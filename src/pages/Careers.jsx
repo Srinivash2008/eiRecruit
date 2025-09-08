@@ -15,6 +15,7 @@ import {
 } from '../components/AnimatedButton';
 import banner2 from '../assets/contact4.jpg';
 import carrers_image from '../assets/carrers.jpg';
+import for_job_asseekers from '../assets/for_job_ass.jpeg';
 
 const sectionTitle = css`
   font-size: 2rem;
@@ -358,13 +359,13 @@ const blockTitle = emotionClass`
 
 const blockContent = emotionClass`
   color: #555;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   padding-bottom: 2rem;
   line-height: 1.6;
   text-align: justify;
   margin: 0;
   @media (max-width: 768px) {
-    font-size: 0.96rem;
+    font-size: 1.2rem;
   }
   @media (max-width: 480px) {
     font-size: 0.92rem;
@@ -419,6 +420,63 @@ const mainIntroContent = emotionClass`
   p {
     position: relative;
     z-index: 1;
+  }
+`;
+
+const mainIntroContent1 = emotionClass`
+  color: #1a202c;
+  font-size: clamp(0.95rem, 1vw + 0.8rem, 1.15rem);
+  line-height: 1.75;
+  gap: 2%;
+  margin: 0 auto;
+  text-align: center;
+  width: 100%;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.5rem, 6vw, 4rem);
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #ffffff 0%, #f9fbfd 100%, #f1f5f9 100%);
+  position: relative;
+  overflow: hidden;
+  border-radius: 0; 
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: inset 0 -2px 6px rgba(0,0,0,0.04);
+
+  font-weight: 400;
+  letter-spacing: 0.015em;
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #3b82f6, #06b6d4, #10b981);
+  }
+
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: -50px;
+    right: -50px;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    z-index: 0;
+  }
+
+  p {
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 1200px) {
+    flex-direction: column !important;
+    justify-content: center;
+    gap: 3rem;
   }
 `;
 
@@ -674,19 +732,53 @@ export default function Careers() {
           <motion.p className={careersSubtitle} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>
             &ldquo;Connecting Global Talent with World-Class Opportunities.&ldquo;
           </motion.p>
-          <div className={mainIntroContent} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'row', gap: '1.5rem', marginTop: '2rem' }}>
-            <motion.img
-              src={carrers_image}
-              alt="Join the Eirecruit team"
+
+          <div className={mainIntroContent1}>
+            <motion.div
               style={{
-                width: '33%',
-                borderRadius: '1.25rem',
-                boxShadow: '0 20px 40px -10px rgba(0, 118, 255, 0.25)',
+                position: 'relative',
+                width: '100%',
+                maxWidth: '400px',
+                height: '350px',
+                borderRadius: '24px',
+                overflow: 'hidden',
+                boxShadow: '0 25px 80px rgba(0, 0, 0, 0.12)',
+                background: 'linear-gradient(145deg, #ffffff 0%, #f8faff 100%)',
+                border: '1px solid rgba(255, 255, 255, 0.8)',
+                transform: 'perspective(1000px) rotateY(-5deg)',
+                transformStyle: 'preserve-3d'
               }}
-              whileHover={{ scale: 1.05, y: -8 }}
-              transition={{ type: 'spring', stiffness: 300 }}
-            />
-            <p className={blockContent} style={{textAlign: 'center'}}>
+              whileHover={{
+                transform: 'perspective(1000px) rotateY(-2deg) scale(1.02)',
+                boxShadow: '0 35px 100px rgba(0, 0, 0, 0.2)'
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                duration: 0.6
+              }}
+            >
+              <motion.img
+                src={carrers_image}
+                alt="Healthcare Team"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  objectPosition: 'center'
+                }}
+              />
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'linear-gradient(135deg, rgba(0, 118, 255, 0.1) 0%, rgba(28, 166, 56, 0.1) 100%)',
+                opacity: 0.3
+              }} />
+            </motion.div>
+            <p className={blockContent} style={{ textAlign: 'center' }}>
               As a leading recruitment agency, we believe that great talent is the foundation of every success story. We specialise in connecting skilled healthcare professionals with hospitals, clinics, and care facilities worldwide.
             </p>
           </div>
@@ -758,7 +850,7 @@ export default function Careers() {
                       }}
                     >
                       <motion.img
-                        src={banner2}
+                        src={for_job_asseekers}
                         alt="Healthcare Team"
                         style={{
                           width: '100%',
@@ -768,7 +860,7 @@ export default function Careers() {
                         }}
                       />
                       {/* Gradient Overlay */}
-                      <div style={{
+                      {/* <div style={{
                         position: 'absolute',
                         top: 0,
                         left: 0,
@@ -776,10 +868,10 @@ export default function Careers() {
                         bottom: 0,
                         background: 'linear-gradient(135deg, rgba(0, 118, 255, 0.1) 0%, rgba(28, 166, 56, 0.1) 100%)',
                         opacity: 0.3
-                      }} />
+                      }} /> */}
 
                       {/* Floating Badge */}
-                      <motion.div
+                      {/* <motion.div
                         style={{
                           position: 'absolute',
                           top: '20px',
@@ -794,7 +886,8 @@ export default function Careers() {
                         whileHover={{ scale: 1.1 }}
                         transition={{ type: "spring", stiffness: 400 }}
                       >
-                      </motion.div>
+                      </motion.div> */}
+
                     </motion.div>
                   </motion.div>
                 </Col>
@@ -1114,7 +1207,7 @@ export default function Careers() {
           <motion.section className={careersHero} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick} style={{ position: 'relative', marginTop: '2rem', marginBottom: '2rem' }}>
             <motion.div
               className={contentBlock}
-              style={{ gridColumn: '1 / -1' ,marginBottom: '3%'}}
+              style={{ gridColumn: '1 / -1', marginBottom: '3%' }}
             >
               <p className={blockContent} style={{ width: '100%', textAlign: 'justify' }}>
                 For those considering a nursing career in Ireland, it promises excitement and fulfilment. There are various nursing roles and career pathways to explore. To make informed decisions about pursuing a nursing career, it's essential to understand the diverse responsibilities that come with the profession. </p>
@@ -1123,7 +1216,7 @@ export default function Careers() {
                 Are you an experienced nurse or qualified doctor looking for better career opportunities, international exposure, and rewarding work environments?
               </p> */}
             </motion.div>
-             <motion.div
+            <motion.div
               className={contentBlock}
               style={{ gridColumn: '1 / -1' }}
             >
@@ -1131,9 +1224,9 @@ export default function Careers() {
                 Are you an experienced nurse or qualified doctor looking for better career opportunities, international exposure, and rewarding work environments?
               </p>
             </motion.div>
-            
+
           </motion.section>
-         
+
 
 
           <motion.div className='py-5'>
