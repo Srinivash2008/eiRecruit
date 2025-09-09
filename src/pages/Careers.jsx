@@ -17,6 +17,8 @@ import banner2 from '../assets/contact4.jpg';
 import carrers_image from '../assets/carrers.jpg';
 import for_job_asseekers from '../assets/for_job_ass.jpeg';
 
+
+
 const sectionTitle = css`
   font-size: 2rem;
   font-weight: 600;
@@ -684,6 +686,23 @@ export default function Careers() {
   const theme = useTheme();
   const [activeCategory, setActiveCategory] = useState('healthcare');
 
+  function useIsMobile() {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+      const mq = window.matchMedia('(max-width: 768px)');
+      setIsMobile(mq.matches);
+
+      const handler = (e) => setIsMobile(e.matches);
+      mq.addEventListener('change', handler);
+      return () => mq.removeEventListener('change', handler);
+    }, []);
+
+    return isMobile;
+  }
+
+  const isMobile = useIsMobile();
+
   const imageContainerStyle = {
     position: 'relative',
     width: '100%',
@@ -903,11 +922,15 @@ export default function Careers() {
                 <Col lg={7} md={12}>
                   <motion.div
                     style={{
-                      padding: '3rem 2rem 3rem 0.5rem',
+                      padding: isMobile
+                        ? '0rem 0rem 0rem 0rem'
+                        : '3rem 2rem 3rem 1.5rem',
                       height: '100%',
                       display: 'flex',
                       flexDirection: 'column',
-                      justifyContent: 'center'
+                      justifyContent: 'center',
+                      textAlign: 'center',
+                      alignItems: 'center',
                     }}
                     variants={fadeUpQuick}
                   >
@@ -1006,7 +1029,9 @@ export default function Careers() {
                 <Col lg={7} md={12}>
                   <motion.div
                     style={{
-                      padding: '3rem 2rem 3rem 0.5rem',
+                      padding: isMobile
+                        ? '0rem 2rem 3rem 0.5rem'
+                        : '3rem 2rem 3rem 0.5rem',
                       height: '100%',
                       display: 'flex',
                       flexDirection: 'column',
