@@ -945,7 +945,7 @@ export default function Careers() {
                     {/* Description */}
                     <motion.p
                       style={{
-                        fontSize: '1.2rem',
+                        fontSize: '1rem',
                         color: '#4a5568',
                         lineHeight: 1.7,
                         marginBottom: '2.5rem',
@@ -1075,7 +1075,7 @@ export default function Careers() {
                     {/* Description */}
                     <motion.p
                       style={{
-                        fontSize: '1.2rem',
+                        fontSize: '1rem',
                         color: '#4a5568',
                         lineHeight: 1.7,
                         marginBottom: '2.5rem',
@@ -1140,7 +1140,7 @@ export default function Careers() {
                         <span style={{
                           color: '#1a202c',
                           fontWeight: 600,
-                          fontSize: '12px'
+                          fontSize: '1rem'
                         }}>Healthcare Professionals</span>
                       </motion.div>
 
@@ -1186,7 +1186,7 @@ export default function Careers() {
                         <span style={{
                           color: '#1a202c',
                           fontWeight: 600,
-                          fontSize: '12px'
+                          fontSize: '1rem'
                         }}>Software Professionals</span>
                       </motion.div>
 
@@ -1232,7 +1232,7 @@ export default function Careers() {
                         <span style={{
                           color: '#1a202c',
                           fontWeight: 600,
-                          fontSize: '12px'
+                          fontSize: '1rem'
                         }}>Other Professionals</span>
                       </motion.div>
                     </motion.div>
