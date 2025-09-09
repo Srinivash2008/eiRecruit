@@ -686,23 +686,30 @@ export default function Careers() {
   const theme = useTheme();
   const [activeCategory, setActiveCategory] = useState('healthcare');
 
-  function useIsMobile() {
-    const [isMobile, setIsMobile] = useState(false);
+  function useDeviceType() {
+    const [device, setDevice] = useState('desktop');
 
     useEffect(() => {
-      const mq = window.matchMedia('(max-width: 768px)');
-      setIsMobile(mq.matches);
+      function checkDevice() {
+        const width = window.innerWidth;
+        if (width <= 767) {
+          setDevice('mobile');
+        } else if (width <= 1024) {
+          setDevice('tablet');
+        } else {
+          setDevice('laptop');
+        }
+      }
+      checkDevice();
 
-      const handler = (e) => setIsMobile(e.matches);
-      mq.addEventListener('change', handler);
-      return () => mq.removeEventListener('change', handler);
+      window.addEventListener('resize', checkDevice);
+      return () => window.removeEventListener('resize', checkDevice);
     }, []);
 
-    return isMobile;
+    return device;
   }
-
-  const isMobile = useIsMobile();
-
+  const device = useDeviceType();
+  console.log('Current device type:', device);
   const imageContainerStyle = {
     position: 'relative',
     width: '100%',
@@ -885,7 +892,8 @@ export default function Careers() {
                     style={{
                       position: 'relative',
                       height: '100%',
-                      minHeight: '400px',
+                      minHeight: device === 'mobile' ? 'auto' : '400px',
+                      marginTop: device === 'mobile' ? '5%' : '0%',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center'
@@ -922,8 +930,8 @@ export default function Careers() {
                 <Col lg={7} md={12}>
                   <motion.div
                     style={{
-                      padding: isMobile
-                        ? '0rem 0rem 0rem 0rem'
+                      padding: device === 'mobile' ?
+                        '0rem 0rem 0rem 0rem'
                         : '3rem 2rem 3rem 1.5rem',
                       height: '100%',
                       display: 'flex',
@@ -992,7 +1000,8 @@ export default function Careers() {
                     style={{
                       position: 'relative',
                       height: '100%',
-                      minHeight: '400px',
+                      minHeight: device === 'mobile' ? 'auto' : '400px',
+                      marginTop: device === 'mobile' ? '5%' : '0%',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center'
@@ -1029,7 +1038,7 @@ export default function Careers() {
                 <Col lg={7} md={12}>
                   <motion.div
                     style={{
-                      padding: isMobile
+                      padding: device === 'mobile'
                         ? '0rem 2rem 3rem 0.5rem'
                         : '3rem 2rem 3rem 0.5rem',
                       height: '100%',
