@@ -208,7 +208,7 @@ const nursingStepCard = emotionClass`
 const careersHero = emotionClass`
   background: linear-gradient(135deg, #f8faff 0%, #e6f0ff 100%);
   border-radius: 2rem;
-  padding: 3rem 2rem;
+  // padding: 2rem 1rem;
   margin: 2rem 0;
   position: relative;
   overflow: hidden;
@@ -236,6 +236,52 @@ const careersHero = emotionClass`
     z-index: 0;
   }
 `;
+const careersHero1 = emotionClass`
+  background: linear-gradient(135deg, #f8faff 0%, #e6f0ff 100%);
+  border-radius: 2rem;
+  // padding: 2rem 1rem;
+  margin: 2rem 0;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0076FF 0%, #1CA638 50%, #FFC72C 100%);
+    border-radius: 2rem 2rem 0 0;
+    z-index: 1;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0076FF 0%, #1CA638 50%, #FFC72C 100%);
+    border-radius: 0 0 2rem 2rem;
+    z-index: 1;
+  }
+
+  // existing radial overlay
+  .&:global(&)::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(0, 118, 255, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+  }
+`;
+
 
 const careersTitle = emotionClass`
   font-size: 2.5rem;
@@ -638,6 +684,22 @@ export default function Careers() {
   const theme = useTheme();
   const [activeCategory, setActiveCategory] = useState('healthcare');
 
+  const imageContainerStyle = {
+    position: 'relative',
+    width: '100%',
+    maxWidth: '400px',
+    aspectRatio: '8 / 7',
+    margin: '0 auto',
+    borderRadius: '24px',
+    overflow: 'hidden',
+    boxShadow: '0 25px 80px rgba(0, 0, 0, 0.12)',
+    background: 'linear-gradient(145deg, #ffffff 0%, #f8faff 100%)',
+    border: '1px solid rgba(255, 255, 255, 0.8)',
+    transform: 'perspective(1000px) rotateY(-5deg)',
+    transformStyle: 'preserve-3d'
+
+  };
+
   // Animation variants
   const fadeUp = {
     hidden: { opacity: 0, y: 40 },
@@ -723,7 +785,7 @@ export default function Careers() {
       {/* Careers Summary */}
       <motion.section className={careersHero} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick} style={{ position: 'relative' }}>
 
-        <Container>
+        <Container style={{ padding: '2rem 1rem', position: 'relative', zIndex: 2 }}>
           {/* Existing Content - Unchanged */}
           <motion.h1 className={careersTitle} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>
             Careers
@@ -733,21 +795,9 @@ export default function Careers() {
             &ldquo;Connecting Global Talent with World-Class Opportunities.&ldquo;
           </motion.p>
 
-          <div className={mainIntroContent1}>
+          {/* <div className={mainIntroContent1}>
             <motion.div
-              style={{
-                position: 'relative',
-                width: '100%',
-                maxWidth: '400px',
-                height: '350px',
-                borderRadius: '24px',
-                overflow: 'hidden',
-                boxShadow: '0 25px 80px rgba(0, 0, 0, 0.12)',
-                background: 'linear-gradient(145deg, #ffffff 0%, #f8faff 100%)',
-                border: '1px solid rgba(255, 255, 255, 0.8)',
-                transform: 'perspective(1000px) rotateY(-5deg)',
-                transformStyle: 'preserve-3d'
-              }}
+              style={imageContainerStyle}
               whileHover={{
                 transform: 'perspective(1000px) rotateY(-2deg) scale(1.02)',
                 boxShadow: '0 35px 100px rgba(0, 0, 0, 0.2)'
@@ -781,7 +831,108 @@ export default function Careers() {
             <p className={blockContent} style={{ textAlign: 'center' }}>
               As a leading recruitment agency, we believe that great talent is the foundation of every success story. We specialise in connecting skilled healthcare professionals with hospitals, clinics, and care facilities worldwide.
             </p>
-          </div>
+          </div> */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }}
+            className={careersHero1}
+            variants={fadeUpQuick}
+            style={{
+              position: 'relative',
+              margin: '4rem 0',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Background Pattern */}
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              borderRadius: '1.5rem',
+              opacity: 0.05,
+              zIndex: 0
+            }} />
+
+            {/* Main Content Container */}
+            <Container style={{ position: 'relative', zIndex: 2 }}>
+              <Row className="g-0">
+                {/* Left Side - Image with Modern Card Design */}
+                <Col lg={5} md={12} className="mb-4 mb-lg-0">
+                  <motion.div
+                    style={{
+                      position: 'relative',
+                      height: '100%',
+                      minHeight: '400px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                    variants={fadeUpQuick}
+                  >
+                    <motion.div
+                      style={imageContainerStyle}
+                      whileHover={{
+                        transform: 'perspective(1000px) rotateY(-2deg) scale(1.02)',
+                        boxShadow: '0 35px 100px rgba(0, 0, 0, 0.2)'
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        duration: 0.6
+                      }}
+                    >
+                      <motion.img
+                        src={carrers_image}
+                        alt="Healthcare Team"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          objectPosition: 'center'
+                        }}
+                      />
+                    </motion.div>
+                  </motion.div>
+                </Col>
+
+                {/* Right Side - Content with Modern Typography */}
+                <Col lg={7} md={12}>
+                  <motion.div
+                    style={{
+                      padding: '3rem 2rem 3rem 0.5rem',
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center'
+                    }}
+                    variants={fadeUpQuick}
+                  >
+                    {/* Description */}
+                    <motion.p
+                      style={{
+                        fontSize: '1.2rem',
+                        color: '#4a5568',
+                        lineHeight: 1.7,
+                        marginBottom: '2.5rem',
+                        textAlign: 'center',
+                        fontWeight: 400
+                      }}
+                      variants={fadeUpQuick}
+                    >
+                      As a leading recruitment agency, we believe that great talent is the foundation of every success story. We specialise in connecting skilled healthcare professionals with hospitals, clinics, and care facilities worldwide.
+
+                    </motion.p>
+
+                  </motion.div>
+                </Col>
+              </Row>
+            </Container>
+          </motion.div>
+
 
 
           {/* Enhanced Job Opportunities Introduction - Modern Layout */}
@@ -826,19 +977,7 @@ export default function Careers() {
                     variants={fadeUpQuick}
                   >
                     <motion.div
-                      style={{
-                        position: 'relative',
-                        width: '100%',
-                        maxWidth: '400px',
-                        height: '350px',
-                        borderRadius: '24px',
-                        overflow: 'hidden',
-                        boxShadow: '0 25px 80px rgba(0, 0, 0, 0.12)',
-                        background: 'linear-gradient(145deg, #ffffff 0%, #f8faff 100%)',
-                        border: '1px solid rgba(255, 255, 255, 0.8)',
-                        transform: 'perspective(1000px) rotateY(-5deg)',
-                        transformStyle: 'preserve-3d'
-                      }}
+                      style={imageContainerStyle}
                       whileHover={{
                         transform: 'perspective(1000px) rotateY(-2deg) scale(1.02)',
                         boxShadow: '0 35px 100px rgba(0, 0, 0, 0.2)'
@@ -859,35 +998,6 @@ export default function Careers() {
                           objectPosition: 'center'
                         }}
                       />
-                      {/* Gradient Overlay */}
-                      {/* <div style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        background: 'linear-gradient(135deg, rgba(0, 118, 255, 0.1) 0%, rgba(28, 166, 56, 0.1) 100%)',
-                        opacity: 0.3
-                      }} /> */}
-
-                      {/* Floating Badge */}
-                      {/* <motion.div
-                        style={{
-                          position: 'absolute',
-                          top: '20px',
-                          right: '20px',
-                          background: 'rgba(255, 255, 255, 0.95)',
-                          backdropFilter: 'blur(10px)',
-                          padding: '8px 16px',
-                          borderRadius: '20px',
-                          border: '1px solid rgba(255, 255, 255, 0.3)',
-                          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
-                        }}
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ type: "spring", stiffness: 400 }}
-                      >
-                      </motion.div> */}
-
                     </motion.div>
                   </motion.div>
                 </Col>
@@ -1006,7 +1116,7 @@ export default function Careers() {
                           alignItems: 'center',
                           gap: '12px',
                           background: 'linear-gradient(135deg, rgba(255, 199, 44, 0.1) 0%, rgba(255, 199, 44, 0.05) 100%)',
-                          padding: '16px 20px',
+                          padding: '16px 10px',
                           borderRadius: '16px',
                           border: '1px solid rgba(255, 199, 44, 0.2)',
                           boxShadow: '0 4px 20px rgba(255, 199, 44, 0.1)',
@@ -1142,6 +1252,9 @@ export default function Careers() {
               }}
             />
           </motion.div>
+
+
+
           <motion.h2 id="healthcare_professionals" style={{ scrollMarginTop: '90px' }} className={sectionTitle} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>Healthcare Professionals</motion.h2>
 
           <motion.div className={careersContent} variants={staggerQuick}>
