@@ -771,8 +771,8 @@ export default function Careers() {
   ];
   // Dummy job postings
   const jobs = [
-    { title: 'title: yet to draft', location: 'location: yet to draft', type: 'type: yet to draft', desc: 'description: yet to draft' },
-    { title: 'title: yet to draft', location: 'location: yet to draft', type: 'type: yet to draft', desc: 'description: yet to draft' },
+    { title: 'title: Content will be added', location: 'location: Content will be added', type: 'type: Content will be added', desc: 'description: Content will be added' },
+    { title: 'title: Content will be added', location: 'location: Content will be added', type: 'type: Content will be added', desc: 'description: Content will be added' },
   ];
   return (
     <Container >
@@ -1360,9 +1360,9 @@ export default function Careers() {
           </motion.div>
 
           <motion.h2 id="software_professionals" style={{ scrollMarginTop: '100px' }} className={sectionTitle} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>Software Professionals</motion.h2>
-          <motion.h2 className={sectionContent} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>yet to draft</motion.h2>
+          <motion.h2 className={sectionContent} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>Content will be added</motion.h2>
           <motion.h2 id="other_professionals" style={{ scrollMarginTop: '90px' }} className={sectionTitle} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>Other Professionals</motion.h2>
-          <motion.h2 className={sectionContent} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>yet to draft</motion.h2>
+          <motion.h2 className={sectionContent} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>Content will be added</motion.h2>
 
         </Container>
       </motion.section>
