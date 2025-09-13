@@ -5,7 +5,7 @@ import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { FaEnvelope, FaPhoneAlt, FaPaperPlane, FaGlobe } from 'react-icons/fa';
 import { ButtonTwo } from '../components/AnimatedButton';
-import contact1 from '../assets/contact1.jpg';
+import contact1 from '../assets/contact5.jpeg';
 import carrers_image from '../assets/carrers.jpg';
 const sectionTitle = theme => css`
   color: ${theme.colors.primary};

@@ -383,16 +383,16 @@ const contentBlock = emotionClass`
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 1.5rem;
+  padding: 2%;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(0, 118, 255, 0.1);
   transition: all 0.3s ease;
   
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-    border-color: rgba(0, 118, 255, 0.2);
-  }
+  // &:hover {
+  //   transform: translateY(-4px);
+  //   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  //   border-color: rgba(0, 118, 255, 0.2);
+  // }
 `;
 
 const blockTitle = emotionClass`
@@ -718,7 +718,7 @@ export default function Careers() {
     margin: '0 auto',
     borderRadius: '24px',
     overflow: 'hidden',
-    boxShadow: '0 25px 80px rgba(0, 0, 0, 0.12)',
+    // boxShadow: '0 25px 80px rgba(0, 0, 0, 0.12)',
     background: 'linear-gradient(145deg, #ffffff 0%, #f8faff 100%)',
     border: '1px solid rgba(255, 255, 255, 0.8)',
     transform: 'perspective(1000px) rotateY(-5deg)',
@@ -821,57 +821,21 @@ export default function Careers() {
             &ldquo;Connecting Global Talent with World-Class Opportunities.&ldquo;
           </motion.p>
 
-          {/* <div className={mainIntroContent1}>
-            <motion.div
-              style={imageContainerStyle}
-              whileHover={{
-                transform: 'perspective(1000px) rotateY(-2deg) scale(1.02)',
-                boxShadow: '0 35px 100px rgba(0, 0, 0, 0.2)'
-              }}
-              transition={{
-                type: "spring",
-                stiffness: 300,
-                duration: 0.6
-              }}
-            >
-              <motion.img
-                src={carrers_image}
-                alt="Healthcare Team"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  objectPosition: 'center'
-                }}
-              />
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: 'linear-gradient(135deg, rgba(0, 118, 255, 0.1) 0%, rgba(28, 166, 56, 0.1) 100%)',
-                opacity: 0.3
-              }} />
-            </motion.div>
-            <p className={blockContent} style={{ textAlign: 'center' }}>
-              As a leading recruitment agency, we believe that great talent is the foundation of every success story. We specialise in connecting skilled healthcare professionals with hospitals, clinics, and care facilities worldwide.
-            </p>
-          </div> */}
+
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }}
-            className={careersHero1}
+            // className={careersHero1}
             variants={fadeUpQuick}
             style={{
               position: 'relative',
-              margin: '4rem 0',
+              // margin: '4rem 0',
               overflow: 'hidden',
             }}
           >
             {/* Background Pattern */}
-            <div style={{
+            {/* <div style={{
               position: 'absolute',
               top: 0,
               left: 0,
@@ -881,11 +845,11 @@ export default function Careers() {
               borderRadius: '1.5rem',
               opacity: 0.05,
               zIndex: 0
-            }} />
+            }} /> */}
 
             {/* Main Content Container */}
             <Container style={{ position: 'relative', zIndex: 2 }}>
-              <Row className="g-0">
+              <Row className="g-0"  style={{ flexDirection: 'row-reverse' }}>
                 {/* Left Side - Image with Modern Card Design */}
                 <Col lg={5} md={12} className="mb-4 mb-lg-0">
                   <motion.div
@@ -904,7 +868,7 @@ export default function Careers() {
                       style={imageContainerStyle}
                       whileHover={{
                         transform: 'perspective(1000px) rotateY(-2deg) scale(1.02)',
-                        boxShadow: '0 35px 100px rgba(0, 0, 0, 0.2)'
+                        // boxShadow: '0 35px 100px rgba(0, 0, 0, 0.2)'
                       }}
                       transition={{
                         type: "spring",
@@ -945,7 +909,7 @@ export default function Careers() {
                     {/* Description */}
                     <motion.p
                       style={{
-                        fontSize: '1rem',
+                        fontSize: '1.3rem',
                         color: '#4a5568',
                         lineHeight: 1.7,
                         marginBottom: '2.5rem',
@@ -974,12 +938,14 @@ export default function Careers() {
             variants={fadeUpQuick}
             style={{
               position: 'relative',
-              margin: '4rem 0',
+              // margin: '4rem 0',
+              marginTop: '2rem',
+              marginBottom: '2rem',
               overflow: 'hidden'
             }}
           >
             {/* Background Pattern */}
-            <div style={{
+            {/* <div style={{
               position: 'absolute',
               top: 0,
               left: 0,
@@ -989,11 +955,11 @@ export default function Careers() {
               borderRadius: '1.5rem',
               opacity: 0.05,
               zIndex: 0
-            }} />
+            }} /> */}
 
             {/* Main Content Container */}
             <Container style={{ position: 'relative', zIndex: 2 }}>
-              <Row className="g-0">
+              <Row className="g-0" >
                 {/* Left Side - Image with Modern Card Design */}
                 <Col lg={5} md={12} className="mb-4 mb-lg-0">
                   <motion.div
@@ -1012,7 +978,7 @@ export default function Careers() {
                       style={imageContainerStyle}
                       whileHover={{
                         transform: 'perspective(1000px) rotateY(-2deg) scale(1.02)',
-                        boxShadow: '0 35px 100px rgba(0, 0, 0, 0.2)'
+                        // boxShadow: '0 35px 100px rgba(0, 0, 0, 0.2)'
                       }}
                       transition={{
                         type: "spring",
@@ -1289,7 +1255,7 @@ export default function Careers() {
 
 
 
-          <motion.h2 id="healthcare_professionals" style={{ scrollMarginTop: '90px' }} className={sectionTitle} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>Healthcare Professionals</motion.h2>
+          <motion.h2 id="healthcare_professionals" style={{ scrollMarginTop: '90px', marginBottom: '0px' }} className={sectionTitle} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>Healthcare Professionals</motion.h2>
 
           <motion.div className={careersContent} variants={staggerQuick}>
             {/* <motion.div className={contentBlock} >
@@ -1351,35 +1317,35 @@ export default function Careers() {
             </motion.div> */}
 
           </motion.div>
-          <motion.section className={careersHero} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick} style={{ position: 'relative', marginTop: '2rem', marginBottom: '2rem' }}>
+          <motion.section initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick} style={{ position: 'relative', marginTop: '2rem' }}>
             <motion.div
               className={contentBlock}
-              style={{ gridColumn: '1 / -1', marginBottom: '3%' }}
+              style={{ gridColumn: '1 / -1', marginBottom: '3%', background: 'transparent', boxShadow: 'none', border: 'none' }}
             >
               <p className={blockContent} style={{ width: '100%', textAlign: 'justify' }}>
                 For those considering a nursing career in Ireland, it promises excitement and fulfilment. There are various nursing roles and career pathways to explore. To make informed decisions about pursuing a nursing career, it's essential to understand the diverse responsibilities that come with the profession. </p>
               <p className={blockContent} style={{ width: '100%', textAlign: 'justify' }}>Ireland's developed economy presents lucrative career opportunities for professionals, strengthening all sectors and ensuring comfortable living for families. The country is known for its natural beauty, rich cultural heritage, and vibrant cities. The symbiotic connection between Ireland and professionals seeking nursing careers has resulted in mutual benefits and thriving careers.</p>
-              {/* <p className={blockContent} style={{ width: '100%', textAlign: 'justify' }}>
-                Are you an experienced nurse or qualified doctor looking for better career opportunities, international exposure, and rewarding work environments?
-              </p> */}
-            </motion.div>
-            <motion.div
-              className={contentBlock}
-              style={{ gridColumn: '1 / -1' }}
-            >
-              <p className={blockContent} style={{ width: '100%', textAlign: 'justify' }}>
+              <p className={blockContent} style={{ width: '100%', textAlign: 'justify', background: 'transparent', boxShadow: 'none', border: 'none' }}>
                 Are you an experienced nurse or qualified doctor looking for better career opportunities, international exposure, and rewarding work environments?
               </p>
             </motion.div>
+            {/* <motion.div
+              className={contentBlock}
+              style={{ gridColumn: '1 / -1',background: 'transparent', boxShadow: 'none',border: 'none' }}
+            >
+              <p className={blockContent} style={{ width: '100%', textAlign: 'justify',background: 'transparent', boxShadow: 'none',border: 'none' }}>
+                Are you an experienced nurse or qualified doctor looking for better career opportunities, international exposure, and rewarding work environments?
+              </p>
+            </motion.div> */}
 
           </motion.section>
 
 
 
-          <motion.div className='py-5'>
+          <motion.div >
             <motion.h2 className={sectionTitle} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>Eirecruit support you with employability assistance and relocation to Ireland</motion.h2>
             <motion.div variants={staggerQuick} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} className="">
-              <Row className="g-3 justify-content-center align-items-stretch">
+              <Row className="g-3 justify-content-center align-items-stretch py-5" >
                 {nursingSteps.map((step, i) => (
                   <Col md={6} lg={4} key={i} className="d-flex">
                     <motion.div variants={fadeUpQuick} style={{ width: '100%' }}>

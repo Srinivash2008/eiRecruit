@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import HomeButton from '../components/HomeButton';
 import Banner1 from '../assets/Banner1.jpg';
 import Banner2 from '../assets/Banner3.jpg';
-import Banner3 from '../assets/contact3.jpg';
+import Banner3 from '../assets/banner5.jpeg';
 import India from '../assets/flags/india.png';
 import Ireland from '../assets/flags/ireland.png';
 import Uk from '../assets/flags/uk.png';
