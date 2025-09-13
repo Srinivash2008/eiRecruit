@@ -773,6 +773,8 @@ export default function Careers() {
   const jobs = [
     { title: 'title: Content will be added', location: 'location: Content will be added', type: 'type: Content will be added', desc: 'description: Content will be added' },
     { title: 'title: Content will be added', location: 'location: Content will be added', type: 'type: Content will be added', desc: 'description: Content will be added' },
+     { title: 'title: Content will be added', location: 'location: Content will be added', type: 'type: Content will be added', desc: 'description: Content will be added' },
+  
   ];
   return (
     <Container >
@@ -818,7 +820,7 @@ export default function Careers() {
           </motion.h1>
 
           <motion.p className={careersSubtitle} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>
-            &ldquo;Connecting Global Talent with World-Class Opportunities.&ldquo;
+            &ldquo;Connecting Global Talent with World-Class Opportunities.&rdquo;
           </motion.p>
 
 
