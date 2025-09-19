@@ -10,10 +10,10 @@ export default function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
-      <Header />
+      {/* <Header /> */}
       <AppRoutes />
-      <Footer />
-         <ToastContainer position="top-right" autoClose={3000} />
+      {/* <Footer /> */}
+      <ToastContainer position="top-right" autoClose={3000} />
     </BrowserRouter>
   );
 }

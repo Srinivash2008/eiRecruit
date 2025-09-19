@@ -349,15 +349,16 @@ export default function Login() {
       console.log("Login Data:", response?.data?.token);
       if (response?.data?.success) {
 
-        Cookies.set("Token", response.data.token, {
+        Cookies.set("token", response.data.token, {
           expires: 1,       // 1 day
-          secure: true,     // true = only HTTPS (set false for localhost)
+          secure: false,    // set true only for HTTPS production
           sameSite: "Strict"
         });
 
-         console.log("Login successful, token stored in cookies ✅");
 
-        navigate('/');
+        console.log("Login successful, token stored in cookies ✅");
+
+        navigate('/dashboard');
       }
 
     } catch (err) {

@@ -16,7 +16,7 @@ export const loginController = async (req, res) => {
         }
 
         const isMatch = await comparePassword(password, user.password);
-        console.log(isMatch,"isMatch")
+
         if (!isMatch) {
             return res.status(401).json({ success: false, message: "Invalid Employee ID or Password" });
         }
