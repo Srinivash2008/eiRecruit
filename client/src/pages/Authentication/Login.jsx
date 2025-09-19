@@ -9,6 +9,7 @@ import logo from '../../assets/logo.png';
 import { css as emotionClass } from '@emotion/css';
 import axios from "axios";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 // Animations
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -348,7 +349,7 @@ export default function Login() {
       );
       console.log("Login Data:", response?.data?.token);
       if (response?.data?.success) {
-
+console.log(response?.data)
         Cookies.set("token", response.data.token, {
           expires: 1,       // 1 day
           secure: false,    // set true only for HTTPS production
@@ -359,10 +360,12 @@ export default function Login() {
         console.log("Login successful, token stored in cookies ✅");
 
         navigate('/dashboard');
+        toast.success(response?.data?.message);
       }
 
     } catch (err) {
       setError('Login failed. Please check your credentials.');
+         toast.success(response?.data?.message);
     } finally {
       setIsLoading(false);
     }
