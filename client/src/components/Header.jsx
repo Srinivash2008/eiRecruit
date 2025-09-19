@@ -231,9 +231,9 @@ export default function Header() {
     { to: '/', label: 'Services', sectionId: 'services' },
     { to: '/', label: 'Careers', sectionId: 'careers' },
     { to: '/', label: 'Contact', sectionId: 'contact' },
-   ...(token
-      ? [{ to: "/logout", label: "Logout", sectionId: null, onClick: handleLogout }]
-      : [{ to: "/login", label: "Login", sectionId: null }]),
+  //  ...(token
+  //     ? [{ to: "/logout", label: "Logout", sectionId: null, onClick: handleLogout }]
+  //     : [{ to: "/login", label: "Login", sectionId: null }]),
   ];
 
   useEffect(() => {
