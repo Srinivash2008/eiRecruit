@@ -1,0 +1,27 @@
+{
+  		"pdmr_user_team_pid" : 1,
+            "pdmr_user_depart_pid" : 13,
+            "pdmr_user_position_pid" : 5,
+            "pdmr_user_id" : 1807,
+            "pdmr_user_name" : "Nikita.E",
+            "pdmr_user_pass" : 1807,
+            "pdmr_user_gender" : "FEMALE",
+            "pdmr_user_mail_id" : "nikita@pdmrindia.com",
+            "pdmr_user_reporting_manager" : 1981,
+            "pdmr_user_level" : 1
+}
+
+http://192.168.29.161:8000/api/v1/auth/registerUser
+
+
+
+
+http://192.168.29.186:8000/api/v1/userTeam/userTeamDetails/create
+{
+            "pdmr_user_team_depart_pid": 13,
+            "pdmr_user_team_name": Technical Team,
+            "pdmr_user_team_display_name": Technical Team,
+            "pdmr_user_team_sm_id": 1981,
+            "pdmr_user_team_am_id": 1647,
+            "pdmr_user_team_tl_id": 1941
+}
