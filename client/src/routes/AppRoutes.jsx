@@ -1,7 +1,8 @@
 import { Routes, Route } from "react-router-dom";
-import SinglePage from "../pages/SinglePage";  // Public landing
-import Login from "../pages/Authentication/Login"; // Public login
-import Dashboard from "../pages/Dashboard"; // Protected
+import SinglePage from "../pages/SinglePage";  
+import Login from "../pages/Authentication/Login"; 
+import Signup from "../pages/Authentication/Signup"
+import Dashboard from "../pages/Dashboard"; 
 import NotFound from "../pages/NotFound";
 import ProtectedRoute from "../components/ProtectedRoute";
 import PublicRoute from "../components/PublicRoute";
@@ -15,6 +16,14 @@ export default function AppRoutes() {
         element={
           <PublicRoute>
             <Login />
+          </PublicRoute>
+        }
+      />
+       <Route
+        path="/signup"
+        element={
+          <PublicRoute>
+            <Signup />
           </PublicRoute>
         }
       />

@@ -4,10 +4,9 @@ import Cookies from "js-cookie";
 export default function PublicRoute({ children }) {
   const token = Cookies.get("token"); 
 
-  // If already logged in, redirect to dashboard
   if (token) {
     return <Navigate to="/" replace />;
   }
 
-  return children; // otherwise, allow access
+  return children;
 }
