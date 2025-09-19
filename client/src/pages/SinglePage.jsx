@@ -6,6 +6,8 @@ import About from './About';
 import Services from './Services';
 import Careers from './Careers';
 import Contact from './Contact';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 const sectionStyle = {
   minHeight: '100vh',
   // padding: '2rem 0',
@@ -92,6 +94,8 @@ export default function SinglePage() {
   }, []);
 
   return (
+    <>
+     <Header />
     <div>
       {/* Home Section */}
       <section id="home" style={sectionStyle1}>
@@ -127,5 +131,7 @@ export default function SinglePage() {
         <Contact />
       </section>
     </div>
+     <Footer />
+    </>
   );
 } 
