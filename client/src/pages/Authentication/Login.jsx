@@ -349,7 +349,6 @@ export default function Login() {
       );
       console.log("Login Data:", response?.data?.token);
       if (response?.data?.success) {
-console.log(response?.data)
         Cookies.set("token", response.data.token, {
           expires: 1,       // 1 day
           secure: false,    // set true only for HTTPS production

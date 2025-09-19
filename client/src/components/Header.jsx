@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation, useNavigate } from 'react-router-dom';
 import { css } from '@emotion/react';
 import logo from '../assets/logo.png';
+import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
 const navBarStyle = css`
   position: sticky;
@@ -212,6 +214,15 @@ export default function Header() {
   const location = useLocation();
   const navigate = useNavigate();
 
+   const token = Cookies.get("token");
+
+    const handleLogout = () => {
+    Cookies.remove("token");
+    navigate("/login");
+    toast.success("Logout successful");
+
+  };
+
   const isSinglePage = location.pathname === '/';
 
   const navItems = [
@@ -220,7 +231,9 @@ export default function Header() {
     { to: '/', label: 'Services', sectionId: 'services' },
     { to: '/', label: 'Careers', sectionId: 'careers' },
     { to: '/', label: 'Contact', sectionId: 'contact' },
-    // { to: '/login', label: 'Login', sectionId: null }
+   ...(token
+      ? [{ to: "/logout", label: "Logout", sectionId: null, onClick: handleLogout }]
+      : [{ to: "/login", label: "Login", sectionId: null }]),
   ];
 
   useEffect(() => {
@@ -256,6 +269,11 @@ export default function Header() {
 
   const handleLinkClick = (item) => {
     setMenuOpen(false);
+
+     if (item.onClick) {
+      item.onClick(); // logout action
+      return;
+    }
     
     if (item.sectionId && isSinglePage) {
       const element = document.getElementById(item.sectionId);

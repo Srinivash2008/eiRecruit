@@ -1,24 +1,55 @@
-import { Routes, Route } from 'react-router-dom';
-import SinglePage from '../pages/SinglePage';
-import About from '../pages/About';
-import Services from '../pages/Services';
-import Careers from '../pages/Careers';
-import Contact from '../pages/Contact';
-import CurrentOpenings from '../pages/CurrentOpenings';
-import Dashboard from '../pages/DashBoard';
-import NotFound from '../pages/NotFound';
-import Login from '../pages/Authentication/Login';
-import Signup from '../pages/Authentication/Signup';
+import { Routes, Route } from "react-router-dom";
+import SinglePage from "../pages/SinglePage";
+import Login from "../pages/Authentication/Login";
+import Signup from "../pages/Authentication/Signup";
+import Dashboard from "../pages/Dashboard";
+import DummyComponent from "../pages/dummy";
+import NotFound from "../pages/NotFound";
+import ProtectedRoute from "../components/ProtectedRoute";
+import PublicRoute from "../components/PublicRoute";
+import AdminLayout from "../layouts/AdminLayout";
 
 export default function AppRoutes() {
   return (
     <Routes>
+      {/* Public routes */}
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <PublicRoute>
+            <Signup />
+          </PublicRoute>
+        }
+      />
+
+      {/* Always public */}
       <Route path="/" element={<SinglePage />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/Dashboard" element={<Dashboard />} />
-      <Route path="/CurrentOpenings" element={<CurrentOpenings />} />
+
+      {/* Protected routes with shared AdminLayout */}
+      <Route
+        element={
+          <ProtectedRoute>
+            <AdminLayout />
+          </ProtectedRoute>
+        }
+      >
+        {/* 👇 everything here will have Header + Footer */}
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dummy" element={<DummyComponent />} />
+        <Route path="/dummy2" element={<DummyComponent />} />
+      </Route>
+
+      {/* Catch all */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
-} 
+}
+
