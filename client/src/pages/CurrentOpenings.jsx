@@ -74,7 +74,7 @@ const addButton = emotionClass`
 // Scrollable ReactQuill editor with limited toolbar
 const quillModules = {
     toolbar: [
-        ['bold', 'italic'],
+        ['bold', 'italic','underline'],
         [{ 'list': 'ordered' }, { 'list': 'bullet' }],
     ],
 };

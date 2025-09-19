@@ -2,12 +2,14 @@ import { Routes, Route } from "react-router-dom";
 import SinglePage from "../pages/SinglePage";
 import Login from "../pages/Authentication/Login";
 import Signup from "../pages/Authentication/Signup";
-import Dashboard from "../pages/Dashboard";
 import DummyComponent from "../pages/dummy";
 import NotFound from "../pages/NotFound";
 import ProtectedRoute from "../components/ProtectedRoute";
 import PublicRoute from "../components/PublicRoute";
 import AdminLayout from "../layouts/AdminLayout";
+import Dashboard from "../pages/DashBoard";
+import CurrentOpenings from "../pages/CurrentOpenings";
+
 
 export default function AppRoutes() {
   return (
@@ -43,8 +45,7 @@ export default function AppRoutes() {
       >
         {/* 👇 everything here will have Header + Footer */}
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/dummy" element={<DummyComponent />} />
-        <Route path="/dummy2" element={<DummyComponent />} />
+        <Route path="/CurrentOpenings" element={<CurrentOpenings />} />
       </Route>
 
       {/* Catch all */}
