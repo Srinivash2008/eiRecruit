@@ -10,6 +10,7 @@ import AdminLayout from "../layouts/AdminLayout";
 import Dashboard from "../pages/DashBoard";
 import CurrentOpenings from "../pages/CurrentOpenings";
 import  SubmittedQuery from "../pages/SubmittedQuery";
+import JobSeekerList from "../pages/JobSeekerList";
 
 
 export default function AppRoutes() {
@@ -48,6 +49,8 @@ export default function AppRoutes() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/CurrentOpenings" element={<CurrentOpenings />} />
          <Route path="/submittedquery" element={<SubmittedQuery />} />
+          <Route path="/jobseekerlist" element={<JobSeekerList />} />
+         
       </Route>
 
       {/* Catch all */}
