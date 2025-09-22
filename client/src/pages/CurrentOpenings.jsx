@@ -227,11 +227,11 @@ export default function CurrentOpenings() {
                         <thead>
                             <tr>
                                 <th>S.No</th>
-                                <th>Logo</th>
+                                {/* <th>Logo</th> */}
                                 <th>Opening Name</th>
+                                <th>Job Description</th>
                                 <th>Location</th>
                                 <th>Status</th>
-                                <th>Job Description</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -239,7 +239,7 @@ export default function CurrentOpenings() {
                                 openings.map((opening, index) => (
                                     <tr key={opening.id}>
                                         <td>{index + 1}</td>
-                                        <td>
+                                        {/* <td>
                                             <img
                                                 src={opening.logo}
                                                 alt="logo"
@@ -250,19 +250,35 @@ export default function CurrentOpenings() {
                                                     objectFit: "cover",
                                                 }}
                                             />
-                                        </td>
+                                        </td> */}
                                         <td>{opening.name}</td>
+                                        <td style={{ minHeight: "60px", padding: "12px", verticalAlign: "middle" }}>
+                                            {opening.description ? (
+                                                <span
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={() => handlePreview(opening.description)}
+                                                >
+                                                    {opening.description.replace(/<[^>]+>/g, "").length > 20 ? (
+                                                        <>
+                                                            {opening.description.replace(/<[^>]+>/g, "").slice(0, 20)}
+                                                            <span style={{ color: "#FF5722", marginLeft: "2px" }}>
+                                                                ... Read more
+                                                            </span>
+                                                        </>
+                                                    ) : (
+                                                        <span
+                                                            dangerouslySetInnerHTML={{
+                                                                __html: opening.description,
+                                                            }}
+                                                        />
+                                                    )}
+                                                </span>
+                                            ) : (
+                                                <span className="text-muted">No Message</span>
+                                            )}
+                                        </td>
                                         <td>{opening.location}</td>
                                         <td>{opening.status}</td>
-                                        <td className="text-center">
-                                            <Button
-                                                variant="outline-primary"
-                                                size="sm"
-                                                onClick={() => handlePreview(opening.description)}
-                                            >
-                                                <FaEye />
-                                            </Button>
-                                        </td>
                                     </tr>
                                 ))
                             ) : (

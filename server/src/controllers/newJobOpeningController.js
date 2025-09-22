@@ -91,3 +91,53 @@ export const createNewOpeningController = async (req, res) => {
         return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
+
+
+export const updateCurrentOpeningStatusController = async (req, res) => {
+    const updatecurrentOpeningStatusData = req.body;
+
+    try {
+
+        // Required fields validation
+        const requiredFields = [
+            "status",
+            "id",
+        ];
+        const missingFields = requiredFields.filter(
+            field => !updatecurrentOpeningStatusData[field] || updatecurrentOpeningStatusData[field].trim() === ""
+        );
+
+        if (missingFields.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: `Missing required fields: ${missingFields.join(", ")}`
+            });
+        }
+
+        const result = await currentJobOpenings.updateStatus(updatecurrentOpeningStatusData);
+
+
+        if (result.success && result.result.affectedRows > 0) {
+
+            const updatedData = {
+                id: result.affectedData.id,
+                status: result.affectedData.status,
+            };
+
+
+            return res.status(201).json({
+                success: true,
+                message: "update  successfully!",
+                result: updatedData
+            });
+        } else {
+            return res.status(500).json({
+                success: false,
+                message: "Failed to update current opening."
+            });
+        }
+    } catch (error) {
+        console.error("Error in updateCurrentOpeningStatusController:", error);
+        return res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
