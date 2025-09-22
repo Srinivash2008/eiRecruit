@@ -170,37 +170,33 @@ export default function JobSeekerList() {
                                                 <span
                                                     className={attachmentChip}
                                                     onClick={() => forceDownload(row.resume, row.resume.split("/").pop())} // download full file
-                                                    title={row.resume.split("/").pop()} // full file name on hover
+                                                    title={row.resume.split("/").pop()} // show only file name on hover
                                                 >
-                                                    <FaFileAlt /> {truncateFilename(row.resume, 18)} {/* truncated file name */}
+                                                    <FaFileAlt /> {truncateFilename(row.resume.split("/").pop(), 18)} {/* display only filename */}
                                                 </span>
                                             ) : (
                                                 <span className="text-muted">No Resume</span>
                                             )}
                                         </td>
 
-
                                         <td>
-                                            <div
-                                                style={{
-                                                    display: 'flex',
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center',
-                                                    height: '100%',
-                                                    width: '100%',
-                                                }}
-                                            >
-                                                {row.message ? (
-                                                    <FaCommentDots
-                                                        style={{ cursor: "pointer", color: "#0076FF", fontSize: '1.2rem' }}
+                                            {row.message ? (
+                                                row.message.length > 20 ? (
+                                                    <span
+                                                        style={{ cursor: "pointer" }}
                                                         onClick={() => handleShowMessage(row.message)}
-                                                        title="View Message"
-                                                    />
+                                                    >
+                                                        {row.message.slice(0, 20)}
+                                                        <span style={{ color: "#FF5722", marginLeft: '2px' }}>... Read more</span>
+                                                    </span>
                                                 ) : (
-                                                    <span className="text-muted">No Message</span>
-                                                )}
-                                            </div>
+                                                    <span>{row.message}</span> // plain text, not clickable
+                                                )
+                                            ) : (
+                                                <span className="text-muted">No Message</span>
+                                            )}
                                         </td>
+
                                         <td>{formatDate(row.submitted_date)}</td>
                                     </tr>
                                 ))

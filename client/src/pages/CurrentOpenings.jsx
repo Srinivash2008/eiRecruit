@@ -105,6 +105,22 @@ const customModalBody = emotionClass`
   padding-right: 1rem; // Prevent scrollbar overlapping
 `;
 
+const lightModal = emotionClass`
+  .modal-content {
+    border-radius: 1rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1); /* lighter shadow */
+    border: 1px solid #e9ecef;
+  }
+  .modal-header, .modal-footer {
+    border: none;
+    padding: 0.75rem 1rem; /* reduce padding */
+  }
+  .modal-body {
+    padding: 1rem;
+    font-size: 0.95rem; /* slightly smaller text */
+  }
+`;
+
 export default function CurrentOpenings() {
     const [showModal, setShowModal] = useState(false);
     const [openings, setOpenings] = useState([]);
@@ -355,12 +371,13 @@ export default function CurrentOpenings() {
             </Container>
 
             {/* 👇 JD Preview Modal */}
-            <Modal
+           <Modal
                 show={showPreviewModal}
                 onHide={handleClosePreview}
                 centered
-                size="lg"
+                size="md"   // smaller modal
                 scrollable
+                className={lightModal}  // apply lightweight styles
             >
                 <Modal.Header closeButton>
                     <Modal.Title>Job Description</Modal.Title>

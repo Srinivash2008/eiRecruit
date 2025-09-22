@@ -188,16 +188,24 @@ export default function SubmittedQuery() {
                                                         }}
                                                     >
                                                         {row.message ? (
-                                                            <FaCommentDots
-                                                                style={{ cursor: "pointer", color: "#0076FF", fontSize: '1.2rem' }}
-                                                                onClick={() => handleShowMessage(row.message)}
-                                                                title="View Message"
-                                                            />
+                                                            row.message.length > 20 ? (
+                                                                <span
+                                                                    style={{ cursor: "pointer", textAlign: 'center' }}
+                                                                    onClick={() => handleShowMessage(row.message)}
+                                                                >
+                                                                    {row.message.slice(0, 20)}
+                                                                    <span style={{ color: "#FF5722", marginLeft: '2px' }}>... Read more</span>
+                                                                </span>
+                                                            ) : (
+                                                                <span style={{ textAlign: 'center' }}>{row.message}</span>
+                                                            )
                                                         ) : (
                                                             <span className="text-muted">No Message</span>
                                                         )}
                                                     </div>
                                                 </td>
+
+
 
                                                 <td>
                                                     {row.attachment_url ? (
