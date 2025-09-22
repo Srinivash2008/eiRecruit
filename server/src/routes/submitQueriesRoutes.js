@@ -1,6 +1,7 @@
 // src/routes/submitQueriesRoutes.js
 import express from 'express';
 import multer from 'multer';
+import fs from 'fs/promises';
 import { fetchQueriesController, submitQueryController } from '../controllers/submitQueriesController.js';
 
 
@@ -12,8 +13,15 @@ const router = express.Router();
 
 // Multer storage config
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/submitQueriesFolder'); // uploads folder must exist
+    destination: async (req, file, cb) => {
+        const destinationPath = path.join('uploads', 'submitQueriesFolder');
+        try {
+            await fs.access(destinationPath);
+        } catch {
+            // Create the directory if it does not exist
+            await fs.mkdir(destinationPath, { recursive: true });
+        }
+        cb(null, destinationPath);
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + '-' + file.originalname);
@@ -27,7 +35,7 @@ router.get('/uploads/submitQueriesFolder/:filename', (req, res) => {
     const filename = req.params.filename;
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
-    const imagePath = path.join(__dirname, '..', '..', 'uploads','submitQueriesFolder', filename);
+    const imagePath = path.join(__dirname, '..', '..', 'uploads', 'submitQueriesFolder', filename);
     // console.log(imagePath, "imagepath");
 
     res.sendFile(imagePath);

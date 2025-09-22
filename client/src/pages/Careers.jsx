@@ -685,11 +685,6 @@ const draftSubtitle = emotionClass`
   }
 `;
 
-const customModalBody = emotionClass`
-  max-height: 65vh;
-  overflow-y: auto;
-`;
-
 export default function Careers() {
   const theme = useTheme();
   const [activeCategory, setActiveCategory] = useState('healthcare');
@@ -1596,51 +1591,61 @@ export default function Careers() {
       </motion.div>
 
       {/* Application Modal */}
-      <Modal show={showModal} onHide={handleCloseModal}  centered scrollable>
+      <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
         <Modal.Header closeButton>
+          <Modal.Title>Apply for  {selectedJob?.name}</Modal.Title>
         </Modal.Header>
-        <Modal.Body className={customModalBody}>
+        <Modal.Body>
           <Form onSubmit={handleApplicationSubmit}>
-            <Form.Group className="mb-3">
-              <Form.Label>Job Title</Form.Label>
-              <Form.Control type="text" value={selectedJob?.name || ''} readOnly />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Full Name</Form.Label>
-              <Form.Control
-                type="text"
-                name="name"
-                value={applicationData.name}
-                onChange={handleApplicationChange}
-                placeholder="Enter your full name"
-                required
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Email Address</Form.Label>
-              <Form.Control
-                type="email"
-                name="email"
-                value={applicationData.email}
-                onChange={handleApplicationChange}
-                placeholder="Enter your email"
-                required
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Contact Number</Form.Label>
-              <Form.Control
-                type="tel"
-                name="contact_number"
-                value={applicationData.contact_number}
-                onChange={handleApplicationChange}
-                placeholder="Enter your contact number"
-                required
-              />
-            </Form.Group>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Job Title</Form.Label>
+                  <Form.Control type="text" value={selectedJob?.name || ''} readOnly />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Full Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    name="name"
+                    value={applicationData.name}
+                    onChange={handleApplicationChange}
+                    placeholder="Enter your full name"
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Email Address</Form.Label>
+                  <Form.Control
+                    type="email"
+                    name="email"
+                    value={applicationData.email}
+                    onChange={handleApplicationChange}
+                    placeholder="Enter your email"
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Contact Number</Form.Label>
+                  <Form.Control
+                    type="tel"
+                    name="contact_number"
+                    value={applicationData.contact_number}
+                    onChange={handleApplicationChange}
+                    placeholder="Enter your contact number"
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
 
             <Form.Group className="mb-3">
               <Form.Label>Message (Optional)</Form.Label>

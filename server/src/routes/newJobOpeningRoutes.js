@@ -2,6 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import { fileURLToPath } from 'url'
 import path from "path";
+import fs from 'fs/promises';
 
 import { fetchOpeningController, createNewOpeningController } from '../controllers/newJobOpeningController.js';
 
@@ -9,8 +10,15 @@ const router = express.Router();
 
 // Multer storage config
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/logoFolder'); // uploads folder must exist
+    destination: async (req, file, cb) => {
+        const destinationPath = path.join('uploads', 'logoFolder');
+        try {
+            await fs.access(destinationPath);
+        } catch {
+            // Create the directory if it does not exist
+            await fs.mkdir(destinationPath, { recursive: true });
+        }
+        cb(null, destinationPath);
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + '-' + file.originalname);
