@@ -1,7 +1,7 @@
-import { use, useEffect, useState } from 'react';
-import { Container, Row, Col, Modal, Button, Form, Table } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { Container, Modal, Button, Form, Table } from 'react-bootstrap';
 import { css as emotionClass } from '@emotion/css';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaEye } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
@@ -40,7 +40,6 @@ const stagger = {
 
 // New styles for the table section
 const tableSection = emotionClass`
-  margin-top: 4rem;
   padding: 2.5rem;
   background: #fff;
   border-radius: 1.5rem;
@@ -118,6 +117,10 @@ export default function CurrentOpenings() {
         logo: null,
     });
 
+    // 👇 JD Preview Modal State
+    const [previewJD, setPreviewJD] = useState(null);
+    const [showPreviewModal, setShowPreviewModal] = useState(false);
+
     const handleClose = () => {
         setShowModal(false);
         setNewOpening({ name: '', description: '', location: '', logo: null });
@@ -139,7 +142,6 @@ export default function CurrentOpenings() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
 
         const isDescriptionEmpty = !newOpening.description || newOpening.description.replace(/<[^>]*>/g, '').trim().length === 0;
 
@@ -196,6 +198,16 @@ export default function CurrentOpenings() {
         fetchOpenings();
     }, []);
 
+    // 👇 Preview handlers
+    const handlePreview = (jd) => {
+        setPreviewJD(jd);
+        setShowPreviewModal(true);
+    };
+
+    const handleClosePreview = () => {
+        setShowPreviewModal(false);
+        setPreviewJD(null);
+    };
 
     return (
         <motion.div className={dashboardContainer} initial="hidden" animate="visible" variants={stagger}>
@@ -215,11 +227,11 @@ export default function CurrentOpenings() {
                         <thead>
                             <tr>
                                 <th>S.No</th>
-                                <th>Opening Name</th>
-                                <th>Job Description</th>
-                                <th>Status</th>
-                                <th>Location</th>
                                 <th>Logo</th>
+                                <th>Opening Name</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Job Description</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -227,10 +239,6 @@ export default function CurrentOpenings() {
                                 openings.map((opening, index) => (
                                     <tr key={opening.id}>
                                         <td>{index + 1}</td>
-                                        <td>{opening.name}</td>
-                                        <td dangerouslySetInnerHTML={{ __html: opening.description }}></td>
-                                        <td>{opening.status}</td>
-                                        <td>{opening.location}</td>
                                         <td>
                                             <img
                                                 src={opening.logo}
@@ -239,20 +247,60 @@ export default function CurrentOpenings() {
                                                     width: "50px",
                                                     height: "50px",
                                                     borderRadius: "50%",
-                                                    objectFit: "cover"
-                                                }} />
+                                                    objectFit: "cover",
+                                                }}
+                                            />
+                                        </td>
+                                        <td>{opening.name}</td>
+                                        <td>{opening.location}</td>
+                                        <td>{opening.status}</td>
+                                        <td className="text-center">
+                                            <Button
+                                                variant="outline-primary"
+                                                size="sm"
+                                                onClick={() => handlePreview(opening.description)}
+                                            >
+                                                <FaEye />
+                                            </Button>
                                         </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="5" className="text-center text-muted">No openings added yet.</td>
+                                    <td colSpan="6" className="text-center text-muted">
+                                        No openings added yet.
+                                    </td>
                                 </tr>
                             )}
                         </tbody>
                     </Table>
                 </motion.div>
             </Container>
+
+            {/* 👇 JD Preview Modal */}
+            <Modal
+                show={showPreviewModal}
+                onHide={handleClosePreview}
+                centered
+                size="lg"
+                scrollable
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Job Description</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {previewJD ? (
+                        <div dangerouslySetInnerHTML={{ __html: previewJD }} />
+                    ) : (
+                        <p>No description available.</p>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClosePreview}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
 
             {/* Add Opening Modal */}
             <Modal
