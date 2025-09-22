@@ -229,7 +229,7 @@ export default function DashBoardHeader() {
         // { to: '/dashboard', label: 'Home' },
         { to: '/CurrentOpenings', label: 'Current Opening' },
         { to: '/careers', label: 'Registration' },
-        { to: '/contact', label: 'Query' },
+        { to: '/submittedquery', label: 'Query' },
         ...(token
             ? [{ to: "/logout", label: "Logout", sectionId: null, onClick: handleLogout }]
             : [{ to: "/login", label: "Login", sectionId: null }]),

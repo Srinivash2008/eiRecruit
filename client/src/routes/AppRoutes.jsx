@@ -9,6 +9,7 @@ import PublicRoute from "../components/PublicRoute";
 import AdminLayout from "../layouts/AdminLayout";
 import Dashboard from "../pages/DashBoard";
 import CurrentOpenings from "../pages/CurrentOpenings";
+import  SubmittedQuery from "../pages/SubmittedQuery";
 
 
 export default function AppRoutes() {
@@ -46,6 +47,7 @@ export default function AppRoutes() {
         {/* 👇 everything here will have Header + Footer */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/CurrentOpenings" element={<CurrentOpenings />} />
+         <Route path="/submittedquery" element={<SubmittedQuery />} />
       </Route>
 
       {/* Catch all */}

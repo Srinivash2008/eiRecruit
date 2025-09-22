@@ -90,7 +90,7 @@ export default function Dashboard() {
   const dashboardItems = [
     { title: 'Manage Openings', icon: <FaBriefcase />, to: '/CurrentOpenings' },
     { title: 'Candidate Registration', icon: <FaUserPlus />, to: '/careers' },
-    { title: 'Submit a Query', icon: <FaQuestionCircle />, to: '/contact' },
+    { title: 'Submit a Query', icon: <FaQuestionCircle />, to: '/submittedquery' },
   ];
 
   return (
