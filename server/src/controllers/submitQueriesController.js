@@ -10,7 +10,7 @@ export const submitQueryController = async (req, res) => {
     try {
         // Handle file if uploaded
         if (file) {
-            newQueryData.attachment_url = `http://${req.headers.host}/api/v1/uploads/${file.filename}`;
+            newQueryData.attachment_url = `http://${req.headers.host}/api/v1/uploads/submitQueriesFolder/${file.filename}`;
         }
         
 

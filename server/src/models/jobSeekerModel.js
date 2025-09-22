@@ -2,7 +2,7 @@
 import db from '../database/dbConfig.js';
 
 class JobSeeker {
-    
+
     static findAll = async () => {
         return new Promise((resolve, reject) => {
             const query = `
@@ -14,6 +14,36 @@ class JobSeeker {
                     return reject({ error: error, success: false });
                 }
                 resolve({ result: result, success: true });
+            });
+        });
+    };
+    
+    static create = async (data) => {
+        return new Promise((resolve, reject) => {
+            const query = `
+                INSERT INTO job_seeker_list (
+                    name, 
+                    email, 
+                    contact_number, 
+                    resume, 
+                    message, 
+                    current_opening_id
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            `;
+            const values = [
+                data.name,
+                data.email,
+                data.contact_number,
+                data.resume,
+                data.message,
+                data.job_id
+            ];
+            db.query(query, values, (error, result) => {
+                if (error) {
+                    console.error('Error creating Job Seeker:', error);
+                    return reject({ error: error, success: false, affectedData: null });
+                }
+                resolve({ result: result, success: true, affectedData: data });
             });
         });
     };

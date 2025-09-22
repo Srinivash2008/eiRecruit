@@ -1,6 +1,6 @@
 import { useTheme } from '@emotion/react';
-import { Container, Row, Col, Card, Button, Badge } from 'react-bootstrap';
-import { keyframes } from '@emotion/css';
+import { Container, Row, Col, Card, Button, Badge, Modal, Form } from 'react-bootstrap';
+import { keyframes } from '@emotion/react';
 import { css as emotionClass, css } from '@emotion/css';
 import { FaLaptopHouse, FaChartLine, FaMoneyBillWave, FaUsers, FaBriefcase, FaMapMarkerAlt, FaSuitcase, FaClipboardCheck, FaPassport, FaPlane, FaUserMd, FaFileAlt, FaHandshake, FaCheckCircle, FaShieldAlt, FaStar, FaHeart, FaGlobe } from 'react-icons/fa';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -685,10 +685,82 @@ const draftSubtitle = emotionClass`
   }
 `;
 
+const customModalBody = emotionClass`
+  max-height: 65vh;
+  overflow-y: auto;
+`;
+
 export default function Careers() {
   const theme = useTheme();
   const [activeCategory, setActiveCategory] = useState('healthcare');
+  const [showModal, setShowModal] = useState(false);
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [applying, setApplying] = useState(false);
+  const [applicationData, setApplicationData] = useState({
+    name: '',
+    email: '',
+    contact_number: '',
+    message: '',
+    resume: null,
+  });
 
+  const handleShowModal = (job) => {
+    setSelectedJob(job);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedJob(null);
+    setApplicationData({ name: '', email: '', contact_number: '', message: '', resume: null });
+  };
+
+  const handleApplicationChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === 'resume') {
+      setApplicationData((prev) => ({ ...prev, resume: files[0] }));
+    } else {
+      setApplicationData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleApplicationSubmit = async (e) => {
+    e.preventDefault();
+    if (!applicationData.resume) {
+      toast.warning('Please upload your resume.');
+      return;
+    }
+    setApplying(true);
+
+    const formData = new FormData();
+    formData.append('jobId', selectedJob.id);
+    formData.append('jobName', selectedJob.name);
+    formData.append('name', applicationData.name);
+    formData.append('email', applicationData.email);
+    formData.append('contact_number', applicationData.contact_number);
+    formData.append('message', applicationData.message);
+    formData.append('resume', applicationData.resume);
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/v1/job-seeker/create', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.data.success) {
+        toast.success('Application submitted successfully!');
+        handleCloseModal();
+      } else {
+        toast.error(response.data.message || 'Failed to submit application.');
+      }
+    } catch (error) {
+      console.error('Application submission error:', error);
+      toast.error('An error occurred while submitting your application.');
+    } finally {
+      setApplying(false);
+    }
+  };
   const [jobs, setJobs] = useState([]);
 
   function useDeviceType() {
@@ -1453,8 +1525,8 @@ export default function Careers() {
                       </div>
                       <Card.Text style={{ fontSize: '1.01rem', opacity: 0.92 }} dangerouslySetInnerHTML={{ __html: job.description }} />
                     </div>
-                    <div style={{ marginTop: 15, width: '100%' }}>
-                      <ButtonTwo label="Apply Now" to="#" />
+                    <div style={{ marginTop: 15, width: '100%' }} onClick={() => handleShowModal(job)}>
+                      <ButtonTwo label="Apply Now" />
                     </div>
                   </Card.Body>
                 </Card>
@@ -1522,6 +1594,68 @@ export default function Careers() {
           </Card.Body>
         </Card>
       </motion.div>
+
+      {/* Application Modal */}
+      <Modal show={showModal} onHide={handleCloseModal}  centered scrollable>
+        <Modal.Header closeButton>
+        </Modal.Header>
+        <Modal.Body className={customModalBody}>
+          <Form onSubmit={handleApplicationSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Label>Job Title</Form.Label>
+              <Form.Control type="text" value={selectedJob?.name || ''} readOnly />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Full Name</Form.Label>
+              <Form.Control
+                type="text"
+                name="name"
+                value={applicationData.name}
+                onChange={handleApplicationChange}
+                placeholder="Enter your full name"
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Email Address</Form.Label>
+              <Form.Control
+                type="email"
+                name="email"
+                value={applicationData.email}
+                onChange={handleApplicationChange}
+                placeholder="Enter your email"
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Contact Number</Form.Label>
+              <Form.Control
+                type="tel"
+                name="contact_number"
+                value={applicationData.contact_number}
+                onChange={handleApplicationChange}
+                placeholder="Enter your contact number"
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Message (Optional)</Form.Label>
+              <Form.Control as="textarea" rows={3} name="message" value={applicationData.message} onChange={handleApplicationChange} />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Upload Resume</Form.Label>
+              <Form.Control type="file" name="resume" onChange={handleApplicationChange} accept=".pdf,.doc,.docx" required />
+            </Form.Group>
+
+            <Button variant="primary" type="submit" disabled={applying} className="w-100">{applying ? 'Submitting...' : 'Submit Application'}</Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
     </Container>
   );
 }
