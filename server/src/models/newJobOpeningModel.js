@@ -44,7 +44,9 @@ class CurrentJobOpenings {
             current_opening.logo,
             current_opening.status,
             current_opening.created_Date
-            FROM current_opening ORDER BY id DESC
+            FROM current_opening 
+            WHERE current_opening.status = 'Publish'
+            ORDER BY current_opening.id DESC
         `;
             db.query(query, (error, result) => {
                 if (error) {
