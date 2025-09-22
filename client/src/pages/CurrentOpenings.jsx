@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Container, Modal, Button, Form, Table } from 'react-bootstrap';
 import { css as emotionClass } from '@emotion/css';
-import { FaPlus, FaEye } from 'react-icons/fa';
+import { FaPlus, FaEye, FaCheck, FaTimes } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
@@ -116,6 +116,9 @@ export default function CurrentOpenings() {
         location: '',
         logo: null,
     });
+    // State for inline status editing
+    const [editingOpeningId, setEditingOpeningId] = useState(null);
+    const [selectedStatus, setSelectedStatus] = useState('');
 
     // 👇 JD Preview Modal State
     const [previewJD, setPreviewJD] = useState(null);
@@ -209,6 +212,44 @@ export default function CurrentOpenings() {
         setPreviewJD(null);
     };
 
+    const handleStatusClick = (opening) => {
+        setEditingOpeningId(opening.id);
+        setSelectedStatus(opening.status);
+    };
+
+    const handleCancelEdit = () => {
+        setEditingOpeningId(null);
+        setSelectedStatus('');
+    };
+
+    const handleUpdateStatus = async (openingId) => {
+        try {
+            // Assuming a PUT endpoint to update status
+            const response = await axios.post(
+                `http://localhost:5000/api/v1/currentJobOpening/status/update`,
+                { status: selectedStatus, id: openingId },
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+
+            if (response.data.success) {
+                toast.success("Status updated successfully!");
+                setOpenings(openings.map(op =>
+                    op.id === openingId ? { ...op, status: selectedStatus } : op
+                ));
+                handleCancelEdit(); // Exit editing mode
+            } else {
+                toast.error(response.data.message || "Failed to update status.");
+            }
+        } catch (error) {
+            console.error("Error updating status:", error);
+            toast.error("An error occurred while updating the status.");
+        }
+    };
+
     return (
         <motion.div className={dashboardContainer} initial="hidden" animate="visible" variants={stagger}>
             <Container>
@@ -278,7 +319,27 @@ export default function CurrentOpenings() {
                                             )}
                                         </td>
                                         <td>{opening.location}</td>
-                                        <td>{opening.status}</td>
+                                        <td>
+                                            {editingOpeningId === opening.id ? (
+                                                <div className="d-flex align-items-center">
+                                                    <Form.Select
+                                                        size="sm"
+                                                        value={selectedStatus}
+                                                        onChange={(e) => setSelectedStatus(e.target.value)}
+                                                        style={{ maxWidth: '150px' }}
+                                                    >
+                                                        <option value="publish">Publish</option>
+                                                        <option value="not publish">Not Publish</option>
+                                                    </Form.Select>
+                                                    <Button variant="link" onClick={() => handleUpdateStatus(opening.id)} className="ms-2 p-0" title="Update Status"><FaCheck color="green" /></Button>
+                                                    <Button variant="link" onClick={handleCancelEdit} className="ms-2 p-0" title="Cancel"><FaTimes color="red" /></Button>
+                                                </div>
+                                            ) : (
+                                                <span onClick={() => handleStatusClick(opening)} style={{ cursor: 'pointer' }} title="Click to edit">
+                                                    {opening.status}
+                                                </span>
+                                            )}
+                                        </td>
                                     </tr>
                                 ))
                             ) : (

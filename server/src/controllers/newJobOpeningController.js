@@ -98,20 +98,19 @@ export const updateCurrentOpeningStatusController = async (req, res) => {
 
     try {
 
-        // Required fields validation
-        const requiredFields = [
-            "status",
-            "id",
-        ];
-        const missingFields = requiredFields.filter(
-            field => !updatecurrentOpeningStatusData[field] || updatecurrentOpeningStatusData[field].trim() === ""
-        );
 
-        if (missingFields.length > 0) {
-            return res.status(400).json({
-                success: false,
-                message: `Missing required fields: ${missingFields.join(", ")}`
-            });
+        // Validate required fields
+        const validFields = Object.keys(updatecurrentOpeningStatusData).filter((field) => {
+            const value = updatecurrentOpeningStatusData[field];
+
+            if (value === null || value === undefined) return false;
+            if (typeof value === "string" && value.trim() === "") return false;
+
+            return true;
+        });
+
+        if (validFields.length === 0) {
+            return res.status(400).json({ success: false, message: "No valid fields provided." });
         }
 
         const result = await currentJobOpenings.updateStatus(updatecurrentOpeningStatusData);
