@@ -5,7 +5,7 @@ import { css as emotionClass, css } from '@emotion/css';
 import { FaLaptopHouse, FaChartLine, FaMoneyBillWave, FaUsers, FaBriefcase, FaMapMarkerAlt, FaSuitcase, FaClipboardCheck, FaPassport, FaPlane, FaUserMd, FaFileAlt, FaHandshake, FaCheckCircle, FaShieldAlt, FaStar, FaHeart, FaGlobe } from 'react-icons/fa';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import {
   ButtonOne,
   ButtonTwo,
@@ -689,6 +689,8 @@ export default function Careers() {
   const theme = useTheme();
   const [activeCategory, setActiveCategory] = useState('healthcare');
 
+  const [jobs, setJobs] = useState([]);
+
   function useDeviceType() {
     const [device, setDevice] = useState('desktop');
 
@@ -711,6 +713,20 @@ export default function Careers() {
 
     return device;
   }
+  useEffect(() => {
+    const fetchOpenings = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/v1/currentJobOpening/fetch");
+        if (response.data.success) {
+          setJobs(response.data.result);
+        }
+      } catch (error) {
+        console.error("Error fetching openings:", error);
+      }
+    };
+    fetchOpenings();
+  }, []);
+
   const device = useDeviceType();
 
   const imageContainerStyle = {
@@ -773,7 +789,7 @@ export default function Careers() {
     'Initial accommodation assistance and support',
   ];
   // Dummy job postings
-  const jobs = [
+  const jobs1 = [
     { title: 'title: Content will be added', location: 'location: Content will be added', type: 'type: Content will be added', desc: 'description: Content will be added' },
     { title: 'title: Content will be added', location: 'location: Content will be added', type: 'type: Content will be added', desc: 'description: Content will be added' },
     { title: 'title: Content will be added', location: 'location: Content will be added', type: 'type: Content will be added', desc: 'description: Content will be added' },
@@ -804,11 +820,11 @@ export default function Careers() {
         formData
       );
 
-      console.log(response,"response")
+      console.log(response, "response")
 
       if (response?.data.success) {
         toast.success(response?.data?.message);
-         console.log("Server response:", response.data);
+        console.log("Server response:", response.data);
         setFormData({
           name: "",
           position: "",
@@ -819,8 +835,8 @@ export default function Careers() {
         toast.error(response?.data?.message);
       }
     } catch (error) {
-       console.error("Error submitting form:", error);
-       toast.error("An error occurred. Please try again.");
+      console.error("Error submitting form:", error);
+      toast.error("An error occurred. Please try again.");
     }
   };
   return (
@@ -1425,15 +1441,17 @@ export default function Careers() {
       <motion.h2 className={sectionTitle} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>Current Job Opportunities</motion.h2>
       <motion.div variants={staggerQuick} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }}>
         <Row className="g-4 mb-4 justify-content-center align-items-stretch" style={{ display: 'flex' }}>
-          {jobs.map((job, i) => (
+          {jobs?.map((job, i) => (
             <Col md={6} key={i} className="d-flex align-items-stretch">
-              <motion.div variants={fadeUpQuick} style={{ width: '100%', display: 'flex' }}>
+              <motion.div variants={staggerQuick} style={{ width: '100%', display: 'flex' }}>
                 <Card className={jobCard + ' ' + equalHeightCard} style={{ background: i % 2 === 0 ? theme.colors.lightBlue : theme.colors.lightGreen, border: `2px solid ${theme.colors.primary}22`, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'stretch' }}>
                   <Card.Body className="d-flex flex-column justify-content-between" style={{ flex: 1, minHeight: 140 }}>
                     <div>
-                      <Card.Title style={{ fontWeight: 600, fontSize: '1.13rem', color: theme.colors.primary }}>{job.title}</Card.Title>
-                      <div style={{ color: '#888', fontSize: '0.98rem', marginBottom: 8 }}>{job.location} | {job.type}</div>
-                      <Card.Text style={{ fontSize: '1.01rem', opacity: 0.92 }}>{job.desc}</Card.Text>
+                      <Card.Title style={{ fontWeight: 600, fontSize: '1.13rem', color: theme.colors.primary }}>{job.name}</Card.Title>
+                      <div style={{ color: '#888', fontSize: '0.98rem', marginBottom: 8 }}>
+                        {job.location}
+                      </div>
+                      <Card.Text style={{ fontSize: '1.01rem', opacity: 0.92 }} dangerouslySetInnerHTML={{ __html: job.description }} />
                     </div>
                     <div style={{ marginTop: 15, width: '100%' }}>
                       <ButtonTwo label="Apply Now" to="#" />
