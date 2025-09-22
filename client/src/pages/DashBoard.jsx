@@ -89,7 +89,7 @@ const stagger = {
 export default function Dashboard() {
   const dashboardItems = [
     { title: 'Manage Openings', icon: <FaBriefcase />, to: '/CurrentOpenings' },
-    { title: 'Candidate Registration', icon: <FaUserPlus />, to: '/careers' },
+    { title: 'Candidate Registration', icon: <FaUserPlus />, to: '/candidateregistration' },
     { title: 'Submit a Query', icon: <FaQuestionCircle />, to: '/submittedquery' },
     { title: 'Job seeker list', icon: <FaUsers  />, to: '/jobseekerlist' },
   ];

@@ -9,8 +9,9 @@ import PublicRoute from "../components/PublicRoute";
 import AdminLayout from "../layouts/AdminLayout";
 import Dashboard from "../pages/DashBoard";
 import CurrentOpenings from "../pages/CurrentOpenings";
-import  SubmittedQuery from "../pages/SubmittedQuery";
+import SubmittedQuery from "../pages/SubmittedQuery";
 import JobSeekerList from "../pages/JobSeekerList";
+import CandidateRegistration from "../pages/CandidateRegistration";
 
 
 export default function AppRoutes() {
@@ -48,9 +49,10 @@ export default function AppRoutes() {
         {/* 👇 everything here will have Header + Footer */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/CurrentOpenings" element={<CurrentOpenings />} />
-         <Route path="/submittedquery" element={<SubmittedQuery />} />
-          <Route path="/jobseekerlist" element={<JobSeekerList />} />
-         
+        <Route path="/submittedquery" element={<SubmittedQuery />} />
+        <Route path="/jobseekerlist" element={<JobSeekerList />} />
+        <Route path="/candidateregistration" element={<CandidateRegistration />} />
+
       </Route>
 
       {/* Catch all */}
