@@ -1,7 +1,7 @@
 import { Container, Row, Col } from 'react-bootstrap';
 import { css as emotionClass } from '@emotion/css';
 import { Link } from 'react-router-dom';
-import { FaBriefcase, FaUserPlus, FaQuestionCircle } from 'react-icons/fa';
+import { FaBriefcase, FaUserPlus, FaQuestionCircle, FaUsers } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
 // Styles inspired by other pages in the project
@@ -91,6 +91,7 @@ export default function Dashboard() {
     { title: 'Manage Openings', icon: <FaBriefcase />, to: '/CurrentOpenings' },
     { title: 'Candidate Registration', icon: <FaUserPlus />, to: '/careers' },
     { title: 'Submit a Query', icon: <FaQuestionCircle />, to: '/submittedquery' },
+    { title: 'Job seeker list', icon: <FaUsers  />, to: '/jobseekerlist' },
   ];
 
   return (

@@ -230,6 +230,8 @@ export default function DashBoardHeader() {
         { to: '/CurrentOpenings', label: 'Current Opening' },
         { to: '/careers', label: 'Registration' },
         { to: '/submittedquery', label: 'Query' },
+        { to: '/jobseekerlist', label: 'Job Seeker' },
+
         ...(token
             ? [{ to: "/logout", label: "Logout", sectionId: null, onClick: handleLogout }]
             : [{ to: "/login", label: "Login", sectionId: null }]),
