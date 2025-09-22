@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { Container, Row, Col, Modal, Button, Form, Table } from 'react-bootstrap';
 import { css as emotionClass } from '@emotion/css';
 import { FaPlus } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
+import axios from 'axios';
+import { toast } from "react-toastify";
 
 // Styles inspired by other pages in the project
 const dashboardContainer = emotionClass`
@@ -74,7 +76,7 @@ const addButton = emotionClass`
 // Scrollable ReactQuill editor with limited toolbar
 const quillModules = {
     toolbar: [
-        ['bold', 'italic','underline'],
+        ['bold', 'italic', 'underline'],
         [{ 'list': 'ordered' }, { 'list': 'bullet' }],
     ],
 };
@@ -108,8 +110,10 @@ export default function CurrentOpenings() {
     const [showModal, setShowModal] = useState(false);
     const [openings, setOpenings] = useState([]);
     const [newOpening, setNewOpening] = useState({
+        id: '',
         name: '',
         description: '',
+        status: '',
         location: '',
         logo: null,
     });
@@ -133,11 +137,65 @@ export default function CurrentOpenings() {
         setNewOpening((prev) => ({ ...prev, description: value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setOpenings((prev) => [...prev, { ...newOpening, id: Date.now() }]);
-        handleClose();
+
+
+        const isDescriptionEmpty = !newOpening.description || newOpening.description.replace(/<[^>]*>/g, '').trim().length === 0;
+
+        if (!newOpening.name || isDescriptionEmpty || !newOpening.location) {
+            toast.warning("Please fill in all required fields.");
+            return;
+        }
+        if (!newOpening.logo) {
+            toast.warning('Please upload a logo.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('name', newOpening.name);
+        formData.append('description', newOpening.description);
+        formData.append('location', newOpening.location);
+        formData.append('logo', newOpening.logo);
+
+        try {
+            const response = await axios.post(
+                "http://localhost:5000/api/v1/newJobOpening/create",
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }
+            );
+            if (response?.data.success) {
+                toast.success(response?.data?.message);
+                setOpenings((prev) => [response.data.result, ...prev]);
+                handleClose();
+
+            } else {
+                toast.error(response?.data?.message);
+            }
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            toast.error("An error occurred. Please try again.")
+        }
     };
+
+    useEffect(() => {
+        const fetchOpenings = async () => {
+            try {
+                const response = await axios.get("http://localhost:5000/api/v1/currentJobOpening/fetch");
+                if (response.data.success) {
+                    setOpenings(response.data.result);
+                }
+            } catch (error) {
+                console.error("Error fetching openings:", error);
+            }
+        };
+        fetchOpenings();
+    }, []);
+
 
     return (
         <motion.div className={dashboardContainer} initial="hidden" animate="visible" variants={stagger}>
@@ -156,10 +214,12 @@ export default function CurrentOpenings() {
                     <Table striped bordered hover responsive>
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>S.No</th>
                                 <th>Opening Name</th>
+                                <th>Job Description</th>
+                                <th>Status</th>
                                 <th>Location</th>
-                                <th>Actions</th>
+                                <th>Logo</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -168,16 +228,25 @@ export default function CurrentOpenings() {
                                     <tr key={opening.id}>
                                         <td>{index + 1}</td>
                                         <td>{opening.name}</td>
+                                        <td dangerouslySetInnerHTML={{ __html: opening.description }}></td>
+                                        <td>{opening.status}</td>
                                         <td>{opening.location}</td>
                                         <td>
-                                            <Button variant="outline-primary" size="sm" className="me-2">Edit</Button>
-                                            <Button variant="outline-danger" size="sm">Delete</Button>
+                                            <img
+                                                src={opening.logo}
+                                                alt="logo"
+                                                style={{
+                                                    width: "50px",
+                                                    height: "50px",
+                                                    borderRadius: "50%",
+                                                    objectFit: "cover"
+                                                }} />
                                         </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="4" className="text-center text-muted">No openings added yet.</td>
+                                    <td colSpan="5" className="text-center text-muted">No openings added yet.</td>
                                 </tr>
                             )}
                         </tbody>

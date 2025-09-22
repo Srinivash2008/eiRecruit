@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// fetch articles files
+// fetch  files
 router.get('/uploads/:filename', (req, res) => {
     const filename = req.params.filename;
     const __filename = fileURLToPath(import.meta.url);

@@ -6,6 +6,8 @@ import cors from 'cors';   // ✅ add this
 import { jobApplicationRouter } from './routes/jobApplicationRoutes.js';
 import { submitQueriesRouter } from './routes/submitQueriesRoutes.js';
 import { authUserRouter } from './routes/authRouters.js';
+import { newJobOpeningRouter } from './routes/newJobOpeningRoutes.js';
+
 
 dotenv.config();
 
@@ -30,6 +32,8 @@ app.use('/api/v1', jobApplicationRouter);
 app.use('/api/v1', submitQueriesRouter);
 
 app.use('/api/v1', authUserRouter);
+
+app.use('/api/v1', newJobOpeningRouter);
 
 
 app.listen(PORT, () => {
