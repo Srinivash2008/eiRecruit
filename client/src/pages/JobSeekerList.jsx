@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { Container, Table, Pagination, Modal, Button } from "react-bootstrap";
 import { css as emotionClass } from "@emotion/css";
 import { motion } from "framer-motion";
@@ -80,36 +81,8 @@ const truncateFilename = (filename, maxLength = 18) => {
 const formatDate = (isoString) => new Date(isoString).toLocaleDateString("en-GB");
 
 export default function JobSeekerList() {
-    // Dummy data
-    const [data] = useState([
-        {
-            id: 1,
-            name: "Alice Johnson",
-            email: "alice.johnson@example.com",
-            phone: "+1234567890",
-            resume: "https://example.com/resume/alice.pdf",
-            message: "Looking forward to joining your team!",
-            submittedDate: "2025-09-21T10:30:00Z"
-        },
-        {
-            id: 2,
-            name: "Bob Smith",
-            email: "bob.smith@example.com",
-            phone: "+0987654321",
-            resume: null,
-            message: "",
-            submittedDate: "2025-09-20T14:15:00Z"
-        },
-        {
-            id: 3,
-            name: "Charlie Brown",
-            email: "charlie.brown@example.com",
-            phone: "+1122334455",
-            resume: "https://example.com/resume/charlie.pdf",
-            message: "Experienced in React and Node.js.",
-            submittedDate: "2025-09-19T09:00:00Z"
-        }
-    ]);
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
@@ -132,13 +105,38 @@ export default function JobSeekerList() {
     const indexOfFirst = indexOfLast - itemsPerPage;
     const currentItems = data.slice(indexOfFirst, indexOfLast);
 
-    const forceDownload = (url, filename) => {
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+    useEffect(() => {
+        setLoading(true);
+        (async () => {
+            try {
+                const res = await axios.get("http://localhost:5000/api/v1/job-seeker/fetch");
+                if (res.data && res.data.result) {
+                    setData(res.data.result);
+                }
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        })();
+    }, []);
+
+    const forceDownload = async (url, filename) => {
+        try {
+            const res = await fetch(url, {
+                method: "GET",
+            });
+            const blob = await res.blob();
+            const link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(link.href);
+        } catch (err) {
+            console.error("Download failed", err);
+        }
     };
 
     return (
@@ -166,20 +164,22 @@ export default function JobSeekerList() {
                                         <td>{indexOfFirst + idx + 1}</td>
                                         <td>{row.name}</td>
                                         <td>{row.email}</td>
-                                        <td>{row.phone}</td>
+                                        <td>{row.contact_number}</td>
                                         <td>
                                             {row.resume ? (
                                                 <span
                                                     className={attachmentChip}
-                                                    onClick={() => forceDownload(row.resume, row.resume.split("/").pop())}
-                                                    title={row.resume.split("/").pop()}
+                                                    onClick={() => forceDownload(row.resume, row.resume.split("/").pop())} // download full file
+                                                    title={row.resume.split("/").pop()} // full file name on hover
                                                 >
-                                                    <FaFileAlt /> {truncateFilename(row.resume)}
+                                                    <FaFileAlt /> {truncateFilename(row.resume, 18)} {/* truncated file name */}
                                                 </span>
                                             ) : (
                                                 <span className="text-muted">No Resume</span>
                                             )}
                                         </td>
+
+
                                         <td>
                                             <div
                                                 style={{
@@ -201,13 +201,13 @@ export default function JobSeekerList() {
                                                 )}
                                             </div>
                                         </td>
-                                        <td>{formatDate(row.submittedDate)}</td>
+                                        <td>{formatDate(row.submitted_date)}</td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
                                     <td colSpan="7" className="text-center text-muted">
-                                        No job seekers found.
+                                        {loading ? "Loading..." : "No job seekers found."}
                                     </td>
                                 </tr>
                             )}

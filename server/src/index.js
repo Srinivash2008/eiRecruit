@@ -7,6 +7,7 @@ import { jobApplicationRouter } from './routes/jobApplicationRoutes.js';
 import { submitQueriesRouter } from './routes/submitQueriesRoutes.js';
 import { authUserRouter } from './routes/authRouters.js';
 import { newJobOpeningRouter } from './routes/newJobOpeningRoutes.js';
+import { jobSeekerRouter } from './routes/jobSeekerRoutes.js';
 
 
 dotenv.config();
@@ -34,6 +35,8 @@ app.use('/api/v1', submitQueriesRouter);
 app.use('/api/v1', authUserRouter);
 
 app.use('/api/v1', newJobOpeningRouter);
+
+app.use('/api/v1', jobSeekerRouter);
 
 
 app.listen(PORT, () => {
