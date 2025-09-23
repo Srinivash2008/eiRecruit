@@ -150,6 +150,22 @@ export default function CurrentOpenings() {
     const [previewJD, setPreviewJD] = useState(null);
     const [showPreviewModal, setShowPreviewModal] = useState(false);
 
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [selectedOpening, setSelectedOpening] = useState(null);
+
+    const handleDeleteClick = (opening) => {
+        setSelectedOpening(opening);
+        setShowDeleteModal(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!selectedOpening) return;
+
+       console.log(selectedOpening?.id,"selectedOpening")
+    };
+
+
+
     const handleClose = () => {
         setShowModal(false);
         setNewOpening({ name: '', description: '', location: '', logo: null });
@@ -473,9 +489,11 @@ export default function CurrentOpenings() {
                                                     fontSize: "14px",
                                                     marginLeft: "6px",
                                                 }}
+                                                onClick={() => handleDeleteClick(opening)}
                                             >
                                                 <FaRegTrashAlt />
                                             </Button>
+
                                         </td>
 
 
@@ -696,6 +714,25 @@ export default function CurrentOpenings() {
                     </Modal.Footer>
                 </Form>
             </Modal>
+            {/* Model Confirm Delete */}
+            <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirm Delete</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Are you sure you want to delete{" "}
+                    <strong>{selectedOpening?.name}</strong>?
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                        Cancel
+                    </Button>
+                    <Button variant="danger" onClick={confirmDelete}>
+                        Yes, Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
         </motion.div>
     );
 }
