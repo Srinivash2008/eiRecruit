@@ -35,6 +35,10 @@ html {
 section {
   scroll-margin-top: 70px; /* Account for fixed header */
 }
+body.modal-open {
+  overflow: auto !important; /* keep global page scroll */
+  padding-right: 0 !important; /* avoid layout shift */
+}
 
 @media (max-width: 600px) {
   html, body {

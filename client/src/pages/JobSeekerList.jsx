@@ -266,7 +266,7 @@ export default function JobSeekerList() {
             </Container>
 
             {/* Message Modal */}
-            <Modal show={showModal} onHide={handleCloseModal} centered>
+            <Modal scrollable   show={showModal} onHide={handleCloseModal} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Message</Modal.Title>
                 </Modal.Header>
