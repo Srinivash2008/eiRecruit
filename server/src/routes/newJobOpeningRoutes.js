@@ -44,6 +44,7 @@ router.get('/currentJobOpening/fetchWithStatus', fetchOpeningWithStatusControlle
 
 router.post('/newJobOpening/create', upload.single('logo'), createNewOpeningController);
 router.post('/currentJobOpening/update', upload.single('logo'), updateCurrentOpeningController);
+router.post('/currentJobOpening/delete', removeCurrentOpeningStatusController);
 
 router.post('/currentJobOpening/status/update', updateCurrentOpeningStatusController);
 
