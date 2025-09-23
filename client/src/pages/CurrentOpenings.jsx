@@ -161,7 +161,29 @@ export default function CurrentOpenings() {
     const confirmDelete = async () => {
         if (!selectedOpening) return;
 
-       console.log(selectedOpening?.id,"selectedOpening")
+        console.log(selectedOpening?.id, "selectedOpening")
+        try {
+            const response = await axios.post(
+                "http://localhost:5000/api/v1/currentJobOpening/delete",
+                { id: selectedOpening.id },
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+            if (response?.data.success) {
+                toast.success(response?.data?.message);
+                setOpenings((prev) => prev.filter(op => op.id !== selectedOpening.id));
+                setShowDeleteModal(false);
+                setSelectedOpening(null);
+            } else {
+                toast.error(response?.data?.message);
+            }
+        } catch (error) {
+            console.error("Error deleting opening:", error);
+            toast.error("An error occurred. Please try again.");
+        }
     };
 
 
