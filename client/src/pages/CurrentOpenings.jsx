@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Container, Modal, Button, Form, Table } from 'react-bootstrap';
 import { css as emotionClass } from '@emotion/css';
-import { FaPlus, FaEye, FaCheck, FaTimes } from 'react-icons/fa';
+import { FaPlus, FaEye, FaCheck, FaTimes, FaEdit, FaTrash } from 'react-icons/fa';
+import { FaPen, FaRegTrashAlt } from "react-icons/fa";
 import { motion } from 'framer-motion';
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
@@ -132,6 +133,15 @@ export default function CurrentOpenings() {
         location: '',
         logo: null,
     });
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [editingOpening, setEditingOpening] = useState({
+        id: '',
+        name: '',
+        description: '',
+        status: '',
+        location: '',
+        logo: null,
+    });
     // State for inline status editing
     const [editingOpeningId, setEditingOpeningId] = useState(null);
     const [selectedStatus, setSelectedStatus] = useState('');
@@ -194,6 +204,77 @@ export default function CurrentOpenings() {
                 setOpenings((prev) => [response.data.result, ...prev]);
                 handleClose();
 
+            } else {
+                toast.error(response?.data?.message);
+            }
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            toast.error("An error occurred. Please try again.")
+        }
+    };
+
+    // edit opening handlers
+    const handleEditShow = (opening) => {
+        setEditingOpening(opening);
+        setShowEditModal(true);
+    };
+    const handleEditClose = () => {
+        setShowEditModal(false);
+        setEditingOpening({
+            id: '',
+            name: '',
+            description: '',
+            status: '',
+            location: '',
+            logo: null,
+        });
+    };
+
+    const handleEditChange = (e) => {
+        const { name, value, files } = e.target;
+        if (name === 'logo') {
+            setEditingOpening((prev) => ({ ...prev, logo: files[0] }));
+        } else {
+            setEditingOpening((prev) => ({ ...prev, [name]: value }));
+        }
+    };
+    const handleEditDescriptionChange = (value) => {
+        setEditingOpening((prev) => ({ ...prev, description: value }));
+    };
+    const handleEditSubmit = async (e) => {
+        e.preventDefault();
+        const isDescriptionEmpty = !editingOpening.description || editingOpening.description.replace(/<[^>]*>/g, '').trim().length === 0;
+
+        if (!editingOpening.name || isDescriptionEmpty || !editingOpening.location) {
+            toast.warning("Please fill in all required fields.");
+            return;
+        }
+        console.log(editingOpening, "editingOpening");
+
+        const formData = new FormData();
+        formData.append('id', editingOpening.id);
+        formData.append('name', editingOpening.name);
+        formData.append('description', editingOpening.description);
+        formData.append('location', editingOpening.location);
+        formData.append('status', editingOpening.status);
+        if (editingOpening.logo) {
+            formData.append('logo', editingOpening.logo);
+        }
+
+        try {
+            const response = await axios.post(
+                "http://localhost:5000/api/v1/currentJobOpening/update",
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }
+            );
+            if (response?.data.success) {
+                toast.success(response?.data?.message);
+                setOpenings((prev) => prev.map(op => op.id === editingOpening.id ? response.data.result : op));
+                handleEditClose();
             } else {
                 toast.error(response?.data?.message);
             }
@@ -289,6 +370,7 @@ export default function CurrentOpenings() {
                                 <th>Job Description</th>
                                 <th>Location</th>
                                 <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -357,6 +439,47 @@ export default function CurrentOpenings() {
                                                 </span>
                                             )}
                                         </td>
+
+                                        <td style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
+                                            <Button
+                                                onClick={() => handleEditShow(opening)}
+                                                variant="primary"
+                                                title="Edit Opening"
+                                                style={{
+                                                    width: "28px",
+                                                    height: "28px",
+                                                    borderRadius: "50%",
+                                                    padding: "0",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    fontSize: "14px",
+                                                }}
+                                            >
+                                                <FaPen />
+                                            </Button>
+
+                                            <Button
+                                                variant="danger"
+                                                title="Delete Opening"
+                                                style={{
+                                                    width: "28px",
+                                                    height: "28px",
+                                                    borderRadius: "50%",
+                                                    padding: "0",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    fontSize: "14px",
+                                                    marginLeft: "6px",
+                                                }}
+                                            >
+                                                <FaRegTrashAlt />
+                                            </Button>
+                                        </td>
+
+
+
                                     </tr>
                                 ))
                             ) : (
@@ -455,6 +578,23 @@ export default function CurrentOpenings() {
                                 onChange={handleChange}
                                 accept="image/*"
                             />
+                            {newOpening.logo && (
+                                <img
+                                    src={
+                                        newOpening.logo instanceof File
+                                            ? URL.createObjectURL(newOpening.logo)
+                                            : newOpening.logo
+                                    }
+                                    alt="logo"
+                                    style={{
+                                        width: "50px",
+                                        height: "50px",
+                                        borderRadius: "50%",
+                                        objectFit: "cover",
+                                        marginTop: "10px",
+                                    }}
+                                />
+                            )}
                         </Form.Group>
                     </Modal.Body>
                     <Modal.Footer>
@@ -463,6 +603,95 @@ export default function CurrentOpenings() {
                         </Button>
                         <Button type="submit" className={addButton}>
                             Add Opening
+                        </Button>
+                    </Modal.Footer>
+                </Form>
+            </Modal>
+
+            {/* Edit Opening Modal */}
+            <Modal
+                show={showEditModal}
+                onHide={handleEditClose}
+                centered
+                size="lg"
+                scrollable
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Edit Opening</Modal.Title>
+                </Modal.Header>
+                <Form onSubmit={handleEditSubmit}>
+                    <Modal.Body className={customModalBody}>
+                        <Form.Group className="mb-3" controlId="openingName">
+                            <Form.Label>Opening Name</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="name"
+                                placeholder="e.g., Senior React Developer"
+                                value={editingOpening.name}
+                                onChange={handleEditChange}
+                                required
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-3" controlId="jobDescription">
+                            <Form.Label>Job Description</Form.Label>
+                            <div className={quillEditorStyle}>
+                                <ReactQuill
+                                    theme="snow"
+                                    value={editingOpening.description}
+                                    onChange={handleEditDescriptionChange}
+                                    placeholder="Describe the job role and requirements..."
+                                    modules={quillModules}
+                                />
+                            </div>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3" controlId="location">
+                            <Form.Label>Location</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="location"
+                                placeholder="e.g., Dublin, Ireland"
+                                value={editingOpening.location}
+                                onChange={handleEditChange}
+                                required
+                            />
+                        </Form.Group>
+
+                        <Form.Group controlId="logo" className="mb-3">
+                            <Form.Label>Logo (optional)</Form.Label>
+                            <Form.Control
+                                type="file"
+                                name="logo"
+                                onChange={handleEditChange}
+                                accept="image/*"
+                            />
+
+                            {editingOpening.logo && (
+                                <img
+                                    src={
+                                        editingOpening.logo instanceof File
+                                            ? URL.createObjectURL(editingOpening.logo)
+                                            : editingOpening.logo
+                                    }
+                                    alt="logo"
+                                    style={{
+                                        width: "50px",
+                                        height: "50px",
+                                        borderRadius: "50%",
+                                        objectFit: "cover",
+                                        marginTop: "10px",
+                                    }}
+                                />
+                            )}
+                        </Form.Group>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleEditClose}>
+                            Close
+                        </Button>
+                        <Button type="submit" className={addButton}>
+                            Update Opening
                         </Button>
                     </Modal.Footer>
                 </Form>

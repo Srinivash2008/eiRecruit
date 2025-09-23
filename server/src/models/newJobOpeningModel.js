@@ -57,7 +57,7 @@ class CurrentJobOpenings {
             });
         });
     };
-    
+
     static findAllWithStatus = async () => {
         return new Promise((resolve, reject) => {
             const query = `
@@ -100,6 +100,47 @@ class CurrentJobOpenings {
                     return reject({ error: error, success: false, affectedData: null });
                 }
                 resolve({ result: result, success: true, affectedData: queryData });
+            });
+        });
+    };
+
+    static update = async (queryData) => {
+        return new Promise((resolve, reject) => {
+            const query = `
+            UPDATE current_opening 
+            SET name = ?, description = ?, location = ?, logo = ?
+            WHERE id = ?
+        `;
+            const values = [
+                queryData.name,
+                queryData.description,
+                queryData.location,
+                queryData.logo || null,
+                queryData.id
+            ];
+            db.query(query, values, (error, result) => {
+                if (error) {
+                    console.error('Error updating current opening:', error);
+                    return reject({ error: error, success: false, affectedData: null });
+                }
+
+                resolve({ result: result, success: true, affectedData: queryData });
+            });
+        });
+    };
+    static softDelete = async (id) => {
+        return new Promise((resolve, reject) => {
+            const query = `
+            UPDATE current_opening 
+            SET isActive = 'inactive'
+            WHERE id = ?
+        `;
+            db.query(query, [id], (error, result) => {
+                if (error) {
+                    console.error('Error soft deleting current opening:', error);
+                    return reject({ error: error, success: false });
+                }
+                resolve({ result: result, success: true });
             });
         });
     };
