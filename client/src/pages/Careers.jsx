@@ -714,13 +714,53 @@ export default function Careers() {
     const { name, value, files } = e.target;
     if (name === 'resume') {
       setApplicationData((prev) => ({ ...prev, resume: files[0] }));
-    } else {
+    } else if (name === "name") {
+
+      const regex = /^[A-Za-z\s]*$/;
+      if (regex.test(value)) {
+        setApplicationData((prev) => ({ ...prev, name: value }));
+      }
+    }
+    else if (name === "email") {
+
+      setApplicationData((prev) => ({ ...prev, email: value }));
+    }
+    else if (name === "contact_number") {
+
+      const regex = /^[0-9]{0,10}$/;
+      if (regex.test(value)) {
+        setApplicationData((prev) => ({ ...prev, contact_number: value }));
+      }
+    }
+    else {
       setApplicationData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
   const handleApplicationSubmit = async (e) => {
     e.preventDefault();
+    // Name check
+    if (!/^[A-Za-z\s]+$/.test(applicationData.name)) {
+      toast.warning("Name should contain alphabets only");
+      return;
+    }
+
+    // Email check
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(applicationData.email)) {
+      toast.warning("Enter a valid email address");
+      return;
+    }
+
+    // Contact number check
+    if (!/^\d{10}$/.test(applicationData.contact_number)) {
+      toast.warning("Contact number must be exactly 10 digits");
+      return;
+    }
+
+    if (!applicationData.resume) {
+      toast.warning("Please upload your resume");
+      return;
+    }
     if (!applicationData.resume) {
       toast.warning('Please upload your resume.');
       return;

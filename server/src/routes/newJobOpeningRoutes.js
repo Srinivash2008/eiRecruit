@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url'
 import path from "path";
 import fs from 'fs/promises';
 
-import { fetchOpeningController, createNewOpeningController, updateCurrentOpeningStatusController } from '../controllers/newJobOpeningController.js';
+import { fetchOpeningController, createNewOpeningController, updateCurrentOpeningStatusController, fetchOpeningWithStatusController } from '../controllers/newJobOpeningController.js';
 
 const router = express.Router();
 
@@ -40,9 +40,10 @@ router.get('/uploads/logoFolder/:filename', (req, res) => {
 
 
 router.get('/currentJobOpening/fetch', fetchOpeningController);
+router.get('/currentJobOpening/fetchWithStatus', fetchOpeningWithStatusController);
 
 router.post('/newJobOpening/create', upload.single('logo'), createNewOpeningController);
 
-router.post('/currentJobOpening/status/update',updateCurrentOpeningStatusController);
+router.post('/currentJobOpening/status/update', updateCurrentOpeningStatusController);
 
 export const newJobOpeningRouter = router;
