@@ -921,6 +921,16 @@ export default function Careers() {
 
     console.log(formData, "onSubmit={handleSubmit}")
 
+    if (!/^[a-zA-Z\s]+$/.test(formData.name)) {
+      toast.error("Name must contain only letters and spaces");
+      return;
+    }
+
+    if (!/^[a-zA-Z\s]+$/.test(formData.position)) {
+      toast.error("Position must contain only letters and spaces");
+      return;
+    }
+
     try {
       const response = await axios.post(
         "http://localhost:5000/api/v1/job-applications/apply",

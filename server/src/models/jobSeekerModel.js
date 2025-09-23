@@ -6,7 +6,19 @@ class JobSeeker {
     static findAll = async () => {
         return new Promise((resolve, reject) => {
             const query = `
-                SELECT * FROM job_seeker_list ORDER BY submitted_date DESC
+              SELECT 
+                job_seeker_list.id,
+                job_seeker_list.name,
+                job_seeker_list.email,
+                job_seeker_list.contact_number,
+                job_seeker_list.resume,
+                job_seeker_list.message,
+                job_seeker_list.submitted_date,
+                current_opening.name AS opening_name
+            FROM job_seeker_list
+            JOIN current_opening 
+                ON job_seeker_list.current_opening_id = current_opening.id
+            ORDER BY job_seeker_list.submitted_date DESC;
             `;
             db.query(query, (error, result) => {
                 if (error) {
@@ -17,7 +29,7 @@ class JobSeeker {
             });
         });
     };
-    
+
     static create = async (data) => {
         return new Promise((resolve, reject) => {
             const query = `

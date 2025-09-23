@@ -105,6 +105,8 @@ export default function JobSeekerList() {
     const indexOfFirst = indexOfLast - itemsPerPage;
     const currentItems = data.slice(indexOfFirst, indexOfLast);
 
+    console.log(currentItems,"currentItems")
+
     useEffect(() => {
         setLoading(true);
         (async () => {
@@ -152,6 +154,7 @@ export default function JobSeekerList() {
                                 <th>Name</th>
                                 <th>Email ID</th>
                                 <th>Contact Number</th>
+                                <th>Applied Role</th>
                                 <th>Resume Upload</th>
                                 <th>Message</th>
                                 <th>Submitted Date</th>
@@ -165,6 +168,7 @@ export default function JobSeekerList() {
                                         <td>{row.name}</td>
                                         <td>{row.email}</td>
                                         <td>{row.contact_number}</td>
+                                        <td>{row.opening_name}</td>
                                         <td>
                                             {row.resume ? (
                                                 <span
