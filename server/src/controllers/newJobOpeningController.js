@@ -28,6 +28,31 @@ export const fetchOpeningController = async (req, res) => {
     }
 };
 
+export const fetchOpeningWithStatusController = async (req, res) => {
+    try {
+        const currentOpenings = await currentJobOpenings.findAllWithStatus();
+
+
+        if (currentOpenings.success) {
+            return res.status(200).json({
+                success: true,
+                message: "opening retrieved successfully",
+                result: currentOpenings.result
+            });
+        } else {
+            return res.status(500).json({
+                success: false,
+                message: "Failed to retrieve openings"
+            });
+        }
+    } catch (error) {
+        console.error('Error in fetchOpeningWithStatusController:', error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error"
+        });
+    }
+};
 
 export const createNewOpeningController = async (req, res) => {
     const newOpeningData = req.body;

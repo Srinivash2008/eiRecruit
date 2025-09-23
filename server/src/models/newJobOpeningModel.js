@@ -57,6 +57,30 @@ class CurrentJobOpenings {
             });
         });
     };
+    
+    static findAllWithStatus = async () => {
+        return new Promise((resolve, reject) => {
+            const query = `
+            SELECT 
+            current_opening.id,
+            current_opening.name,
+            current_opening.description,
+            current_opening.location,
+            current_opening.logo,
+            current_opening.status,
+            current_opening.created_Date
+            FROM current_opening
+            ORDER BY current_opening.id DESC
+        `;
+            db.query(query, (error, result) => {
+                if (error) {
+                    console.error('Error fetching current openings:', error);
+                    return reject({ error: error, success: false });
+                }
+                resolve({ result: result, success: true });
+            });
+        });
+    };
     static updateStatus = async (queryData) => {
         return new Promise((resolve, reject) => {
             const query = `

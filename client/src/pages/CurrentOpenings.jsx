@@ -204,17 +204,17 @@ export default function CurrentOpenings() {
     };
 
     useEffect(() => {
-        const fetchOpenings = async () => {
+        const fetchOpeningsWithStatus = async () => {
             try {
-                const response = await axios.get("http://localhost:5000/api/v1/currentJobOpening/fetch");
+                const response = await axios.get("http://localhost:5000/api/v1/currentJobOpening/fetchWithStatus");
                 if (response.data.success) {
                     setOpenings(response.data.result);
                 }
             } catch (error) {
-                console.error("Error fetching openings:", error);
+                console.error("Error fetching openings with status:", error);
             }
         };
-        fetchOpenings();
+        fetchOpeningsWithStatus();
     }, []);
 
     // 👇 Preview handlers
@@ -344,8 +344,8 @@ export default function CurrentOpenings() {
                                                         onChange={(e) => setSelectedStatus(e.target.value)}
                                                         style={{ maxWidth: '150px' }}
                                                     >
-                                                        <option value="publish">Publish</option>
-                                                        <option value="not publish">Not Publish</option>
+                                                        <option value="Publish">Publish</option>
+                                                        <option value="Not Publish">Not Publish</option>
                                                     </Form.Select>
                                                     <Button variant="link" onClick={() => handleUpdateStatus(opening.id)} className="ms-2 p-0" title="Update Status"><FaCheck color="green" /></Button>
                                                     <Button variant="link" onClick={handleCancelEdit} className="ms-2 p-0" title="Cancel"><FaTimes color="red" /></Button>
@@ -371,7 +371,7 @@ export default function CurrentOpenings() {
             </Container>
 
             {/* 👇 JD Preview Modal */}
-           <Modal
+            <Modal
                 show={showPreviewModal}
                 onHide={handleClosePreview}
                 centered
