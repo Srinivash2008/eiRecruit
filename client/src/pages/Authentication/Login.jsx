@@ -349,9 +349,11 @@ export default function Login() {
       );
       console.log("Login Data:", response?.data?.token);
       if (response?.data?.success) {
+        // const inOneMinute = new Date(new Date().getTime() + 60 * 1000); 
+         const inOneHour = new Date(new Date().getTime() + 60 * 60 * 1000);
         Cookies.set("token", response.data.token, {
-          expires: 1,       // 1 day
-          secure: false,    // set true only for HTTPS production
+          expires: inOneHour,
+          secure: false,
           sameSite: "Strict"
         });
 
