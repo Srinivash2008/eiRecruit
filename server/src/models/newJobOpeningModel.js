@@ -45,7 +45,7 @@ class CurrentJobOpenings {
             current_opening.status,
             current_opening.created_Date
             FROM current_opening 
-            WHERE current_opening.status = 'Publish'
+            WHERE current_opening.status = 'Publish' AND current_opening.is_active = 'Active'
             ORDER BY current_opening.id DESC
         `;
             db.query(query, (error, result) => {
@@ -70,6 +70,7 @@ class CurrentJobOpenings {
             current_opening.status,
             current_opening.created_Date
             FROM current_opening
+            WHERE current_opening.is_active = 'Active'
             ORDER BY current_opening.id DESC
         `;
             db.query(query, (error, result) => {
@@ -132,7 +133,7 @@ class CurrentJobOpenings {
         return new Promise((resolve, reject) => {
             const query = `
             UPDATE current_opening 
-            SET isActive = 'inactive'
+            SET is_active = 'InActive'
             WHERE id = ?
         `;
             db.query(query, [id], (error, result) => {

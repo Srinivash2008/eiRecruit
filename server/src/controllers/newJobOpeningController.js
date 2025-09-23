@@ -168,6 +168,29 @@ export const updateCurrentOpeningController = async (req, res) => {
     }
 };
 
+export const removeCurrentOpeningStatusController = async (req, res) => {
+    const { id } = req.body;
+    try {
+        const result = await currentJobOpenings.softDelete(id);
+
+        if (result.success && result.result.affectedRows > 0) {
+            return res.status(200).json({
+                success: true,
+                message: "Current opening deleted successfully!"
+            });
+        } else {
+            return res.status(500).json({
+                success: false,
+                message: "Failed to delete current opening."
+            });
+        }
+    } catch (error) {
+        console.error("Error in removeCurrentOpeningStatusController:", error);
+        return res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
+
+
 export const updateCurrentOpeningStatusController = async (req, res) => {
     const updatecurrentOpeningStatusData = req.body;
 
