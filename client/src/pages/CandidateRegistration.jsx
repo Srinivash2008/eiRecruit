@@ -3,6 +3,9 @@ import { Container, Table, Pagination, Spinner } from "react-bootstrap";
 import { css as emotionClass } from "@emotion/css";
 import { motion } from "framer-motion";
 import axios from "axios";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+
 
 // Styles
 const dashboardContainer = emotionClass`
@@ -75,11 +78,44 @@ export default function CandidateRegistration() {
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentItems = data.slice(indexOfFirst, indexOfLast);
 
+  const exportToExcel = () => {
+    if (!data || data.length === 0) return;
+
+    // Map data for Excel
+    const excelData = data.map((row, idx) => ({
+      "S.No": idx + 1,
+      Name: row.name,
+      Position: row.position,
+      "Current Place of Stay": row.current_place_of_stay,
+      "Preferred Country to Apply": row.preferred_country_to_apply,
+      "Submission Date": formatDate(row.submission_date)
+    }));
+
+    // Create worksheet and workbook
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Candidates");
+
+    // Convert workbook to binary and save as file
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, "Candidate_Registration.xlsx");
+  };
+
+
   return (
     <motion.div className={dashboardContainer} initial="hidden" animate="visible">
       <Container>
         <div className={tableSection}>
           <h1 className={sectionTitle}>Candidate Registration</h1>
+          <div className="d-flex justify-content-end mb-3">
+            <button
+              className="btn btn-primary"
+              onClick={exportToExcel}
+            >
+              Export to Excel
+            </button>
+          </div>
 
           {loading ? (
             <div className="text-center py-5">

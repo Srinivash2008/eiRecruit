@@ -4,6 +4,8 @@ import { Container, Table, Pagination, Modal, Button } from "react-bootstrap";
 import { css as emotionClass } from "@emotion/css";
 import { motion } from "framer-motion";
 import { FaFileAlt, FaCommentDots } from "react-icons/fa";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 // Styles
 const dashboardContainer = emotionClass`
@@ -141,11 +143,45 @@ export default function JobSeekerList() {
         }
     };
 
+    const exportToExcel = () => {
+        if (!data || data.length === 0) return;
+
+        // Map data for Excel, skipping the Resume Upload column
+        const excelData = data.map((row, idx) => ({
+            "S.No": idx + 1,
+            Name: row.name,
+            "Email ID": row.email,
+            "Contact Number": row.contact_number,
+            "Applied Position": row.opening_name,
+            Message: row.message ? (row.message.length > 20 ? row.message.slice(0, 20) + "..." : row.message) : "No Message",
+            "Submitted Date": formatDate(row.submitted_date)
+        }));
+
+        // Create worksheet and workbook
+        const worksheet = XLSX.utils.json_to_sheet(excelData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Job Seekers");
+
+        // Convert workbook to binary and save as file
+        const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+        const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+        saveAs(blob, "Job_Seekers.xlsx");
+    };
+
+
     return (
         <motion.div className={dashboardContainer} initial="hidden" animate="visible">
             <Container>
                 <div className={tableSection}>
                     <h1 className={sectionTitle}>Job Seekers List</h1>
+                    <div className="d-flex justify-content-end mb-3">
+                        <button
+                            className="btn btn-primary"
+                            onClick={exportToExcel}
+                        >
+                            Export to Excel
+                        </button>
+                    </div>
 
                     <Table striped bordered hover responsive className={customTable}>
                         <thead>
@@ -156,8 +192,8 @@ export default function JobSeekerList() {
                                 <th>Contact Number</th>
                                 <th>Applied Position</th>
                                 <th>Message</th>
-                                <th>Submitted Date</th>
                                 <th>Resume Upload</th>
+                                <th>Submitted Date</th>
                             </tr>
                         </thead>
                         <tbody>
