@@ -4,6 +4,8 @@ import { css as emotionClass } from "@emotion/css";
 import { motion } from "framer-motion";
 import { FaFileAlt, FaCommentDots } from "react-icons/fa";
 import axios from "axios";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 // Styles
 const dashboardContainer = emotionClass`
@@ -105,6 +107,9 @@ const forceDownload = async (url, filename) => {
     }
 };
 
+
+
+
 export default function SubmittedQuery() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -148,11 +153,42 @@ export default function SubmittedQuery() {
     const indexOfFirst = indexOfLast - itemsPerPage;
     const currentItems = data.slice(indexOfFirst, indexOfLast);
 
+    const exportToExcel = () => {
+    if (!data || data.length === 0) return;
+
+    // Map data for Excel, skipping the Attachment column
+    const excelData = data.map((row, idx) => ({
+        "S.No": idx + 1,
+        Name: row.full_name,
+        "Phone Number": row.phone_number,
+        Message: row.message ? row.message : "No Message",
+        "Submitted Date": formatDate(row.submission_date)
+    }));
+
+    // Create worksheet and workbook
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Queries");
+
+    // Convert workbook to binary and save as file
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, "Submitted_Queries.xlsx");
+};
+
     return (
         <motion.div className={dashboardContainer} initial="hidden" animate="visible">
             <Container>
                 <div className={tableSection}>
                     <h1 className={sectionTitle}>Submitted Queries</h1>
+                    <div className="d-flex justify-content-end mb-3">
+                        <button
+                            className="btn btn-primary"
+                            onClick={exportToExcel}
+                        >
+                            Export to Excel
+                        </button>
+                    </div>
                     {loading ? (
                         <div className="text-center py-5">
                             <Spinner animation="border" variant="primary" />
