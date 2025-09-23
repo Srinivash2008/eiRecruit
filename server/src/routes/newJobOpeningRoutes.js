@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url'
 import path from "path";
 import fs from 'fs/promises';
 
-import { fetchOpeningController, createNewOpeningController, updateCurrentOpeningStatusController, fetchOpeningWithStatusController, updateCurrentOpeningController } from '../controllers/newJobOpeningController.js';
+import { fetchOpeningController, createNewOpeningController, updateCurrentOpeningStatusController, fetchOpeningWithStatusController, updateCurrentOpeningController, removeCurrentOpeningStatusController } from '../controllers/newJobOpeningController.js';
 
 const router = express.Router();
 
