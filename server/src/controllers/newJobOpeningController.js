@@ -117,6 +117,56 @@ export const createNewOpeningController = async (req, res) => {
     }
 };
 
+export const updateCurrentOpeningController = async (req, res) => {
+    const updatecurrentOpeningData = req.body;
+    const file = req.file;
+
+    try {
+        // Handle file if uploaded
+        if (file) {
+            updatecurrentOpeningData.logo = `http://${req.headers.host}/api/v1/uploads/logoFolder/${file.filename}`;
+        }
+        // Validate required fields
+        const validFields = Object.keys(updatecurrentOpeningData).filter((field) => {
+            const value = updatecurrentOpeningData[field];
+            if (value === null || value === undefined) return false;
+            if (typeof value === "string" && value.trim() === "") return false;
+            return true;
+        });
+
+        if (validFields.length === 0) {
+            return res.status(400).json({ success: false, message: "No valid fields provided." });
+        }
+
+        const result = await currentJobOpenings.update(updatecurrentOpeningData);
+
+
+        if (result.success && result.result.affectedRows > 0) {
+
+            const updatedData = {
+                id: result.affectedData.id,
+                name: result.affectedData.name,
+                description: result.affectedData.description,
+                location: result.affectedData.location,
+                logo: result.affectedData.logo,
+                status: result.affectedData.status,
+            };
+            return res.status(201).json({
+                success: true,
+                message: "update  successfully!",
+                result: updatedData
+            });
+        } else {
+            return res.status(500).json({
+                success: false,
+                message: "Failed to update current opening."
+            });
+        }
+    } catch (error) {
+        console.error("Error in updateCurrentOpeningController:", error);
+        return res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
 
 export const updateCurrentOpeningStatusController = async (req, res) => {
     const updatecurrentOpeningStatusData = req.body;
