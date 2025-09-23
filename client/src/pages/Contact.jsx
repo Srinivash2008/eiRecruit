@@ -637,6 +637,7 @@ export default function Contact() {
                         <Form.Control
                           type="file"
                           ref={fileInputRef}
+                          accept=".pdf,.doc,.docx,.jpg,.jpeg"
                           style={{
                             borderRadius: '0.8rem',
                             border: '1.5px solid rgba(0, 118, 255, 0.2)',

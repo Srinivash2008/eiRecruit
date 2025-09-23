@@ -105,7 +105,7 @@ export default function JobSeekerList() {
     const indexOfFirst = indexOfLast - itemsPerPage;
     const currentItems = data.slice(indexOfFirst, indexOfLast);
 
-    console.log(currentItems,"currentItems")
+    console.log(currentItems, "currentItems")
 
     useEffect(() => {
         setLoading(true);
@@ -154,10 +154,10 @@ export default function JobSeekerList() {
                                 <th>Name</th>
                                 <th>Email ID</th>
                                 <th>Contact Number</th>
-                                <th>Applied Role</th>
-                                <th>Resume Upload</th>
+                                <th>Applied Position</th>
                                 <th>Message</th>
                                 <th>Submitted Date</th>
+                                <th>Resume Upload</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -169,20 +169,6 @@ export default function JobSeekerList() {
                                         <td>{row.email}</td>
                                         <td>{row.contact_number}</td>
                                         <td>{row.opening_name}</td>
-                                        <td>
-                                            {row.resume ? (
-                                                <span
-                                                    className={attachmentChip}
-                                                    onClick={() => forceDownload(row.resume, row.resume.split("/").pop())} // download full file
-                                                    title={row.resume.split("/").pop()} // show only file name on hover
-                                                >
-                                                    <FaFileAlt /> {truncateFilename(row.resume.split("/").pop(), 18)} {/* display only filename */}
-                                                </span>
-                                            ) : (
-                                                <span className="text-muted">No Resume</span>
-                                            )}
-                                        </td>
-
                                         <td>
                                             {row.message ? (
                                                 row.message.length > 20 ? (
@@ -200,7 +186,19 @@ export default function JobSeekerList() {
                                                 <span className="text-muted">No Message</span>
                                             )}
                                         </td>
-
+                                        <td>
+                                            {row.resume ? (
+                                                <span
+                                                    className={attachmentChip}
+                                                    onClick={() => forceDownload(row.resume, row.resume.split("/").pop())} // download full file
+                                                    title={row.resume.split("/").pop()} // show only file name on hover
+                                                >
+                                                    <FaFileAlt /> {truncateFilename(row.resume.split("/").pop(), 18)} {/* display only filename */}
+                                                </span>
+                                            ) : (
+                                                <span className="text-muted">No Resume</span>
+                                            )}
+                                        </td>
                                         <td>{formatDate(row.submitted_date)}</td>
                                     </tr>
                                 ))
