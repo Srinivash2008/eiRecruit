@@ -337,6 +337,7 @@ export default function CurrentOpenings() {
                                         <td>{opening.location}</td>
                                         <td>
                                             {editingOpeningId === opening.id ? (
+
                                                 <div className="d-flex align-items-center">
                                                     <Form.Select
                                                         size="sm"
@@ -345,7 +346,7 @@ export default function CurrentOpenings() {
                                                         style={{ maxWidth: '150px' }}
                                                     >
                                                         <option value="Publish">Publish</option>
-                                                        <option value="Not Publish">Not Publish</option>
+                                                        <option value="UnPublish">UnPublish</option>
                                                     </Form.Select>
                                                     <Button variant="link" onClick={() => handleUpdateStatus(opening.id)} className="ms-2 p-0" title="Update Status"><FaCheck color="green" /></Button>
                                                     <Button variant="link" onClick={handleCancelEdit} className="ms-2 p-0" title="Cancel"><FaTimes color="red" /></Button>
