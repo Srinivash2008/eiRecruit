@@ -240,13 +240,23 @@ export default function Contact() {
 
   const handleChange = (e) => {
     setFormData({
-    ...formData,
-    [e.target.name]: e.target.value
-  });
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!/^[a-zA-Z\s]+$/.test(formData.full_name)) {
+      toast.error("Name must contain only letters and spaces");
+      return;
+    }
+
+    if (!/^\d+$/.test(formData.phone_number)) {
+      toast.error("Phone number must contain only numbers");
+      return;
+    }
 
     try {
       const submitData = new FormData();
@@ -258,7 +268,9 @@ export default function Contact() {
         submitData.append("attachment", fileInputRef.current.files[0]);
       }
 
-      console.log(submitData,"submitDatacvbnm,")
+
+
+      console.log(submitData, "submitDatacvbnm,")
 
       const response = await axios.post(
         "http://localhost:5000/api/v1/submit-queries/create",
@@ -271,7 +283,7 @@ export default function Contact() {
       );
 
       if (response.data.success) {
-         toast.success(response?.data?.message);
+        toast.success(response?.data?.message);
         setFormData({
           full_name: "",
           phone_number: "",
@@ -283,7 +295,7 @@ export default function Contact() {
       }
     } catch (error) {
       console.error("Error submitting query:", error);
-          toast.error("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     }
   };
   // Animation variants
@@ -556,7 +568,7 @@ export default function Contact() {
                             <Form.Label style={{ fontWeight: 600, color: '#2C3E50', marginBottom: '0.5rem' }}>Full Name</Form.Label>
                             <Form.Control
                               type="text"
-                              name="full_name" 
+                              name="full_name"
                               placeholder="Enter your full name"
                               value={formData.full_name}
                               onChange={handleChange}
@@ -577,7 +589,7 @@ export default function Contact() {
                             <Form.Label style={{ fontWeight: 600, color: '#2C3E50', marginBottom: '0.5rem' }}>Phone Number</Form.Label>
                             <Form.Control
                               type="tel"
-                               name="phone_number" 
+                              name="phone_number"
                               placeholder="Enter your phone number"
                               value={formData.phone_number}
                               onChange={handleChange}
