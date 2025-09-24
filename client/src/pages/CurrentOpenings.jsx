@@ -211,11 +211,18 @@ export default function CurrentOpenings() {
         e.preventDefault();
 
         const isDescriptionEmpty = !newOpening.description || newOpening.description.replace(/<[^>]*>/g, '').trim().length === 0;
+        const nameRegex = /^[A-Za-z]+$/;
 
         if (!newOpening.name || isDescriptionEmpty || !newOpening.location) {
             toast.warning("Please fill in all required fields.");
             return;
         }
+
+        if (!nameRegex.test(newOpening.name)) {
+            toast.warning("Name can only contain letters.");
+            return;
+        }
+        
         if (!newOpening.logo) {
             toast.warning('Please upload a logo.');
             return;
