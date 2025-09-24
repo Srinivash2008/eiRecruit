@@ -249,15 +249,15 @@ export default function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!/^[a-zA-Z\s]+$/.test(formData.full_name)) {
-      toast.error("Name must contain only letters and spaces");
+    if (!/^[a-zA-Z\s.]+$/.test(formData.full_name)) {
+      toast.warning("Name must contain only letters, spaces, and periods");
+      return;
+    }
+    if (!/^\+?\d{10,}$/.test(formData.phone_number)) {
+      toast.warning("Phone number must contain only numbers and optionally start with +, minimum 10 digits");
       return;
     }
 
-    if (!/^\d+$/.test(formData.phone_number)) {
-      toast.error("Phone number must contain only numbers");
-      return;
-    }
 
     setLoading(true);
 
