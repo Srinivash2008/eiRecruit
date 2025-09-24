@@ -921,13 +921,13 @@ export default function Careers() {
 
     console.log(formData, "onSubmit={handleSubmit}")
 
-    if (!/^[a-zA-Z\s]+$/.test(formData.name)) {
-      toast.error("Name must contain only letters and spaces");
+    if (!/^[a-zA-Z\s.]+$/.test(formData.name)) {
+      toast.warning("Name must contain only letters, spaces and periods");
       return;
     }
 
     if (!/^[a-zA-Z\s]+$/.test(formData.position)) {
-      toast.error("Position must contain only letters and spaces");
+      toast.warning("Position must contain only letters and spaces");
       return;
     }
 
