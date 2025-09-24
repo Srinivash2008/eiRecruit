@@ -716,7 +716,7 @@ export default function Careers() {
       setApplicationData((prev) => ({ ...prev, resume: files[0] }));
     } else if (name === "name") {
 
-      const regex = /^[A-Za-z\s]*$/;
+      const regex = /^[a-zA-Z\s.]+$/;
       if (regex.test(value)) {
         setApplicationData((prev) => ({ ...prev, name: value }));
       }
@@ -727,7 +727,7 @@ export default function Careers() {
     }
     else if (name === "contact_number") {
 
-      const regex = /^[0-9]{0,10}$/;
+      const regex = /^\+?\d{10,}$/;
       if (regex.test(value)) {
         setApplicationData((prev) => ({ ...prev, contact_number: value }));
       }
@@ -740,7 +740,7 @@ export default function Careers() {
   const handleApplicationSubmit = async (e) => {
     e.preventDefault();
     // Name check
-    if (!/^[A-Za-z\s]+$/.test(applicationData.name)) {
+    if (!/^[a-zA-Z\s.]+$/.test(applicationData.name)) {
       toast.warning("Name should contain alphabets only");
       return;
     }
@@ -752,7 +752,7 @@ export default function Careers() {
     }
 
     // Contact number check
-    if (!/^\d{10}$/.test(applicationData.contact_number)) {
+    if (!/^\+?\d{10,}$/.test(applicationData.contact_number)) {
       toast.warning("Contact number must be exactly 10 digits");
       return;
     }
