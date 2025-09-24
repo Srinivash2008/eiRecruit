@@ -89,7 +89,7 @@ export default function JobSeekerList() {
     const [loading, setLoading] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
+    const itemsPerPage = 10;
 
     const [showMessageModal, setShowMessageModal] = useState(false);
     const [showApplicationModal, setShowApplicationModal] = useState(false);
@@ -139,7 +139,7 @@ export default function JobSeekerList() {
             setApplicationData((prev) => ({ ...prev, resume: files[0] }));
         } else if (name === "name") {
 
-            const regex = /^[a-zA-Z\s.]+$/;
+            const regex = /^[a-zA-Z\s.]*$/;
             if (regex.test(value)) {
                 setApplicationData((prev) => ({ ...prev, name: value }));
             }
@@ -150,7 +150,7 @@ export default function JobSeekerList() {
         }
         else if (name === "contact_number") {
 
-            const regex = /^\+?\d{10,}$/;
+            const regex = /^\+?\d*$/;
             if (regex.test(value)) {
                 setApplicationData((prev) => ({ ...prev, contact_number: value }));
             }
@@ -163,7 +163,7 @@ export default function JobSeekerList() {
     const handleApplicationSubmit = async (e) => {
         e.preventDefault();
         // Name check
-        if (!/^[a-zA-Z\s.]+$/.test(applicationData.name)) {
+        if (!/^[a-zA-Z\s.]*$/.test(applicationData.name)) {
             toast.warning("Name should contain alphabets only");
             return;
         }
@@ -175,7 +175,7 @@ export default function JobSeekerList() {
         }
 
         // Contact number check
-        if (!/^\+?\d{10,}$/.test(applicationData.contact_number)) {
+        if (!/^\+?\d*$/.test(applicationData.contact_number)) {
             toast.warning("Contact number must be exactly 10 digits");
             return;
         }
