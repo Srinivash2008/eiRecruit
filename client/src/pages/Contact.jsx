@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { FaEnvelope, FaPhoneAlt, FaPaperPlane, FaGlobe } from 'react-icons/fa';
-import { Buttonsix, ButtonTwo } from '../components/AnimatedButton';
+import { Buttonseven, Buttonsix, ButtonTwo } from '../components/AnimatedButton';
 import contact1 from '../assets/images/contact5_updated.jpg';
 import axios from "axios";
 import carrers_image from '../assets/carrers.jpg';
@@ -232,6 +232,7 @@ const modernAnimations = css`
 export default function Contact() {
   const theme = useTheme();
   const fileInputRef = useRef();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     full_name: "",
     phone_number: "",
@@ -257,6 +258,8 @@ export default function Contact() {
       toast.error("Phone number must contain only numbers");
       return;
     }
+
+    setLoading(true);
 
     try {
       const submitData = new FormData();
@@ -296,6 +299,8 @@ export default function Contact() {
     } catch (error) {
       console.error("Error submitting query:", error);
       toast.error("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
   // Animation variants
@@ -650,8 +655,9 @@ export default function Contact() {
                       </Form.Group>
 
                       <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-                        <Buttonsix label="Send Message" to="#" />
+                        <Buttonseven label="Send Message" to="#" loading={loading} />
                       </div>
+
                     </Form>
                   </div>
                 </div>

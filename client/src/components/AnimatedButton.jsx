@@ -167,6 +167,47 @@ export const Buttonsix = ({ label, to }) => (
   </button>
 );
 
+export const Buttonseven = ({ label, to, loading }) => (
+  <button
+    to={to}
+    className={button2}
+    disabled={loading}
+    style={{
+      opacity: loading ? 0.6 : 1,
+      cursor: loading ? "not-allowed" : "pointer"
+    }}
+  >
+    {loading ? (
+      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <span className="spinner"></span>
+        <span>Sending...</span>
+      </div>
+    ) : (
+      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <span>{label}</span>
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M5 12h14M13 5l7 7-7 7"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
+    )}
+  </button>
+);
+
+
+
+
 
 export const ButtonThree = ({ label, to }) => <Link to={to} className={button3}>{label}</Link>;
 export const ButtonFour = ({ label, to }) => <Link to={to} className={button4}>{label}</Link>;
