@@ -175,7 +175,7 @@ export default function JobSeekerList() {
         }
 
         // Contact number check
-        if (!/^\+?\d*$/.test(applicationData.contact_number)) {
+        if (!/^\+?\d{10,}$/.test(applicationData.contact_number)) {
             toast.warning("Contact number must be exactly 10 digits");
             return;
         }
