@@ -61,17 +61,22 @@ class CurrentJobOpenings {
     static findAllWithStatus = async () => {
         return new Promise((resolve, reject) => {
             const query = `
-            SELECT 
+           SELECT 
             current_opening.id,
             current_opening.name,
             current_opening.description,
             current_opening.location,
             current_opening.logo,
             current_opening.status,
-            current_opening.created_Date
-            FROM current_opening
-            WHERE current_opening.is_active = 'Active'
-            ORDER BY current_opening.id DESC
+            current_opening.created_date,
+            COUNT(job_seeker_list.id) AS job_seeker_count
+        FROM current_opening
+        LEFT JOIN job_seeker_list 
+            ON current_opening.id = job_seeker_list.current_opening_id
+        WHERE current_opening.is_active = 'Active'
+        GROUP BY 
+            current_opening.id
+        ORDER BY current_opening.id DESC;
         `;
             db.query(query, (error, result) => {
                 if (error) {

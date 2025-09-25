@@ -142,6 +142,7 @@ export default function CurrentOpenings() {
         location: '',
         logo: null,
     });
+    // console.log(openings, "openings")
     // State for inline status editing
     const [editingOpeningId, setEditingOpeningId] = useState(null);
     const [selectedStatus, setSelectedStatus] = useState('');
@@ -211,7 +212,7 @@ export default function CurrentOpenings() {
         e.preventDefault();
 
         const isDescriptionEmpty = !newOpening.description || newOpening.description.replace(/<[^>]*>/g, '').trim().length === 0;
-        const nameRegex = /^[A-Za-z]+$/;
+        const nameRegex = /^[A-Za-z ]+$/;
 
         if (!newOpening.name || isDescriptionEmpty || !newOpening.location) {
             toast.warning("Please fill in all required fields.");
@@ -222,7 +223,7 @@ export default function CurrentOpenings() {
             toast.warning("Name can only contain letters.");
             return;
         }
-        
+
         if (!newOpening.logo) {
             toast.warning('Please upload a logo.');
             return;
@@ -504,24 +505,26 @@ export default function CurrentOpenings() {
                                                 <FaPen />
                                             </Button>
 
-                                            <Button
-                                                variant="danger"
-                                                title="Delete Opening"
-                                                style={{
-                                                    width: "28px",
-                                                    height: "28px",
-                                                    borderRadius: "50%",
-                                                    padding: "0",
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    justifyContent: "center",
-                                                    fontSize: "14px",
-                                                    marginLeft: "6px",
-                                                }}
-                                                onClick={() => handleDeleteClick(opening)}
-                                            >
-                                                <FaRegTrashAlt />
-                                            </Button>
+                                            {(opening?.job_seeker_count ?? 0) === 0 && (
+                                                <Button
+                                                    variant="danger"
+                                                    title="Delete Opening"
+                                                    style={{
+                                                        width: "28px",
+                                                        height: "28px",
+                                                        borderRadius: "50%",
+                                                        padding: "0",
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
+                                                        fontSize: "14px",
+                                                        marginLeft: "6px",
+                                                    }}
+                                                    onClick={() => handleDeleteClick(opening)}
+                                                >
+                                                    <FaRegTrashAlt />
+                                                </Button>
+                                            )}
 
                                         </td>
 
