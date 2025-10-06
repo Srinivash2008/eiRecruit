@@ -297,7 +297,7 @@ export default function DashBoardHeader() {
 
   const handleLogout = () => {
     Cookies.remove("token");
-    navigate("/login");
+    navigate("/hr_entry");
     toast.success("Logout successful");
     setShowLogoutModal(false);
   };
@@ -314,7 +314,7 @@ export default function DashBoardHeader() {
 
     ...(token
       ? [{ to: "/logout", label: "Logout", sectionId: null, onClick: () => setShowLogoutModal(true) }]
-      : [{ to: "/login", label: "Login", sectionId: null }]),
+      : [{ to: "/hr_entry", label: "Login", sectionId: null }]),
   ];
 
   useEffect(() => {

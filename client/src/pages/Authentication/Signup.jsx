@@ -598,7 +598,7 @@ export default function Signup() {
 
                 <motion.div className={loginLink} variants={fadeInUp}>
                   <span>Already have an account?</span>
-                  <Link to="/login">Sign in</Link>
+                  <Link to="/hr_entry">Sign in</Link>
                 </motion.div>
               </motion.form>
             </motion.div>
