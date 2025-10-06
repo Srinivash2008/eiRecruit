@@ -140,7 +140,7 @@ export default function SubmittedQuery() {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const res = await axios.get("http://localhost:5000/api/v1/submit-queries/fetch");
+                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/submit-queries/fetch`);
                 if (res.data && res.data.result) {
                     setData(res.data.result);
                 }

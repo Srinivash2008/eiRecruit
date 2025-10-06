@@ -275,8 +275,7 @@ export default function Contact() {
 
       console.log(submitData, "submitDatacvbnm,")
 
-      const response = await axios.post(
-        "http://localhost:5000/api/v1/submit-queries/create",
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/submit-queries/create`,
         submitData,
         {
           headers: {

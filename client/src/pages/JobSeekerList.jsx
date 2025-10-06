@@ -202,7 +202,7 @@ export default function JobSeekerList() {
         console.log(formData, "formData")
 
         try {
-            const response = await axios.post('http://localhost:5000/api/v1/job-seeker/create', formData, {
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/job-seeker/create`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -242,7 +242,8 @@ export default function JobSeekerList() {
         setLoading(true);
         (async () => {
             try {
-                const res = await axios.get("http://localhost:5000/api/v1/job-seeker/fetch");
+                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/job-seeker/fetch`);
+                console.log(res,"resresresresresresres")
                 if (res.data && res.data.result) {
                     setData(res.data.result);
                 }
@@ -257,7 +258,7 @@ export default function JobSeekerList() {
     useEffect(() => {
         const fetchOpenings = async () => {
             try {
-                const response = await axios.get("http://localhost:5000/api/v1/currentJobOpening/fetch");
+                const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/currentJobOpening/fetch`);
                 if (response.data.success) {
                     setJobs(response.data.result);
                 }
