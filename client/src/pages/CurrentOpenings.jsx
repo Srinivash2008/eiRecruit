@@ -154,6 +154,10 @@ export default function CurrentOpenings() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedOpening, setSelectedOpening] = useState(null);
 
+    const [selectedLocation, setSelectedLocation] = useState("All");
+    const [selectedFilterStatus, setSelectedFilterStatus] = useState("All");
+
+
     const handleDeleteClick = (opening) => {
         setSelectedOpening(opening);
         setShowDeleteModal(true);
@@ -393,6 +397,13 @@ export default function CurrentOpenings() {
         }
     };
 
+    const filteredOpenings = openings.filter(op => {
+        const matchLocation = selectedLocation === "All" || op.location === selectedLocation;
+        const matchStatus = selectedFilterStatus === "All" || op.status === selectedFilterStatus;
+        return matchLocation && matchStatus;
+    });
+
+
     return (
         <motion.div className={dashboardContainer} initial="hidden" animate="visible" variants={stagger}>
             <Container>
@@ -401,12 +412,58 @@ export default function CurrentOpenings() {
                     <motion.h1 className={sectionTitle} variants={fadeUp}>
                         Manage Current Openings
                     </motion.h1>
-                    <div className={tableTitle}>
+                    {/* <div className={tableTitle}>
                         <span>Current Openings</span>
+                      
                         <Button className={addButton} onClick={handleShow}>
                             <FaPlus className="me-2" /> Add Opening
                         </Button>
+                    </div> */}
+                    <div className={tableTitle}>
+                        <div className="d-flex justify-content-between align-items-center w-100">
+
+                            {/* Filters on the left */}
+                            <div className="d-flex align-items-center gap-2">
+                                {/* Location Filter */}
+                                {/* <Form.Select
+                                    value={selectedLocation}
+                                    onChange={(e) => setSelectedLocation(e.target.value)}
+                                    style={{
+                                        maxWidth: "250px",   // increased width
+                                        height: "40px",      // increased height
+                                        fontSize: "16px"     // larger text
+                                    }}
+                                >
+                                    <option value="All">All Locations</option>
+                                    {[...new Set(openings.map(op => op.location))].map((loc, i) => (
+                                        <option key={i} value={loc}>{loc}</option>
+                                    ))}
+                                </Form.Select> */}
+
+                                {/* Status Filter */}
+                                {/* <Form.Select
+                                    value={selectedFilterStatus}
+                                    onChange={(e) => setSelectedFilterStatus(e.target.value)}
+                                    style={{
+                                        maxWidth: "250px",   // increased width
+                                        height: "40px",      // increased height
+                                        fontSize: "16px"     // larger text
+                                    }}
+                                >
+                                    <option value="All">All Status</option>
+                                    <option value="Publish">Publish</option>
+                                    <option value="UnPublish">UnPublish</option>
+                                </Form.Select> */}
+                            </div>
+
+                            {/* Add button on the right */}
+                            <Button className={addButton} onClick={handleShow}>
+                                <FaPlus className="me-2" /> Add Opening
+                            </Button>
+                        </div>
                     </div>
+
+
                     <Table striped bordered hover responsive>
                         <thead>
                             <tr>
@@ -420,8 +477,8 @@ export default function CurrentOpenings() {
                             </tr>
                         </thead>
                         <tbody>
-                            {openings.length > 0 ? (
-                                openings.map((opening, index) => (
+                            {filteredOpenings.length > 0 ? (
+                                filteredOpenings.map((opening, index) => (
                                     <tr key={opening.id}>
                                         <td>{index + 1}</td>
                                         {/* <td>
