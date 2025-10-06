@@ -223,15 +223,15 @@ export default function CurrentOpenings() {
             return;
         }
 
-        if (!nameRegex.test(newOpening.name)) {
-            toast.warning("Name can only contain letters.");
-            return;
-        }
+        // if (!nameRegex.test(newOpening.name)) {
+        //     toast.warning("Name can only contain letters.");
+        //     return;
+        // }
 
-        if (!newOpening.logo) {
-            toast.warning('Please upload a logo.');
-            return;
-        }
+        // if (!newOpening.logo) {
+        //     toast.warning('Please upload a logo.');
+        //     return;
+        // }
 
         const formData = new FormData();
         formData.append('name', newOpening.name);
