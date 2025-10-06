@@ -606,14 +606,21 @@ export default function CurrentOpenings() {
                 show={showPreviewModal}
                 onHide={handleClosePreview}
                 centered
-                size="md"   // smaller modal
-                scrollable
-                className={lightModal}  // apply lightweight styles
+                size="md"
+                className={lightModal} // apply lightweight styles
             >
                 <Modal.Header closeButton>
                     <Modal.Title>Job Description</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body
+                    style={{
+                        maxHeight: '400px',       // fixed max height for the body
+                        overflowY: 'auto',        // enable vertical scroll if content is long
+                        whiteSpace: 'pre-wrap',   // preserve line breaks
+                        wordWrap: 'break-word',   // wrap long words
+                        overflowWrap: 'break-word',
+                    }}
+                >
                     {previewJD ? (
                         <div dangerouslySetInnerHTML={{ __html: previewJD }} />
                     ) : (
@@ -626,6 +633,8 @@ export default function CurrentOpenings() {
                     </Button>
                 </Modal.Footer>
             </Modal>
+
+
 
             {/* Add Opening Modal */}
             <Modal
