@@ -107,7 +107,7 @@ export default function CandidateRegistration() {
     <motion.div className={dashboardContainer} initial="hidden" animate="visible">
       <Container>
         <div className={tableSection}>
-          <h1 className={sectionTitle}>Candidate Registration</h1>
+          <h1 className={sectionTitle}>Future Job Postings</h1>
           <div className="d-flex justify-content-end mb-3">
             <button
               className="btn btn-primary"

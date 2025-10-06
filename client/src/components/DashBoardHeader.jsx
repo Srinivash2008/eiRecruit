@@ -308,7 +308,7 @@ export default function DashBoardHeader() {
   const navItems = [
     // { to: '/dashboard', label: 'Home' },
     { to: '/CurrentOpenings', label: 'Current Opening' },
-    { to: '/candidateregistration', label: 'Registration' },
+    { to: '/candidateregistration', label: 'Future Job Postings' },
     { to: '/submittedquery', label: 'Query' },
     { to: '/jobseekerlist', label: 'Job Seeker' },
 
