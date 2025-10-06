@@ -22,11 +22,7 @@ const PORT = process.env.PORT || 5000;
 app.use(express.static(path.join(__dirname, 'dist')))
 
 // ✅ Allow CORS
-app.use(cors({
-  origin: "http://localhost:5185", 
-  methods: ["GET", "POST"],
-  allowedHeaders: ["Content-Type"]
-}));
+app.use(cors());
 
 // Middlewares
 app.use(bodyParser.json());
