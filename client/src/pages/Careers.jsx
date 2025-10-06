@@ -1588,7 +1588,7 @@ export default function Careers() {
                     style={{ flex: 1, minHeight: 140, position: 'relative' }}
                   >
                     {/* 🔹 Logo at top-right */}
-                    {job.logo && (
+                    {job.logo !== "null" && (
                       <div
                         className="job-logo"
                         style={{
