@@ -600,24 +600,24 @@ export default function CurrentOpenings() {
                     </Table>
                 </motion.div>
             </Container>
-
-            {/* 👇 JD Preview Modal */}
+ 
+ 
             <Modal
                 show={showPreviewModal}
                 onHide={handleClosePreview}
                 centered
                 size="md"
-                className={lightModal} // apply lightweight styles
+                className={lightModal}
             >
                 <Modal.Header closeButton>
                     <Modal.Title>Job Description</Modal.Title>
                 </Modal.Header>
                 <Modal.Body
                     style={{
-                        maxHeight: '400px',       // fixed max height for the body
-                        overflowY: 'auto',        // enable vertical scroll if content is long
-                        whiteSpace: 'pre-wrap',   // preserve line breaks
-                        wordWrap: 'break-word',   // wrap long words
+                        maxHeight: '400px',       
+                        overflowY: 'auto',        
+                        whiteSpace: 'pre-wrap',   
+                        wordWrap: 'break-word',   
                         overflowWrap: 'break-word',
                     }}
                 >
