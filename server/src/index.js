@@ -8,12 +8,18 @@ import { submitQueriesRouter } from './routes/submitQueriesRoutes.js';
 import { authUserRouter } from './routes/authRouters.js';
 import { newJobOpeningRouter } from './routes/newJobOpeningRoutes.js';
 import { jobSeekerRouter } from './routes/jobSeekerRoutes.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 
 dotenv.config();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 const PORT = process.env.PORT || 5000;
+app.use(express.static(path.join(__dirname, 'dist')))
 
 // ✅ Allow CORS
 app.use(cors({
@@ -43,3 +49,6 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
