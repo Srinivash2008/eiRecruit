@@ -88,16 +88,21 @@ const truncateFilename = (url, maxLength = 18) => {
 
 const formatDate = (isoString) => new Date(isoString).toLocaleDateString("en-GB");
 
+// Removes timestamp (everything before first dash) from filename
+const getCleanFilename = (url) => {
+    const filename = url.split("/").pop(); // get actual file name
+    return filename.includes('-') ? filename.split('-').slice(1).join('-') : filename;
+};
+
+
 // Force download function
 const forceDownload = async (url, filename) => {
     try {
-        const res = await fetch(url, {
-            method: "GET",
-        });
+        const res = await fetch(url, { method: "GET" });
         const blob = await res.blob();
         const link = document.createElement("a");
         link.href = window.URL.createObjectURL(blob);
-        link.download = filename;
+        link.download = filename; // already cleaned
         document.body.appendChild(link);
         link.click();
         link.remove();
@@ -154,27 +159,27 @@ export default function SubmittedQuery() {
     const currentItems = data.slice(indexOfFirst, indexOfLast);
 
     const exportToExcel = () => {
-    if (!data || data.length === 0) return;
+        if (!data || data.length === 0) return;
 
-    // Map data for Excel, skipping the Attachment column
-    const excelData = data.map((row, idx) => ({
-        "S.No": idx + 1,
-        Name: row.full_name,
-        "Phone Number": row.phone_number,
-        Message: row.message ? row.message : "No Message",
-        "Submitted Date": formatDate(row.submission_date)
-    }));
+        // Map data for Excel, skipping the Attachment column
+        const excelData = data.map((row, idx) => ({
+            "S.No": idx + 1,
+            Name: row.full_name,
+            "Phone Number": row.phone_number,
+            Message: row.message ? row.message : "No Message",
+            "Submitted Date": formatDate(row.submission_date)
+        }));
 
-    // Create worksheet and workbook
-    const worksheet = XLSX.utils.json_to_sheet(excelData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Queries");
+        // Create worksheet and workbook
+        const worksheet = XLSX.utils.json_to_sheet(excelData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Queries");
 
-    // Convert workbook to binary and save as file
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-    saveAs(blob, "Submitted_Queries.xlsx");
-};
+        // Convert workbook to binary and save as file
+        const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+        const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+        saveAs(blob, "Submitted_Queries.xlsx");
+    };
 
     return (
         <motion.div className={dashboardContainer} initial="hidden" animate="visible">
@@ -250,17 +255,18 @@ export default function SubmittedQuery() {
                                                             onClick={() =>
                                                                 forceDownload(
                                                                     row.attachment_url,
-                                                                    row.attachment_url.split("/").pop()
+                                                                    getCleanFilename(row.attachment_url) // use cleaned filename for download
                                                                 )
                                                             }
-                                                            title={row.attachment_url.split("/").pop()}
+                                                            title={getCleanFilename(row.attachment_url)} // show cleaned filename on hover
                                                         >
-                                                            <FaFileAlt /> {truncateFilename(row.attachment_url, 18)}
+                                                            <FaFileAlt /> {truncateFilename(getCleanFilename(row.attachment_url), 18)}
                                                         </span>
                                                     ) : (
                                                         <span className="text-muted">No File</span>
                                                     )}
                                                 </td>
+
                                                 <td>{formatDate(row.submission_date)}</td>
                                             </tr>
                                         ))
