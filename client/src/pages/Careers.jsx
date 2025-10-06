@@ -1558,128 +1558,128 @@ export default function Careers() {
       <motion.div className={sectionDivider} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick} />
 
       <motion.h2 className={sectionTitle} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>Current Job Opportunities</motion.h2>
-   <motion.div
-  variants={staggerQuick}
-  initial="hidden"
-  whileInView="visible"
-  viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }}
->
-  {jobs && jobs.length > 0 ? (
-    <Row
-      className="g-4 mb-4 justify-content-center align-items-stretch"
-      style={{ display: 'flex' }}
-    >
-      {jobs.map((job, i) => (
-        <Col md={6} key={i} className="d-flex align-items-stretch">
-          <motion.div variants={staggerQuick} style={{ width: '100%', display: 'flex' }}>
-            <Card
-              className={jobCard + ' ' + equalHeightCard}
-              style={{
-                background: i % 2 === 0 ? theme.colors.lightBlue : theme.colors.lightGreen,
-                border: `2px solid ${theme.colors.primary}22`,
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'stretch',
-              }}
-            >
-              <Card.Body
-                className="d-flex flex-column justify-content-between"
-                style={{ flex: 1, minHeight: 140, position: 'relative' }}
-              >
-                {/* Logo */}
-                {job.logo && (
-                  <div
-                    className="job-logo"
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      right: 12,
-                      width: '100px',
-                      height: '100px',
-                      borderRadius: '50%',
-                      background: '#fff',
-                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      overflow: 'hidden',
-                      padding: 4,
-                    }}
-                  >
-                    <img
-                      src={job.logo}
-                      alt={job.name + ' logo'}
-                      style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                    />
-                  </div>
-                )}
-
-                {/* Text Content */}
-                <div className="job-text-content" style={{ marginRight: '25%' }}>
-                  <Card.Title
-                    style={{
-                      fontWeight: 600,
-                      fontSize: '1.13rem',
-                      color: theme.colors.primary,
-                    }}
-                  >
-                    {job.name}
-                  </Card.Title>
-                  <div style={{ color: '#888', fontSize: '0.98rem', marginBottom: 8 }}>
-                    {job.location}
-                  </div>
-                  <Card.Text
-                    style={{ fontSize: '1.01rem', opacity: 0.92 }}
-                    dangerouslySetInnerHTML={{ __html: job.description }}
-                  />
-                </div>
-
-                {/* Apply Button */}
-                <div style={{ marginTop: 15, width: '100%' }} onClick={() => handleShowModal(job)}>
-                  <ButtonTwo label="Apply Now" />
-                </div>
-              </Card.Body>
-            </Card>
-          </motion.div>
-        </Col>
-      ))}
-    </Row>
-  ) : (
-    <Row className="g-4 mb-4 justify-content-center align-items-stretch" style={{ display: 'flex' }}>
-      <Col md={6} className="d-flex align-items-stretch">
-        <motion.div variants={staggerQuick} style={{ width: '100%', display: 'flex' }}>
-          <Card
-            className={jobCard + ' ' + equalHeightCard}
-            style={{
-              background: theme.colors.lightGray,
-              border: `2px solid ${theme.colors.primary}22`,
-              flex: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              minHeight: 140,
-               background: 'rgb(230 240 255)'
-            }}
+      <motion.div
+        variants={staggerQuick}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }}
+      >
+        {jobs && jobs.length > 0 ? (
+          <Row
+            className="g-4 mb-4 justify-content-center align-items-stretch"
+            style={{ display: 'flex' }}
           >
-            <Card.Body
-              className="d-flex flex-column justify-content-center align-items-center"
-              style={{ flex: 1, textAlign: 'center' }}
-            >
-              <Card.Title style={{ fontWeight: 600, fontSize: '1.2rem', color: theme.colors.primary }}>
-                No job openings available
-              </Card.Title>
-              <Card.Text style={{ fontSize: '1rem', color: '#555', marginTop: 8 }}>
-                Please check back later.
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </motion.div>
-      </Col>
-    </Row>
-  )}
-</motion.div>
+            {jobs.map((job, i) => (
+              <Col md={6} key={i} className="d-flex align-items-stretch">
+                <motion.div variants={staggerQuick} style={{ width: '100%', display: 'flex' }}>
+                  <Card
+                    className={jobCard + ' ' + equalHeightCard}
+                    style={{
+                      background: i % 2 === 0 ? theme.colors.lightBlue : theme.colors.lightGreen,
+                      border: `2px solid ${theme.colors.primary}22`,
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'stretch',
+                    }}
+                  >
+                    <Card.Body
+                      className="d-flex flex-column justify-content-between"
+                      style={{ flex: 1, minHeight: 140, position: 'relative' }}
+                    >
+                      {/* Logo */}
+                      {job.logo && (
+                        <div
+                          className="job-logo"
+                          style={{
+                            position: 'absolute',
+                            top: 0,
+                            right: 12,
+                            width: '100px',
+                            height: '100px',
+                            borderRadius: '50%',
+                            background: '#fff',
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            overflow: 'hidden',
+                            padding: 4,
+                          }}
+                        >
+                          <img
+                            src={job.logo}
+                            alt={job.name + ' logo'}
+                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                          />
+                        </div>
+                      )}
+
+                      {/* Text Content */}
+                      <div className="job-text-content" style={{ marginRight: '25%' }}>
+                        <Card.Title
+                          style={{
+                            fontWeight: 600,
+                            fontSize: '1.13rem',
+                            color: theme.colors.primary,
+                          }}
+                        >
+                          {job.name}
+                        </Card.Title>
+                        <div style={{ color: '#888', fontSize: '0.98rem', marginBottom: 8 }}>
+                          {job.location}
+                        </div>
+                        <Card.Text
+                          style={{ fontSize: '1.01rem', opacity: 0.92 }}
+                          dangerouslySetInnerHTML={{ __html: job.description }}
+                        />
+                      </div>
+
+                      {/* Apply Button */}
+                      <div style={{ marginTop: 15, width: '100%' }} onClick={() => handleShowModal(job)}>
+                        <ButtonTwo label="Apply Now" />
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </motion.div>
+              </Col>
+            ))}
+          </Row>
+        ) : (
+          <Row className="g-4 mb-4 justify-content-center align-items-stretch" style={{ display: 'flex' }}>
+            <Col md={6} className="d-flex align-items-stretch">
+              <motion.div variants={staggerQuick} style={{ width: '100%', display: 'flex' }}>
+                <Card
+                  className={jobCard + ' ' + equalHeightCard}
+                  style={{
+                    background: theme.colors.lightGray,
+                    border: `2px solid ${theme.colors.primary}22`,
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    minHeight: 140,
+                    background: 'rgb(230 240 255)'
+                  }}
+                >
+                  <Card.Body
+                    className="d-flex flex-column justify-content-center align-items-center"
+                    style={{ flex: 1, textAlign: 'center' }}
+                  >
+                    <Card.Title style={{ fontWeight: 600, fontSize: '1.2rem', color: theme.colors.primary }}>
+                      No job openings available
+                    </Card.Title>
+                    <Card.Text style={{ fontSize: '1rem', color: '#555', marginTop: 8 }}>
+                      Please check back later.
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </motion.div>
+            </Col>
+          </Row>
+        )}
+      </motion.div>
 
 
 
