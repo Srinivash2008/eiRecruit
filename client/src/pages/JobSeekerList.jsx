@@ -270,13 +270,15 @@ export default function JobSeekerList() {
 
     const forceDownload = async (url, filename) => {
         try {
+            const cleanedFilename = filename.includes('-') ? filename.split('-').slice(1).join('-') : filename;
+
             const res = await fetch(url, {
                 method: "GET",
             });
             const blob = await res.blob();
             const link = document.createElement("a");
             link.href = window.URL.createObjectURL(blob);
-            link.download = filename;
+            link.download = cleanedFilename; // use cleaned filename
             document.body.appendChild(link);
             link.click();
             link.remove();
@@ -285,6 +287,7 @@ export default function JobSeekerList() {
             console.error("Download failed", err);
         }
     };
+
 
     const exportToExcel = () => {
         if (!data || data.length === 0) return;
@@ -318,11 +321,11 @@ export default function JobSeekerList() {
                 <div className={tableSection}>
                     <h1 className={sectionTitle}>Job Seekers List</h1>
                     <div className="d-flex justify-content-end mb-3">
-                          <button
+                        <button
                             className="btn btn-success"
-                             onClick={() => handleShowApplicationModal(null)} 
+                            onClick={() => handleShowApplicationModal(null)}
                         >
-                             Apply
+                            Apply
                         </button>
 
                         <button
@@ -349,7 +352,7 @@ export default function JobSeekerList() {
                         <tbody>
                             {currentItems.length > 0 ? (
                                 currentItems.map((row, idx) => (
-                                     <tr key={indexOfFirst + idx}> 
+                                    <tr key={indexOfFirst + idx}>
                                         <td>{indexOfFirst + idx + 1}</td>
                                         <td>{row.name}</td>
                                         <td>{row.email}</td>
@@ -360,7 +363,7 @@ export default function JobSeekerList() {
                                                 row.message.length > 20 ? (
                                                     <span
                                                         style={{ cursor: "pointer" }}
-                                                      onClick={() => handleShowMessage(row.message)}
+                                                        onClick={() => handleShowMessage(row.message)}
                                                     >
                                                         {row.message.slice(0, 20)}
                                                         <span style={{ color: "#FF5722", marginLeft: '2px' }}>... Read more</span>
@@ -376,15 +379,20 @@ export default function JobSeekerList() {
                                             {row.resume ? (
                                                 <span
                                                     className={attachmentChip}
-                                                    onClick={() => forceDownload(row.resume, row.resume.split("/").pop())} // download full file
-                                                    title={row.resume.split("/").pop()} // show only file name on hover
+                                                    onClick={() => forceDownload(row.resume, row.resume.split("/").pop())}
+                                                    title={row.resume.split("/").pop().split('-').slice(1).join('-')}
                                                 >
-                                                    <FaFileAlt /> {truncateFilename(row.resume.split("/").pop(), 18)} {/* display only filename */}
+                                                    <FaFileAlt />{' '}
+                                                    {truncateFilename(
+                                                        row.resume.split("/").pop().split('-').slice(1).join('-'), 
+                                                        18
+                                                    )}
                                                 </span>
                                             ) : (
                                                 <span className="text-muted">No Resume</span>
                                             )}
                                         </td>
+
                                         <td>{formatDate(row.submitted_date)}</td>
                                     </tr>
                                 ))
