@@ -1627,8 +1627,9 @@ export default function Careers() {
                           {job.name}
                         </Card.Title>
                         <div style={{ color: '#888', fontSize: '0.98rem', marginBottom: 8 }}>
-                          {job.location}
+                          <strong>Location:</strong> {job.location}
                         </div>
+                        <strong style={{color: '#888'  ,marginBottom: 8}}>Job Description:</strong>
                         <Card.Text
                           style={{ fontSize: '1.01rem', opacity: 0.92 }}
                           dangerouslySetInnerHTML={{ __html: job.description }}
