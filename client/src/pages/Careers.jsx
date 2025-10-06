@@ -1661,7 +1661,7 @@ export default function Careers() {
                     justifyContent: 'center',
                     alignItems: 'center',
                     minHeight: 140,
-                    background: 'rgb(230 240 255)'
+                    // background: 'rgb(230 240 255)'
                   }}
                 >
                   <Card.Body
