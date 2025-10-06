@@ -19,7 +19,7 @@ export default function AppRoutes() {
     <Routes>
       {/* Public routes */}
       <Route
-        path="/login"
+        path="/hr_entry"
         element={
           <PublicRoute>
             <Login />

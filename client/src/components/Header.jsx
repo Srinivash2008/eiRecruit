@@ -218,7 +218,7 @@ export default function Header() {
 
     const handleLogout = () => {
     Cookies.remove("token");
-    navigate("/login");
+    navigate("/hr_entry");
     toast.success("Logout successful");
 
   };
@@ -233,7 +233,7 @@ export default function Header() {
     { to: '/', label: 'Contact', sectionId: 'contact' },
   //  ...(token
   //     ? [{ to: "/logout", label: "Logout", sectionId: null, onClick: handleLogout }]
-  //     : [{ to: "/login", label: "Login", sectionId: null }]),
+  //     : [{ to: "/hr_entry", label: "Login", sectionId: null }]),
   ];
 
   useEffect(() => {
