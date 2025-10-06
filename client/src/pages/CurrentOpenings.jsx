@@ -168,8 +168,7 @@ export default function CurrentOpenings() {
 
         console.log(selectedOpening?.id, "selectedOpening")
         try {
-            const response = await axios.post(
-                "http://localhost:5000/api/v1/currentJobOpening/delete",
+            const response = (`${import.meta.env.VITE_BASE_URL}/currentJobOpening/delete`,
                 { id: selectedOpening.id },
                 {
                     headers: {
@@ -240,8 +239,7 @@ export default function CurrentOpenings() {
         formData.append('logo', newOpening.logo);
 
         try {
-            const response = await axios.post(
-                "http://localhost:5000/api/v1/newJobOpening/create",
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/newJobOpening/create`,
                 formData,
                 {
                     headers: {
@@ -312,8 +310,7 @@ export default function CurrentOpenings() {
         }
 
         try {
-            const response = await axios.post(
-                "http://localhost:5000/api/v1/currentJobOpening/update",
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/currentJobOpening/update`,
                 formData,
                 {
                     headers: {
@@ -337,7 +334,7 @@ export default function CurrentOpenings() {
     useEffect(() => {
         const fetchOpeningsWithStatus = async () => {
             try {
-                const response = await axios.get("http://localhost:5000/api/v1/currentJobOpening/fetchWithStatus");
+                const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/currentJobOpening/fetchWithStatus`);
                 if (response.data.success) {
                     setOpenings(response.data.result);
                 }
@@ -372,8 +369,7 @@ export default function CurrentOpenings() {
     const handleUpdateStatus = async (openingId) => {
         try {
             // Assuming a PUT endpoint to update status
-            const response = await axios.post(
-                `http://localhost:5000/api/v1/currentJobOpening/status/update`,
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/currentJobOpening/status/update`,
                 { status: selectedStatus, id: openingId },
                 {
                     headers: {
@@ -601,7 +597,7 @@ export default function CurrentOpenings() {
                 </motion.div>
             </Container>
  
- 
+
             <Modal
                 show={showPreviewModal}
                 onHide={handleClosePreview}

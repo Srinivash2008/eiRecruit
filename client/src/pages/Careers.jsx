@@ -777,7 +777,7 @@ export default function Careers() {
     formData.append('resume', applicationData.resume);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/v1/job-seeker/create', formData, {
+        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/job-seeker/create`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -825,7 +825,7 @@ export default function Careers() {
   useEffect(() => {
     const fetchOpenings = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/v1/currentJobOpening/fetch");
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/currentJobOpening/fetch`);
         if (response.data.success) {
           setJobs(response.data.result);
         }
@@ -934,8 +934,7 @@ export default function Careers() {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/v1/job-applications/apply",
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/job-applications/apply`,
         formData
       );
 

@@ -59,7 +59,7 @@ export default function CandidateRegistration() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("http://localhost:5000/api/v1/job-applications/fetch");
+        const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/job-applications/fetch`);
         if (res.data && res.data.result) {
           setData(res.data.result);
         }
