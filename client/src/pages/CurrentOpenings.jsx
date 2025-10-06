@@ -600,20 +600,27 @@ export default function CurrentOpenings() {
                     </Table>
                 </motion.div>
             </Container>
-
-            {/* 👇 JD Preview Modal */}
+ 
+ 
             <Modal
                 show={showPreviewModal}
                 onHide={handleClosePreview}
                 centered
-                size="md"   // smaller modal
-                scrollable
-                className={lightModal}  // apply lightweight styles
+                size="md"
+                className={lightModal}
             >
                 <Modal.Header closeButton>
                     <Modal.Title>Job Description</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body
+                    style={{
+                        maxHeight: '400px',       
+                        overflowY: 'auto',        
+                        whiteSpace: 'pre-wrap',   
+                        wordWrap: 'break-word',   
+                        overflowWrap: 'break-word',
+                    }}
+                >
                     {previewJD ? (
                         <div dangerouslySetInnerHTML={{ __html: previewJD }} />
                     ) : (
@@ -626,6 +633,8 @@ export default function CurrentOpenings() {
                     </Button>
                 </Modal.Footer>
             </Modal>
+
+
 
             {/* Add Opening Modal */}
             <Modal
