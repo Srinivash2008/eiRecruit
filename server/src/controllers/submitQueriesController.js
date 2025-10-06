@@ -37,7 +37,7 @@ export const submitQueryController = async (req, res) => {
                 <p><strong>Message:</strong> ${newQueryData.message}</p>
                 ${file ? `<p><strong>Attachment:</strong> <a href="${newQueryData.attachment_url}">Download</a></p>` : ''}
             `;
-            await sendEmail('pradeepa@pdmrindia.com', 'New Query Received', emailHtml);
+            await sendEmail('silambarasan@pdmrindia.com', 'New Query Received', emailHtml);
 
             return res.status(201).json({
                 success: true,
