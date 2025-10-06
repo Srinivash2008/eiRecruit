@@ -716,7 +716,7 @@ export default function Careers() {
       setApplicationData((prev) => ({ ...prev, resume: files[0] }));
     } else if (name === "name") {
 
-      const regex =/^[a-zA-Z\s.]*$/;
+      const regex = /^[a-zA-Z\s.]*$/;
       if (regex.test(value)) {
         setApplicationData((prev) => ({ ...prev, name: value }));
       }
@@ -797,6 +797,8 @@ export default function Careers() {
     }
   };
   const [jobs, setJobs] = useState([]);
+
+  console.log(jobs, "jobsjobsjobs")
 
   function useDeviceType() {
     const [device, setDevice] = useState('desktop');
@@ -1556,21 +1558,98 @@ export default function Careers() {
       <motion.div className={sectionDivider} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick} />
 
       <motion.h2 className={sectionTitle} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>Current Job Opportunities</motion.h2>
-      <motion.div variants={staggerQuick} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }}>
-        <Row className="g-4 mb-4 justify-content-center align-items-stretch" style={{ display: 'flex' }}>
+      <motion.div
+        variants={staggerQuick}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }}
+      >
+        <Row
+          className="g-4 mb-4 justify-content-center align-items-stretch"
+          style={{ display: 'flex' }}
+        >
           {jobs?.map((job, i) => (
             <Col md={6} key={i} className="d-flex align-items-stretch">
               <motion.div variants={staggerQuick} style={{ width: '100%', display: 'flex' }}>
-                <Card className={jobCard + ' ' + equalHeightCard} style={{ background: i % 2 === 0 ? theme.colors.lightBlue : theme.colors.lightGreen, border: `2px solid ${theme.colors.primary}22`, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'stretch' }}>
-                  <Card.Body className="d-flex flex-column justify-content-between" style={{ flex: 1, minHeight: 140 }}>
-                    <div>
-                      <Card.Title style={{ fontWeight: 600, fontSize: '1.13rem', color: theme.colors.primary }}>{job.name}</Card.Title>
-                      <div style={{ color: '#888', fontSize: '0.98rem', marginBottom: 8 }}>
+                <Card
+                  className={jobCard + ' ' + equalHeightCard}
+                  style={{
+                    background:
+                      i % 2 === 0 ? theme.colors.lightBlue : theme.colors.lightGreen,
+                    border: `2px solid ${theme.colors.primary}22`,
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'stretch',
+                  }}
+                >
+                  <Card.Body
+                    className="d-flex flex-column justify-content-between"
+                    style={{ flex: 1, minHeight: 140, position: 'relative' }}
+                  >
+                    {/* 🔹 Logo at top-right */}
+                    {job.logo && (
+                      <div
+                        className="job-logo"
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          right: 12,
+                          width: '100px',
+                          height: '100px',
+                          borderRadius: '50%',
+                          background: '#fff',
+                          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          overflow: 'hidden',
+                          padding: 4,
+                        }}
+                      >
+                        <img
+                          src={job.logo}
+                          alt={job.name + ' logo'}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'contain',
+                          }}
+                        />
+                      </div>
+                    )}
+
+                    {/* 🔹 Text content with margin to avoid overlapping logo */}
+                    <div className="job-text-content" style={{ marginRight: '25%' }}>
+                      <Card.Title
+                        style={{
+                          fontWeight: 600,
+                          fontSize: '1.13rem',
+                          color: theme.colors.primary,
+                        }}
+                      >
+                        {job.name}
+                      </Card.Title>
+                      <div
+                        style={{
+                          color: '#888',
+                          fontSize: '0.98rem',
+                          marginBottom: 8,
+                        }}
+                      >
                         {job.location}
                       </div>
-                      <Card.Text style={{ fontSize: '1.01rem', opacity: 0.92 }} dangerouslySetInnerHTML={{ __html: job.description }} />
+                      <Card.Text
+                        style={{ fontSize: '1.01rem', opacity: 0.92 }}
+                        dangerouslySetInnerHTML={{ __html: job.description }}
+                      />
                     </div>
-                    <div style={{ marginTop: 15, width: '100%' }} onClick={() => handleShowModal(job)}>
+
+                    {/* 🔹 Apply Button */}
+                    <div
+                      style={{ marginTop: 15, width: '100%' }}
+                      onClick={() => handleShowModal(job)}
+                    >
                       <ButtonTwo label="Apply Now" />
                     </div>
                   </Card.Body>
@@ -1580,6 +1659,7 @@ export default function Careers() {
           ))}
         </Row>
       </motion.div>
+
       {/* Application Form */}
       <motion.h2 className={sectionTitle} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>Apply for Future Job Postings</motion.h2>
       <motion.div variants={fadeUpQuick} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }}>

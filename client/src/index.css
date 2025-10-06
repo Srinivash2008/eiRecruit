@@ -40,6 +40,28 @@ body.modal-open {
   padding-right: 0 !important; /* avoid layout shift */
 }
 
+@media (max-width: 1000px) {
+  .job-logo {
+    position: static !important; /* disable absolute */
+    width: 100px !important; /* adjust size */
+    height: 100px !important;
+    margin: 0 auto 12px auto; 
+    border-radius: 50%; 
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden;
+    padding: 4px;
+  }
+
+  .job-text-content {
+    margin: 0 !important; /* remove right margin to fit centered logo above */
+  }
+}
+
+
 .spinner {
   width: 18px;
   height: 18px;
