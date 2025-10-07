@@ -73,6 +73,13 @@ const addButton = emotionClass`
   }
 `;
 
+const compactVertical = emotionClass`
+  th, td {
+    padding: 0.4rem 0.75rem !important; /* 0.4rem top/bottom, 0.75rem left/right */
+    vertical-align: middle;
+  }
+`;
+
 // Scrollable ReactQuill editor with limited toolbar
 const quillModules = {
     toolbar: [
@@ -369,7 +376,7 @@ export default function CurrentOpenings() {
     const handleUpdateStatus = async (openingId) => {
         try {
             // Assuming a PUT endpoint to update status
-           const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/currentJobOpening/status/update`,
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/currentJobOpening/status/update`,
                 { status: selectedStatus, id: openingId },
                 {
                     headers: {
@@ -460,7 +467,7 @@ export default function CurrentOpenings() {
                     </div>
 
 
-                    <Table striped bordered hover responsive>
+                    <Table striped bordered hover responsive className={compactVertical}>
                         <thead>
                             <tr>
                                 <th>S.No</th>
@@ -539,29 +546,12 @@ export default function CurrentOpenings() {
                                             )}
                                         </td>
 
-                                        <td style={{ display: "flex", justifyContent: "flex-start", alignItems: "center" }}>
-                                            <Button
-                                                onClick={() => handleEditShow(opening)}
-                                                variant="primary"
-                                                title="Edit Opening"
-                                                style={{
-                                                    width: "28px",
-                                                    height: "28px",
-                                                    borderRadius: "50%",
-                                                    padding: "0",
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    justifyContent: "center",
-                                                    fontSize: "14px",
-                                                }}
-                                            >
-                                                <FaPen />
-                                            </Button>
-
-                                            {(opening?.job_seeker_count ?? 0) === 0 && (
+                                        <td>
+                                            <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", width: "100%" }}>
                                                 <Button
-                                                    variant="danger"
-                                                    title="Delete Opening"
+                                                    onClick={() => handleEditShow(opening)}
+                                                    variant="primary"
+                                                    title="Edit Opening"
                                                     style={{
                                                         width: "28px",
                                                         height: "28px",
@@ -571,14 +561,32 @@ export default function CurrentOpenings() {
                                                         alignItems: "center",
                                                         justifyContent: "center",
                                                         fontSize: "14px",
-                                                        marginLeft: "6px",
                                                     }}
-                                                    onClick={() => handleDeleteClick(opening)}
                                                 >
-                                                    <FaRegTrashAlt />
+                                                    <FaPen />
                                                 </Button>
-                                            )}
 
+                                                {(opening?.job_seeker_count ?? 0) === 0 && (
+                                                    <Button
+                                                        variant="danger"
+                                                        title="Delete Opening"
+                                                        style={{
+                                                            width: "28px",
+                                                            height: "28px",
+                                                            borderRadius: "50%",
+                                                            padding: "0",
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
+                                                            fontSize: "14px",
+                                                            marginLeft: "6px",
+                                                        }}
+                                                        onClick={() => handleDeleteClick(opening)}
+                                                    >
+                                                        <FaRegTrashAlt />
+                                                    </Button>
+                                                )}
+                                            </div>
                                         </td>
 
 
@@ -596,7 +604,7 @@ export default function CurrentOpenings() {
                     </Table>
                 </motion.div>
             </Container>
- 
+
 
             <Modal
                 show={showPreviewModal}
@@ -610,10 +618,10 @@ export default function CurrentOpenings() {
                 </Modal.Header>
                 <Modal.Body
                     style={{
-                        maxHeight: '400px',       
-                        overflowY: 'auto',        
-                        whiteSpace: 'pre-wrap',   
-                        wordWrap: 'break-word',   
+                        maxHeight: '400px',
+                        overflowY: 'auto',
+                        whiteSpace: 'pre-wrap',
+                        wordWrap: 'break-word',
                         overflowWrap: 'break-word',
                     }}
                 >
