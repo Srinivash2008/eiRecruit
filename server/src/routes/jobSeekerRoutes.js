@@ -1,5 +1,5 @@
 import express from 'express';
-import { createJobSeekerController, fetchJobSeekerController } from '../controllers/jobSeekerController.js'; // <- .js extension added
+import { createJobSeekerController, fetchJobSeekerController, updateJobSeekerController } from '../controllers/jobSeekerController.js'; // <- .js extension added
 
 
 import { fileURLToPath } from 'url'
@@ -42,5 +42,7 @@ router.get('/uploads/resumeFolder/:filename', (req, res) => {
 router.get('/job-seeker/fetch', fetchJobSeekerController);
 
 router.post('/job-seeker/create', upload.single('resume'), createJobSeekerController);
+
+router.post('/job-seeker/update', upload.single('resume'), updateJobSeekerController);
 
 export const jobSeekerRouter = router;

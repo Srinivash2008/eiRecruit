@@ -138,6 +138,9 @@ export const updateCurrentOpeningController = async (req, res) => {
             return res.status(400).json({ success: false, message: "No valid fields provided." });
         }
 
+        console.log(updatecurrentOpeningData,"updatecurrentOpeningData");
+        
+
         const result = await currentJobOpenings.update(updatecurrentOpeningData);
 
 

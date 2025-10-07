@@ -3,7 +3,7 @@ import axios from "axios";
 import { Container, Table, Pagination, Modal, Button, Form, Row, Col } from "react-bootstrap";
 import { css as emotionClass } from "@emotion/css";
 import { motion } from "framer-motion";
-import { FaFileAlt, FaCommentDots } from "react-icons/fa";
+import { FaFileAlt, FaCommentDots, FaEdit, FaFilePdf, FaFileWord } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { toast } from "react-toastify";
@@ -74,6 +74,28 @@ const customTable = emotionClass`
   }
 `;
 
+// Edit button style
+const editButton = emotionClass`
+  background: #007bff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  color: white;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+  }
+`;
+
+const editModalStyle = emotionClass`
+  .modal-content {
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px rgba(0, 118, 255, 0.15);
+  }
+`;
+
 // Helpers
 const truncateFilename = (filename, maxLength = 18) => {
     if (!filename) return "";
@@ -82,6 +104,13 @@ const truncateFilename = (filename, maxLength = 18) => {
 };
 
 const formatDate = (isoString) => new Date(isoString).toLocaleDateString("en-GB");
+
+// Helper to get clean file name
+const getCleanFileName = (filePath) => {
+    if (!filePath) return "";
+    const fileName = filePath.split("/").pop();
+    return fileName.includes('-') ? fileName.split('-').slice(1).join('-') : fileName;
+};
 
 export default function JobSeekerList() {
     const [jobs, setJobs] = useState([]);
@@ -93,16 +122,34 @@ export default function JobSeekerList() {
 
     const [showMessageModal, setShowMessageModal] = useState(false);
     const [showApplicationModal, setShowApplicationModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
 
     const [selectedMessage, setSelectedMessage] = useState("");
+    const [editingApplication, setEditingApplication] = useState(null);
 
     const handleShowMessage = (message) => {
         setSelectedMessage(message);
         setShowMessageModal(true);
     };
+
     const handleCloseMessageModal = () => {
         setSelectedMessage("");
         setShowMessageModal(false);
+    };
+
+    // Edit modal handlers
+    const handleShowEditModal = (application) => {
+        const normalizedApplication = {
+            ...application,
+            jobId: application.jobId || application.job_id || getCurrentJobId(application)
+        };
+        setEditingApplication(normalizedApplication);
+        setShowEditModal(true);
+    };
+
+    const handleCloseEditModal = () => {
+        setEditingApplication(null);
+        setShowEditModal(false);
     };
 
     const totalPages = Math.ceil(data.length / itemsPerPage);
@@ -127,6 +174,7 @@ export default function JobSeekerList() {
         setSelectedJob(job);
         setShowApplicationModal(true);
     };
+
     const handleCloseApplicationModal = () => {
         setSelectedJob(null);
         setApplicationData({ name: '', email: '', contact_number: '', message: '', resume: null });
@@ -138,27 +186,97 @@ export default function JobSeekerList() {
         if (name === 'resume') {
             setApplicationData((prev) => ({ ...prev, resume: files[0] }));
         } else if (name === "name") {
-
             const regex = /^[a-zA-Z\s.]*$/;
             if (regex.test(value)) {
                 setApplicationData((prev) => ({ ...prev, name: value }));
             }
-        }
-        else if (name === "email") {
-
+        } else if (name === "email") {
             setApplicationData((prev) => ({ ...prev, email: value }));
-        }
-        else if (name === "contact_number") {
-
+        } else if (name === "contact_number") {
             const regex = /^\+?\d*$/;
             if (regex.test(value)) {
                 setApplicationData((prev) => ({ ...prev, contact_number: value }));
             }
-        }
-        else {
+        } else {
             setApplicationData((prev) => ({ ...prev, [name]: value }));
         }
     };
+
+    // Edit application handlers - UPDATED to preserve jobId
+    const handleEditChange = (e) => {
+        const { name, value, files } = e.target;
+
+        setEditingApplication((prev) => {
+            const updated = { ...prev };
+
+            if (name === 'resume') {
+                updated.resume = files[0];
+            }
+            else if (name === "name") {
+                const regex = /^[a-zA-Z\s.]*$/;
+                if (regex.test(value)) {
+                    updated[name] = value;
+                } else {
+                    return prev;
+                }
+            } else if (name === "contact_number") {
+                const regex = /^\+?\d*$/;
+                if (regex.test(value)) {
+                    updated[name] = value;
+                } else {
+                    return prev; 
+                }
+            } else {
+                updated[name] = value;
+            }
+
+            // Always preserve the jobId
+            updated.jobId = prev.jobId;
+
+            return updated;
+        });
+    };
+
+    // Find current job ID for the application - UPDATED to be more robust
+    const getCurrentJobId = (application) => {
+        if (application.jobId) return application.jobId;
+        if (application.job_id) return application.job_id;
+
+        // Find by job name if ID is not available
+        const job = jobOptions.find(j => j.name === application.opening_name);
+        return job ? job.id : "";
+    };
+
+    const handleEditJobChange = (e) => {
+        const jobId = parseInt(e.target.value);
+        const job = jobOptions.find((j) => j.id === jobId);
+        if (job) {
+            setEditingApplication((prev) => ({
+                ...prev,
+                opening_name: job.name,
+                jobId: job.id,
+                job_id: job.id
+            }));
+        }
+    };
+
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/job-seeker/fetch`);
+            if (res.data?.result) {
+                setData(res.data.result);
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     const handleApplicationSubmit = async (e) => {
         e.preventDefault();
@@ -184,10 +302,7 @@ export default function JobSeekerList() {
             toast.warning("Please upload your resume");
             return;
         }
-        if (!applicationData.resume) {
-            toast.warning('Please upload your resume.');
-            return;
-        }
+
         setApplying(true);
 
         const formData = new FormData();
@@ -199,8 +314,6 @@ export default function JobSeekerList() {
         formData.append('message', applicationData.message);
         formData.append('resume', applicationData.resume);
 
-        console.log(formData, "formData")
-
         try {
             const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/job-seeker/create`, formData, {
                 headers: {
@@ -209,22 +322,19 @@ export default function JobSeekerList() {
             });
 
             if (response.data.success) {
-                console.log(response, "response")
                 const newApplication = {
-                    // id: response.data.result.job_id, // DB-generated ID
                     name: response.data.result.affectedData.name,
                     email: response.data.result.affectedData.email,
                     contact_number: response.data.result.affectedData.contact_number,
-                    opening_name: selectedJob.name, // from your form
+                    opening_name: selectedJob.name,
                     message: response.data.result.affectedData.message,
                     resume: response.data.result.affectedData.resume,
-                    submitted_date: new Date().toISOString() // or formatDate if backend doesn’t send
+                    submitted_date: new Date().toISOString()
                 };
-                setData(prevData => [newApplication, ...prevData]); // add at top
-
-                console.log(newApplication, "newApplication")
+                setData(prevData => [newApplication, ...prevData]);
                 toast.success('Application submitted successfully!');
                 handleCloseApplicationModal();
+                await fetchData()
             } else {
                 toast.error(response.data.message || 'Failed to submit application.');
             }
@@ -236,24 +346,106 @@ export default function JobSeekerList() {
         }
     };
 
-    // console.log(currentItems, "currentItems")
 
-    useEffect(() => {
-        setLoading(true);
-        (async () => {
-            try {
-                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/job-seeker/fetch`);
-                console.log(res,"resresresresresresres")
-                if (res.data && res.data.result) {
-                    setData(res.data.result);
-                }
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setLoading(false);
+
+    // Edit application submit - UPDATED to handle jobId properly
+    const handleEditSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!editingApplication?.resume) {
+            toast.warning("Please upload a resume file");
+            return;
+        }
+
+
+        // Validation
+        if (!/^[a-zA-Z\s.]*$/.test(editingApplication.name)) {
+            toast.warning("Name should contain alphabets only");
+            return;
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editingApplication.email)) {
+            toast.warning("Enter a valid email address");
+            return;
+        }
+
+        if (!/^\+?\d{10,}$/.test(editingApplication.contact_number)) {
+            toast.warning("Contact number must be exactly 10 digits");
+            return;
+        }
+
+        setApplying(true);
+
+        const formData = new FormData();
+        formData.append('id', editingApplication.id);
+        formData.append('name', editingApplication.name);
+        formData.append('email', editingApplication.email);
+        formData.append('contact_number', editingApplication.contact_number);
+        formData.append('message', editingApplication.message);
+
+        // Use jobId if available, otherwise fall back to job_id
+        const finalJobId = editingApplication.jobId || editingApplication.job_id;
+
+        console.log(finalJobId, "finalJobIdfinalJobId")
+        if (!finalJobId) {
+            toast.error("Job ID is required");
+            setApplying(false);
+            return;
+        }
+
+        formData.append('jobId', finalJobId);
+        formData.append('jobName', editingApplication.opening_name);
+
+        // Only append resume if a new file was selected
+        if (editingApplication.resume) {
+            formData.append('resume', editingApplication.resume);
+        }
+
+        try {
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/job-seeker/update`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if (response.data.success) {
+                // Update the application in state
+                setData(prevData =>
+                    prevData.map(app =>
+                        app.id === editingApplication.id ? response.data.result : app
+                    )
+                );
+                toast.success('Application updated successfully!');
+                handleCloseEditModal();
+                await fetchData();
+            } else {
+                toast.error(response.data.message || 'Failed to update application.');
             }
-        })();
-    }, []);
+        } catch (error) {
+            console.error('Application update error:', error);
+            toast.error('An error occurred while updating your application.');
+        } finally {
+            setApplying(false);
+        }
+    };
+
+
+
+    // useEffect(() => {
+    //     setLoading(true);
+    //     (async () => {
+    //         try {
+    //             const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/job-seeker/fetch`);
+    //             if (res.data && res.data.result) {
+    //                 setData(res.data.result);
+    //             }
+    //         } catch (err) {
+    //             console.error(err);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     })();
+    // }, []);
 
     useEffect(() => {
         const fetchOpenings = async () => {
@@ -279,7 +471,7 @@ export default function JobSeekerList() {
             const blob = await res.blob();
             const link = document.createElement("a");
             link.href = window.URL.createObjectURL(blob);
-            link.download = cleanedFilename; // use cleaned filename
+            link.download = cleanedFilename;
             document.body.appendChild(link);
             link.click();
             link.remove();
@@ -289,11 +481,9 @@ export default function JobSeekerList() {
         }
     };
 
-
     const exportToExcel = () => {
         if (!data || data.length === 0) return;
 
-        // Map data for Excel, skipping the Resume Upload column
         const excelData = data.map((row, idx) => ({
             "S.No": idx + 1,
             Name: row.name,
@@ -304,17 +494,30 @@ export default function JobSeekerList() {
             "Submitted Date": formatDate(row.submitted_date)
         }));
 
-        // Create worksheet and workbook
         const worksheet = XLSX.utils.json_to_sheet(excelData);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Job Seekers");
 
-        // Convert workbook to binary and save as file
         const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
         const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
         saveAs(blob, "Job_Seekers.xlsx");
     };
 
+    let fileName = "";
+
+    // Check if resume exists
+    if (editingApplication?.resume) {
+        // If it's a File object, get the name
+        if (editingApplication.resume instanceof File) {
+            fileName = editingApplication.resume.name.replace(/^\d+-/, '');
+        }
+
+        // If it's a string URL, extract the filename from URL
+        else if (typeof editingApplication.resume === "string") {
+            const urlPart = editingApplication.resume.split('/').pop(); // get last part
+            fileName = urlPart?.replace(/^\d+-/, '') || "";
+        }
+    }
 
     return (
         <motion.div className={dashboardContainer} initial="hidden" animate="visible">
@@ -322,12 +525,14 @@ export default function JobSeekerList() {
                 <div className={tableSection}>
                     <h1 className={sectionTitle}>Job Seekers List</h1>
                     <div className="d-flex justify-content-end mb-3">
-                        <button
-                            className="btn btn-success"
-                            onClick={() => handleShowApplicationModal(null)}
-                        >
-                            Apply
-                        </button>
+                        {jobOptions?.length > 0 && (
+                            <button
+                                className="btn btn-success"
+                                onClick={() => handleShowApplicationModal(null)}
+                            >
+                                Apply
+                            </button>
+                        )}
 
                         <button
                             className="btn btn-primary ms-2"
@@ -348,6 +553,7 @@ export default function JobSeekerList() {
                                 <th>Message</th>
                                 <th>Resume Upload</th>
                                 <th>Submitted Date</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -370,7 +576,7 @@ export default function JobSeekerList() {
                                                         <span style={{ color: "#FF5722", marginLeft: '2px' }}>... Read more</span>
                                                     </span>
                                                 ) : (
-                                                    <span>{row.message}</span> // plain text, not clickable
+                                                    <span>{row.message}</span>
                                                 )
                                             ) : (
                                                 <span className="text-muted">No Message</span>
@@ -381,25 +587,30 @@ export default function JobSeekerList() {
                                                 <span
                                                     className={attachmentChip}
                                                     onClick={() => forceDownload(row.resume, row.resume.split("/").pop())}
-                                                    title={row.resume.split("/").pop().split('-').slice(1).join('-')}
+                                                    title={getCleanFileName(row.resume)}
                                                 >
                                                     <FaFileAlt />{' '}
-                                                    {truncateFilename(
-                                                        row.resume.split("/").pop().split('-').slice(1).join('-'), 
-                                                        18
-                                                    )}
+                                                    {truncateFilename(getCleanFileName(row.resume), 18)}
                                                 </span>
                                             ) : (
                                                 <span className="text-muted">No Resume</span>
                                             )}
                                         </td>
-
                                         <td>{formatDate(row.submitted_date)}</td>
+                                        <td>
+                                            <Button
+                                                className={editButton}
+                                                onClick={() => handleShowEditModal(row)}
+                                                title="Edit Application"
+                                            >
+                                                <FaEdit />
+                                            </Button>
+                                        </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="7" className="text-center text-muted">
+                                    <td colSpan="9" className="text-center text-muted">
                                         {loading ? "Loading..." : "No job seekers found."}
                                     </td>
                                 </tr>
@@ -439,8 +650,8 @@ export default function JobSeekerList() {
                 </Modal.Footer>
             </Modal>
 
-            {/* Application Modal */}
-            <Modal show={showApplicationModal} onHide={handleCloseApplicationModal} centered size="lg">
+            {/* Application Modal (Add New) */}
+            <Modal show={showApplicationModal} onHide={handleCloseApplicationModal} centered size="lg" className={editModalStyle}>
                 <Modal.Header closeButton>
                     <Modal.Title>Apply for Job</Modal.Title>
                 </Modal.Header>
@@ -452,11 +663,11 @@ export default function JobSeekerList() {
                                     <Form.Label>Job Title</Form.Label>
                                     <Form.Select
                                         name="jobTitle"
-                                        value={selectedJob?.id || ""} // store selected job id
+                                        value={selectedJob?.id || ""}
                                         onChange={(e) => {
                                             const jobId = parseInt(e.target.value);
                                             const job = jobOptions.find((j) => j.id === jobId);
-                                            setSelectedJob(job || null); // set selectedJob object
+                                            setSelectedJob(job || null);
                                         }}
                                         required
                                     >
@@ -469,8 +680,6 @@ export default function JobSeekerList() {
                                     </Form.Select>
                                 </Form.Group>
                             </Col>
-
-
                             <Col md={6}>
                                 <Form.Group className="mb-3">
                                     <Form.Label>Full Name</Form.Label>
@@ -513,19 +722,153 @@ export default function JobSeekerList() {
                                 </Form.Group>
                             </Col>
                         </Row>
-
                         <Form.Group className="mb-3">
                             <Form.Label>Message (Optional)</Form.Label>
                             <Form.Control as="textarea" rows={3} name="message" value={applicationData.message} onChange={handleApplicationChange} />
                         </Form.Group>
-
                         <Form.Group className="mb-3">
                             <Form.Label>Upload Resume</Form.Label>
                             <Form.Control type="file" name="resume" onChange={handleApplicationChange} accept=".pdf,.doc,.docx" required />
                         </Form.Group>
-
-                        <Button variant="primary" type="submit" disabled={applying} className="w-100">{applying ? 'Submitting...' : 'Submit Application'}</Button>
+                        <Button variant="primary" type="submit" disabled={applying} className="w-100">
+                            {applying ? 'Submitting...' : 'Submit Application'}
+                        </Button>
                     </Form>
+                </Modal.Body>
+            </Modal>
+
+            {/* Edit Application Modal - Corrected */}
+            <Modal show={showEditModal} onHide={handleCloseEditModal} centered size="lg" className={editModalStyle}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Edit Application</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {editingApplication && (
+                        <Form onSubmit={handleEditSubmit}>
+                            <Row>
+                                <Col md={6}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Job Title</Form.Label>
+                                        <Form.Select
+                                            name="jobTitle"
+                                            value={getCurrentJobId(editingApplication) || ""}
+                                            onChange={handleEditJobChange}
+                                            required
+                                        >
+                                            <option value="">Select a job</option>
+                                            {jobOptions.map((job) => (
+                                                <option key={job.id} value={job.id}>
+                                                    {job.name}
+                                                </option>
+                                            ))}
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Col>
+                                <Col md={6}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Full Name</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            name="name"
+                                            value={editingApplication.name}
+                                            onChange={handleEditChange}
+                                            placeholder="Enter your full name"
+                                            required
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col md={6}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Email Address</Form.Label>
+                                        <Form.Control
+                                            type="email"
+                                            name="email"
+                                            value={editingApplication.email}
+                                            onChange={handleEditChange}
+                                            placeholder="Enter your email"
+                                            required
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={6}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Contact Number</Form.Label>
+                                        <Form.Control
+                                            type="tel"
+                                            name="contact_number"
+                                            value={editingApplication.contact_number}
+                                            onChange={handleEditChange}
+                                            placeholder="Enter your contact number"
+                                            required
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Message (Optional)</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={3}
+                                    name="message"
+                                    value={editingApplication.message || ''}
+                                    onChange={handleEditChange}
+                                    placeholder="Enter your message"
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+
+                                <Form.Label>
+                                    Resume:{" "}
+                                    {editingApplication?.resume ? (
+                                        <>
+                                            {/* Determine file name */}
+                                            {(() => {
+                                                let name = "";
+                                                const resume = editingApplication.resume;
+
+                                                if (resume instanceof File) {
+                                                    name = resume.name.replace(/^\d+-/, "");
+                                                } else if (typeof resume === "string") {
+                                                    const urlPart = resume.split("/").pop();
+                                                    name = urlPart?.replace(/^\d+-/, "") || "";
+                                                }
+
+                                                return (
+                                                    <>
+                                                        {/* Show icon based on extension */}
+                                                        {name.endsWith(".pdf") && <FaFilePdf style={{ color: "red" }} />}
+                                                        {name.endsWith(".doc") || name.endsWith(".docx") ? (
+                                                            <FaFileWord style={{ color: "blue" }} />
+                                                        ) : null}
+                                                        {" "}{name}
+                                                    </>
+                                                );
+                                            })()}
+                                        </>
+                                    ) : (
+                                        "No resume uploaded"
+                                    )}
+                                </Form.Label>
+                                <Form.Control
+                                    type="file"
+                                    name="resume"
+                                    onChange={handleEditChange}
+                                    accept=".pdf,.doc,.docx"
+                                />
+                                <Form.Text className="text-muted">
+                                    {editingApplication.resume ?
+                                        "Select a new file to update the resume (optional)" :
+                                        "Upload your resume"
+                                    }
+                                </Form.Text>
+                            </Form.Group>
+                            <Button variant="primary" type="submit" disabled={applying} className="w-100">
+                                {applying ? 'Updating...' : 'Update Application'}
+                            </Button>
+                        </Form>
+                    )}
                 </Modal.Body>
             </Modal>
         </motion.div>

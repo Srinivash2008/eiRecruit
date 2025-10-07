@@ -170,6 +170,21 @@ export default function CurrentOpenings() {
         setShowDeleteModal(true);
     };
 
+    const fetchOpeningsWithStatus = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/currentJobOpening/fetchWithStatus`);
+                if (response.data.success) {
+                    setOpenings(response.data.result);
+                }
+            } catch (error) {
+                console.error("Error fetching openings with status:", error);
+            }
+        };
+
+        useEffect(() => {
+            fetchOpeningsWithStatus();
+        }, []);
+
     const confirmDelete = async () => {
         if (!selectedOpening) return;
 
@@ -258,6 +273,7 @@ export default function CurrentOpenings() {
                 toast.success(response?.data?.message);
                 setOpenings((prev) => [response.data.result, ...prev]);
                 handleClose();
+                await fetchOpeningsWithStatus();
 
             } else {
                 toast.error(response?.data?.message);
@@ -329,6 +345,7 @@ export default function CurrentOpenings() {
                 toast.success(response?.data?.message);
                 setOpenings((prev) => prev.map(op => op.id === editingOpening.id ? response.data.result : op));
                 handleEditClose();
+                await fetchOpeningsWithStatus();
             } else {
                 toast.error(response?.data?.message);
             }
@@ -338,19 +355,6 @@ export default function CurrentOpenings() {
         }
     };
 
-    useEffect(() => {
-        const fetchOpeningsWithStatus = async () => {
-            try {
-                const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/currentJobOpening/fetchWithStatus`);
-                if (response.data.success) {
-                    setOpenings(response.data.result);
-                }
-            } catch (error) {
-                console.error("Error fetching openings with status:", error);
-            }
-        };
-        fetchOpeningsWithStatus();
-    }, []);
 
     // 👇 Preview handlers
     const handlePreview = (jd) => {

@@ -59,6 +59,43 @@ class JobSeeker {
             });
         });
     };
+
+     static update = async (queryData) => {
+        return new Promise((resolve, reject) => {
+            const query = `
+                UPDATE job_seeker_list 
+                SET 
+                    name = ?, 
+                    email = ?, 
+                    contact_number = ?, 
+                    resume = ?, 
+                    message = ?, 
+                    current_opening_id = ?
+                WHERE id = ?
+            `;
+
+            const values = [
+                queryData.name,
+                queryData.email,
+                queryData.contact_number,
+                queryData.resume || null,
+                queryData.message,
+                queryData.jobId,
+                queryData.id
+            ];
+
+            console.log(values,"valuesvalues")
+
+            db.query(query, values, (error, result) => {
+                if (error) {
+                    console.error("Error updating Job Seeker:", error);
+                    return reject({ error: error, success: false, affectedData: null });
+                }
+
+                resolve({ result: result, success: true, affectedData: queryData });
+            });
+        });
+    };
 }
 
 export default JobSeeker;
