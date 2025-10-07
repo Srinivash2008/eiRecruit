@@ -168,7 +168,7 @@ export default function CurrentOpenings() {
 
         console.log(selectedOpening?.id, "selectedOpening")
         try {
-            const response = (`${import.meta.env.VITE_BASE_URL}/currentJobOpening/delete`,
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/currentJobOpening/delete`,
                 { id: selectedOpening.id },
                 {
                     headers: {
@@ -369,7 +369,7 @@ export default function CurrentOpenings() {
     const handleUpdateStatus = async (openingId) => {
         try {
             // Assuming a PUT endpoint to update status
-            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/currentJobOpening/status/update`,
+           const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/currentJobOpening/status/update`,
                 { status: selectedStatus, id: openingId },
                 {
                     headers: {
