@@ -6,6 +6,7 @@ import { FaFileAlt, FaCommentDots } from "react-icons/fa";
 import axios from "axios";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { toast } from "react-toastify";
 
 // Styles
 const dashboardContainer = emotionClass`
@@ -159,7 +160,10 @@ export default function SubmittedQuery() {
     const currentItems = data.slice(indexOfFirst, indexOfLast);
 
     const exportToExcel = () => {
-        if (!data || data.length === 0) return;
+        if (!data || data.length === 0) {
+            toast.warning("No data available to export!");
+            return;
+        }
 
         // Map data for Excel, skipping the Attachment column
         const excelData = data.map((row, idx) => ({

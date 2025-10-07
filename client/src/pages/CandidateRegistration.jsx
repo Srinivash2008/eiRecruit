@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { toast } from "react-toastify";
 
 
 // Styles
@@ -79,7 +80,10 @@ export default function CandidateRegistration() {
   const currentItems = data.slice(indexOfFirst, indexOfLast);
 
   const exportToExcel = () => {
-    if (!data || data.length === 0) return;
+    if (!data || data.length === 0) {
+      toast.warning("No data available to export!");
+      return;
+    }
 
     // Map data for Excel
     const excelData = data.map((row, idx) => ({

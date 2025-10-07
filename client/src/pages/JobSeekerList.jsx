@@ -224,7 +224,7 @@ export default function JobSeekerList() {
                 if (regex.test(value)) {
                     updated[name] = value;
                 } else {
-                    return prev; 
+                    return prev;
                 }
             } else {
                 updated[name] = value;
@@ -482,7 +482,10 @@ export default function JobSeekerList() {
     };
 
     const exportToExcel = () => {
-        if (!data || data.length === 0) return;
+        if (!data || data.length === 0) {
+            toast.warning("No data available to export!");
+            return;
+        }
 
         const excelData = data.map((row, idx) => ({
             "S.No": idx + 1,
