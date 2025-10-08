@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Container, Table, Pagination, Modal, Button, Form, Row, Col } from "react-bootstrap";
+import { Container, Table, Pagination, Modal, Button, Form, Row, Col, InputGroup } from "react-bootstrap";
 import { css as emotionClass } from "@emotion/css";
 import { motion } from "framer-motion";
-import { FaFileAlt, FaCommentDots, FaEdit, FaFilePdf, FaFileWord } from "react-icons/fa";
+import { FaFileAlt, FaCommentDots, FaEdit, FaFilePdf, FaFileWord, FaSearch } from "react-icons/fa";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { toast } from "react-toastify";
@@ -74,6 +74,58 @@ const customTable = emotionClass`
   }
 `;
 
+const searchWrapper = emotionClass`
+  max-width: 200px;
+  display: flex;
+  border: 2px solid #0076ff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, box-shadow 0.3s ease, border 0.3s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    border-color: #1ca638;
+  }
+
+  .input-group-text {
+    background: linear-gradient(135deg, #0076ff, #1ca638);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background: linear-gradient(135deg, #0056cc, #13912c);
+    }
+  }
+
+  .form-control {
+    border: none;
+    border-radius: 0;
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    background-color: #fff;
+    transition: box-shadow 0.3s ease;
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 12px rgba(0, 118, 255, 0.3);
+    }
+
+    &::placeholder {
+      color: #888;
+      opacity: 1;
+    }
+  }
+`;
+
+
 // Edit button style
 const editButton = emotionClass`
   background: #007bff;
@@ -97,71 +149,71 @@ const editModalStyle = emotionClass`
 `;
 
 // Pagination Controls Component
-const PaginationControls = ({ 
-  currentPage, 
-  totalPages, 
-  onPageChange, 
-  pageSize, 
-  onPageSizeChange, 
-  totalItems,
-  pageSizeOptions 
+const PaginationControls = ({
+    currentPage,
+    totalPages,
+    onPageChange,
+    pageSize,
+    onPageSizeChange,
+    totalItems,
+    pageSizeOptions
 }) => {
-  const startItem = totalItems === 0 ? 0 : (currentPage - 1) * (pageSize === -1 ? totalItems : pageSize) + 1;
-  const endItem = Math.min(
-    currentPage * (pageSize === -1 ? totalItems : pageSize),
-    totalItems
-  );
+    const startItem = totalItems === 0 ? 0 : (currentPage - 1) * (pageSize === -1 ? totalItems : pageSize) + 1;
+    const endItem = Math.min(
+        currentPage * (pageSize === -1 ? totalItems : pageSize),
+        totalItems
+    );
 
-  return (
-    <div className="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-3">
-      {/* Page size selector */}
-      <div className="d-flex align-items-center">
-        <span className="me-2" style={{ fontSize: '0.9rem', whiteSpace: 'nowrap' }}>Rows per page:</span>
-        <Form.Select
-          value={pageSize}
-          onChange={(e) => onPageSizeChange(Number(e.target.value))}
-          style={{ width: 'auto', fontSize: '0.9rem' }}
-          size="sm"
-        >
-          {pageSizeOptions.map(option => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </Form.Select>
-      </div>
+    return (
+        <div className="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-3">
+            {/* Page size selector */}
+            <div className="d-flex align-items-center">
+                <span className="me-2" style={{ fontSize: '0.9rem', whiteSpace: 'nowrap' }}>Rows per page:</span>
+                <Form.Select
+                    value={pageSize}
+                    onChange={(e) => onPageSizeChange(Number(e.target.value))}
+                    style={{ width: 'auto', fontSize: '0.9rem' }}
+                    size="sm"
+                >
+                    {pageSizeOptions.map(option => (
+                        <option key={option.value} value={option.value}>
+                            {option.label}
+                        </option>
+                    ))}
+                </Form.Select>
+            </div>
 
-      {/* Page info */}
-      <div style={{ fontSize: '0.9rem', whiteSpace: 'nowrap' }}>
-        Showing {startItem} to {endItem} of {totalItems} entries
-      </div>
+            {/* Page info */}
+            <div style={{ fontSize: '0.9rem', whiteSpace: 'nowrap' }}>
+                Showing {startItem} to {endItem} of {totalItems} entries
+            </div>
 
-      {/* Page navigation */}
-      <div className="d-flex align-items-center gap-2">
-        <Button
-          variant="outline-secondary"
-          size="sm"
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          Previous
-        </Button>
-        
-        <span style={{ fontSize: '0.9rem', minWidth: '80px', textAlign: 'center' }}>
-          Page {currentPage} of {totalPages}
-        </span>
-        
-        <Button
-          variant="outline-secondary"
-          size="sm"
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages || totalPages === 0}
-        >
-          Next
-        </Button>
-      </div>
-    </div>
-  );
+            {/* Page navigation */}
+            <div className="d-flex align-items-center gap-2">
+                <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    onClick={() => onPageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                >
+                    Previous
+                </Button>
+
+                <span style={{ fontSize: '0.9rem', minWidth: '80px', textAlign: 'center' }}>
+                    Page {currentPage} of {totalPages}
+                </span>
+
+                <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    onClick={() => onPageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages || totalPages === 0}
+                >
+                    Next
+                </Button>
+            </div>
+        </div>
+    );
 };
 
 // Helpers
@@ -184,6 +236,9 @@ export default function JobSeekerList() {
     const [jobs, setJobs] = useState([]);
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedPosition, setSelectedPosition] = useState("All");
+
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
@@ -201,18 +256,25 @@ export default function JobSeekerList() {
     const [selectedMessage, setSelectedMessage] = useState("");
     const [editingApplication, setEditingApplication] = useState(null);
 
-    // Calculate paginated data
+    const filteredData = data.filter(row =>
+        (row.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            row.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            row.contact_number.includes(searchQuery)) &&
+        (selectedPosition === "All" || row.opening_name === selectedPosition)
+    );
+
+
+
     const getPaginatedData = () => {
-        const startIndex = (currentPage - 1) * (pageSize === -1 ? data.length : pageSize);
-        const endIndex = pageSize === -1 ? data.length : startIndex + pageSize;
-        
-        return data.slice(startIndex, endIndex);
+        const startIndex = (currentPage - 1) * (pageSize === -1 ? filteredData.length : pageSize);
+        const endIndex = pageSize === -1 ? filteredData.length : startIndex + pageSize;
+
+        return filteredData.slice(startIndex, endIndex);
     };
 
-    // Calculate total pages
     const getTotalPages = () => {
         if (pageSize === -1) return 1;
-        return Math.ceil(data.length / pageSize);
+        return Math.ceil(filteredData.length / pageSize);
     };
 
     // Handle page size change
@@ -558,18 +620,20 @@ export default function JobSeekerList() {
     };
 
     const exportToExcel = () => {
-        if (!data || data.length === 0) {
+        if (!filteredData || filteredData.length === 0) {
             toast.warning("No data available to export!");
             return;
         }
 
-        const excelData = data.map((row, idx) => ({
+        const excelData = filteredData.map((row, idx) => ({
             "S.No": idx + 1,
             Name: row.name,
             "Email ID": row.email,
             "Contact Number": row.contact_number,
             "Applied Position": row.opening_name,
-            Message: row.message ? (row.message.length > 20 ? row.message.slice(0, 20) + "..." : row.message) : "No Message",
+            Message: row.message
+                ? (row.message.length > 20 ? row.message.slice(0, 20) + "..." : row.message)
+                : "No Message",
             "Submitted Date": formatDate(row.submitted_date)
         }));
 
@@ -581,6 +645,7 @@ export default function JobSeekerList() {
         const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
         saveAs(blob, "Job_Seekers.xlsx");
     };
+
 
     let fileName = "";
 
@@ -603,23 +668,69 @@ export default function JobSeekerList() {
             <Container>
                 <div className={tableSection}>
                     <h1 className={sectionTitle}>Job Seekers List</h1>
-                    <div className="d-flex justify-content-end mb-3">
-                        {jobOptions?.length > 0 && (
-                            <button
-                                className="btn btn-success"
-                                onClick={() => handleShowApplicationModal(null)}
+                    <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2 w-100">
+                        {/* Left side: Position filter */}
+                        <div className="d-flex align-items-center">
+                            <Form.Select
+                                value={selectedPosition}
+                                onChange={(e) => {
+                                    setSelectedPosition(e.target.value);
+                                    setCurrentPage(1); // reset pagination on filter change
+                                }}
+                                style={{
+                                    minWidth: "100px",
+                                    maxWidth: "220px",
+                                    height: "40px",
+                                    fontSize: "16px",
+                                    border: "1px solid #363a3eff",
+                                }}
                             >
-                                Apply
-                            </button>
-                        )}
+                                <option value="All">All Positions</option>
+                                {[...new Set(jobOptions.map((job) => job.name))].map((pos, i) => (
+                                    <option key={i} value={pos}>
+                                        {pos}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                        </div>
 
-                        <button
-                            className="btn btn-primary ms-2"
-                            onClick={exportToExcel}
-                        >
-                            Export to Excel
-                        </button>
+                        {/* Right side: Apply, Export, Search */}
+                        <div className="d-flex gap-2 flex-wrap align-items-center">
+                            {jobOptions?.length > 0 && (
+                                <button
+                                    className="btn btn-success"
+                                    onClick={() => handleShowApplicationModal(null)}
+                                     style={{ padding: "0.45rem 0.5rem" }}
+                                >
+                                    Apply
+                                </button>
+                            )}
+
+                            <button
+                                className="btn btn-primary"
+                                 style={{ padding: "0.45rem 0.5rem" }}
+                                onClick={exportToExcel}
+                            >
+                                Export to Excel
+                            </button>
+
+                            <InputGroup style={{ width: '300px' }} className={searchWrapper}>
+                                <InputGroup.Text>
+                                    <FaSearch />
+                                </InputGroup.Text>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Search here"
+                                    value={searchQuery}
+                                    onChange={(e) => {
+                                        setSearchQuery(e.target.value);
+                                        setCurrentPage(1); // reset to first page on search
+                                    }}
+                                />
+                            </InputGroup>
+                        </div>
                     </div>
+
 
                     <Table striped bordered hover responsive className={customTable}>
                         <thead>
@@ -638,7 +749,7 @@ export default function JobSeekerList() {
                         <tbody>
                             {getPaginatedData().length > 0 ? (
                                 getPaginatedData().map((row, index) => {
-                                    const actualIndex = (currentPage - 1) * (pageSize === -1 ? data.length : pageSize) + index + 1;
+                                    const actualIndex = (currentPage - 1) * (pageSize === -1 ? filteredData.length : pageSize) + index + 1;
                                     return (
                                         <tr key={row.id}>
                                             <td>{actualIndex}</td>
@@ -701,16 +812,17 @@ export default function JobSeekerList() {
                     </Table>
 
                     {/* Pagination Controls */}
-                    {data.length > 0 && (
+                    {getPaginatedData().length > 0 && (
                         <PaginationControls
                             currentPage={currentPage}
                             totalPages={getTotalPages()}
                             onPageChange={handlePageChange}
                             pageSize={pageSize}
                             onPageSizeChange={handlePageSizeChange}
-                            totalItems={data.length}
+                            totalItems={filteredData.length}  // <-- use filteredData instead
                             pageSizeOptions={pageSizeOptions}
                         />
+
                     )}
                 </div>
             </Container>
