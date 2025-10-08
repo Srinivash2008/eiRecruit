@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Container, Table, Pagination, Spinner, Modal, Button } from "react-bootstrap";
+import { Container, Table, Pagination, Spinner, Modal, Button, Form } from "react-bootstrap";
 import { css as emotionClass } from "@emotion/css";
 import { motion } from "framer-motion";
 import { FaFileAlt, FaCommentDots } from "react-icons/fa";
@@ -74,6 +74,74 @@ const customTable = emotionClass`
   }
 `;
 
+// Pagination Controls Component
+const PaginationControls = ({ 
+  currentPage, 
+  totalPages, 
+  onPageChange, 
+  pageSize, 
+  onPageSizeChange, 
+  totalItems,
+  pageSizeOptions 
+}) => {
+  const startItem = totalItems === 0 ? 0 : (currentPage - 1) * (pageSize === -1 ? totalItems : pageSize) + 1;
+  const endItem = Math.min(
+    currentPage * (pageSize === -1 ? totalItems : pageSize),
+    totalItems
+  );
+
+  return (
+    <div className="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-3">
+      {/* Page size selector */}
+      <div className="d-flex align-items-center">
+        <span className="me-2" style={{ fontSize: '0.9rem', whiteSpace: 'nowrap' }}>Rows per page:</span>
+        <Form.Select
+          value={pageSize}
+          onChange={(e) => onPageSizeChange(Number(e.target.value))}
+          style={{ width: 'auto', fontSize: '0.9rem' }}
+          size="sm"
+        >
+          {pageSizeOptions.map(option => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </Form.Select>
+      </div>
+
+      {/* Page info */}
+      <div style={{ fontSize: '0.9rem', whiteSpace: 'nowrap' }}>
+        Showing {startItem} to {endItem} of {totalItems} entries
+      </div>
+
+      {/* Page navigation */}
+      <div className="d-flex align-items-center gap-2">
+        <Button
+          variant="outline-secondary"
+          size="sm"
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </Button>
+        
+        <span style={{ fontSize: '0.9rem', minWidth: '80px', textAlign: 'center' }}>
+          Page {currentPage} of {totalPages}
+        </span>
+        
+        <Button
+          variant="outline-secondary"
+          size="sm"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages || totalPages === 0}
+        >
+          Next
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 // Helpers
 const truncateFilename = (url, maxLength = 18) => {
     if (!url) return "";
@@ -95,7 +163,6 @@ const getCleanFilename = (url) => {
     return filename.includes('-') ? filename.split('-').slice(1).join('-') : filename;
 };
 
-
 // Force download function
 const forceDownload = async (url, filename) => {
     try {
@@ -113,19 +180,47 @@ const forceDownload = async (url, filename) => {
     }
 };
 
-
-
-
 export default function SubmittedQuery() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
+    const [pageSize, setPageSize] = useState(1);
+    const pageSizeOptions = [
+        { value: 1, label: '1' },
+        { value: 2, label: '2' },
+        { value: -1, label: 'All' }
+    ];
 
     // Modal state
     const [showModal, setShowModal] = useState(false);
     const [selectedMessage, setSelectedMessage] = useState("");
+
+    // Calculate paginated data
+    const getPaginatedData = () => {
+        const startIndex = (currentPage - 1) * (pageSize === -1 ? data.length : pageSize);
+        const endIndex = pageSize === -1 ? data.length : startIndex + pageSize;
+        
+        return data.slice(startIndex, endIndex);
+    };
+
+    // Calculate total pages
+    const getTotalPages = () => {
+        if (pageSize === -1) return 1;
+        return Math.ceil(data.length / pageSize);
+    };
+
+    // Handle page size change
+    const handlePageSizeChange = (newSize) => {
+        setPageSize(newSize);
+        setCurrentPage(1); // Reset to first page when changing page size
+    };
+
+    // Handle page change
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+    };
 
     const handleShowMessage = (message) => {
         setSelectedMessage(message);
@@ -153,11 +248,6 @@ export default function SubmittedQuery() {
         };
         fetchData();
     }, []);
-
-    const totalPages = Math.ceil(data.length / itemsPerPage);
-    const indexOfLast = currentPage * itemsPerPage;
-    const indexOfFirst = indexOfLast - itemsPerPage;
-    const currentItems = data.slice(indexOfFirst, indexOfLast);
 
     const exportToExcel = () => {
         if (!data || data.length === 0) {
@@ -216,64 +306,65 @@ export default function SubmittedQuery() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {currentItems.length > 0 ? (
-                                        currentItems.map((row, idx) => (
-                                            <tr key={row.id}>
-                                                <td>{indexOfFirst + idx + 1}</td>
-                                                <td>{row.full_name}</td>
-                                                <td>{row.phone_number}</td>
-                                                <td>
-                                                    <div
-                                                        style={{
-                                                            display: 'flex',
-                                                            justifyContent: 'center',
-                                                            alignItems: 'center',
-                                                            height: '100%',
-                                                            width: '100%',
-                                                        }}
-                                                    >
-                                                        {row.message ? (
-                                                            row.message.length > 20 ? (
-                                                                <span
-                                                                    style={{ cursor: "pointer", textAlign: 'center' }}
-                                                                    onClick={() => handleShowMessage(row.message)}
-                                                                >
-                                                                    {row.message.slice(0, 20)}
-                                                                    <span style={{ color: "#FF5722", marginLeft: '2px' }}>... Read more</span>
-                                                                </span>
-                                                            ) : (
-                                                                <span style={{ textAlign: 'center' }}>{row.message}</span>
-                                                            )
-                                                        ) : (
-                                                            <span className="text-muted">No Message</span>
-                                                        )}
-                                                    </div>
-                                                </td>
-
-
-
-                                                <td>
-                                                    {row.attachment_url ? (
-                                                        <span
-                                                            className={attachmentChip}
-                                                            onClick={() =>
-                                                                forceDownload(
-                                                                    row.attachment_url,
-                                                                    getCleanFilename(row.attachment_url) // use cleaned filename for download
-                                                                )
-                                                            }
-                                                            title={getCleanFilename(row.attachment_url)} // show cleaned filename on hover
+                                    {getPaginatedData().length > 0 ? (
+                                        getPaginatedData().map((row, index) => {
+                                            const actualIndex = (currentPage - 1) * (pageSize === -1 ? data.length : pageSize) + index + 1;
+                                            return (
+                                                <tr key={row.id}>
+                                                    <td>{actualIndex}</td>
+                                                    <td>{row.full_name}</td>
+                                                    <td>{row.phone_number}</td>
+                                                    <td>
+                                                        <div
+                                                            style={{
+                                                                display: 'flex',
+                                                                justifyContent: 'center',
+                                                                alignItems: 'center',
+                                                                height: '100%',
+                                                                width: '100%',
+                                                            }}
                                                         >
-                                                            <FaFileAlt /> {truncateFilename(getCleanFilename(row.attachment_url), 18)}
-                                                        </span>
-                                                    ) : (
-                                                        <span className="text-muted">No File</span>
-                                                    )}
-                                                </td>
+                                                            {row.message ? (
+                                                                row.message.length > 20 ? (
+                                                                    <span
+                                                                        style={{ cursor: "pointer", textAlign: 'center' }}
+                                                                        onClick={() => handleShowMessage(row.message)}
+                                                                    >
+                                                                        {row.message.slice(0, 20)}
+                                                                        <span style={{ color: "#FF5722", marginLeft: '2px' }}>... Read more</span>
+                                                                    </span>
+                                                                ) : (
+                                                                    <span style={{ textAlign: 'center' }}>{row.message}</span>
+                                                                )
+                                                            ) : (
+                                                                <span className="text-muted">No Message</span>
+                                                            )}
+                                                        </div>
+                                                    </td>
 
-                                                <td>{formatDate(row.submission_date)}</td>
-                                            </tr>
-                                        ))
+                                                    <td>
+                                                        {row.attachment_url ? (
+                                                            <span
+                                                                className={attachmentChip}
+                                                                onClick={() =>
+                                                                    forceDownload(
+                                                                        row.attachment_url,
+                                                                        getCleanFilename(row.attachment_url) // use cleaned filename for download
+                                                                    )
+                                                                }
+                                                                title={getCleanFilename(row.attachment_url)} // show cleaned filename on hover
+                                                            >
+                                                                <FaFileAlt /> {truncateFilename(getCleanFilename(row.attachment_url), 18)}
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-muted">No File</span>
+                                                        )}
+                                                    </td>
+
+                                                    <td>{formatDate(row.submission_date)}</td>
+                                                </tr>
+                                            );
+                                        })
                                     ) : (
                                         <tr>
                                             <td colSpan="6" className="text-center text-muted">
@@ -284,19 +375,17 @@ export default function SubmittedQuery() {
                                 </tbody>
                             </Table>
 
-                            {/* Pagination */}
-                            {totalPages > 1 && (
-                                <Pagination className="justify-content-center mt-3">
-                                    {[...Array(totalPages)].map((_, idx) => (
-                                        <Pagination.Item
-                                            key={idx + 1}
-                                            active={currentPage === idx + 1}
-                                            onClick={() => setCurrentPage(idx + 1)}
-                                        >
-                                            {idx + 1}
-                                        </Pagination.Item>
-                                    ))}
-                                </Pagination>
+                            {/* Pagination Controls */}
+                            {data.length > 0 && (
+                                <PaginationControls
+                                    currentPage={currentPage}
+                                    totalPages={getTotalPages()}
+                                    onPageChange={handlePageChange}
+                                    pageSize={pageSize}
+                                    onPageSizeChange={handlePageSizeChange}
+                                    totalItems={data.length}
+                                    pageSizeOptions={pageSizeOptions}
+                                />
                             )}
                         </>
                     )}

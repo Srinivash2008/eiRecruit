@@ -129,6 +129,74 @@ const lightModal = emotionClass`
   }
 `;
 
+// Pagination Controls Component
+const PaginationControls = ({
+    currentPage,
+    totalPages,
+    onPageChange,
+    pageSize,
+    onPageSizeChange,
+    totalItems,
+    pageSizeOptions
+}) => {
+    const startItem = totalItems === 0 ? 0 : (currentPage - 1) * (pageSize === -1 ? totalItems : pageSize) + 1;
+    const endItem = Math.min(
+        currentPage * (pageSize === -1 ? totalItems : pageSize),
+        totalItems
+    );
+
+    return (
+        <div className="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-3">
+            {/* Page size selector */}
+            <div className="d-flex align-items-center">
+                <span className="me-2" style={{ fontSize: '0.9rem', whiteSpace: 'nowrap' }}>Rows per page:</span>
+                <Form.Select
+                    value={pageSize}
+                    onChange={(e) => onPageSizeChange(Number(e.target.value))}
+                    style={{ width: 'auto', fontSize: '0.9rem' }}
+                    size="sm"
+                >
+                    {pageSizeOptions.map(option => (
+                        <option key={option.value} value={option.value}>
+                            {option.label}
+                        </option>
+                    ))}
+                </Form.Select>
+            </div>
+
+            {/* Page info */}
+            <div style={{ fontSize: '0.9rem', whiteSpace: 'nowrap' }}>
+                Showing {startItem} to {endItem} of {totalItems} entries
+            </div>
+
+            {/* Page navigation */}
+            <div className="d-flex align-items-center gap-2">
+                <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    onClick={() => onPageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                >
+                    Previous
+                </Button>
+
+                <span style={{ fontSize: '0.9rem', minWidth: '80px', textAlign: 'center' }}>
+                    Page {currentPage} of {totalPages}
+                </span>
+
+                <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    onClick={() => onPageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages || totalPages === 0}
+                >
+                    Next
+                </Button>
+            </div>
+        </div>
+    );
+};
+
 export default function CurrentOpenings() {
     const [showModal, setShowModal] = useState(false);
     const [openings, setOpenings] = useState([]);
@@ -149,6 +217,18 @@ export default function CurrentOpenings() {
         location: '',
         logo: null,
     });
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize, setPageSize] = useState(1);
+    const pageSizeOptions = [
+        { value: 1, label: '1' },
+        { value: 2, label: '2' },
+        { value: 3, label: '3' },
+        { value: 4, label: '4' },
+        { value: -1, label: 'All' }
+    ];
+
     // console.log(openings, "openings")
     // State for inline status editing
     const [editingOpeningId, setEditingOpeningId] = useState(null);
@@ -164,6 +244,35 @@ export default function CurrentOpenings() {
     const [selectedLocation, setSelectedLocation] = useState("All");
     const [selectedFilterStatus, setSelectedFilterStatus] = useState("All");
 
+    // Calculate paginated data
+    const getPaginatedData = () => {
+        const startIndex = (currentPage - 1) * (pageSize === -1 ? filteredOpenings.length : pageSize);
+        const endIndex = pageSize === -1 ? filteredOpenings.length : startIndex + pageSize;
+
+        return filteredOpenings.slice(startIndex, endIndex);
+    };
+
+    // Calculate total pages
+    const getTotalPages = () => {
+        if (pageSize === -1) return 1;
+        return Math.ceil(filteredOpenings.length / pageSize);
+    };
+
+    // Handle page size change
+    const handlePageSizeChange = (newSize) => {
+        setPageSize(newSize);
+        setCurrentPage(1); // Reset to first page when changing page size
+    };
+
+    // Handle page change
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+    };
+
+    // Reset to page 1 when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [selectedLocation, selectedFilterStatus]);
 
     const handleDeleteClick = (opening) => {
         setSelectedOpening(opening);
@@ -171,19 +280,19 @@ export default function CurrentOpenings() {
     };
 
     const fetchOpeningsWithStatus = async () => {
-            try {
-                const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/currentJobOpening/fetchWithStatus`);
-                if (response.data.success) {
-                    setOpenings(response.data.result);
-                }
-            } catch (error) {
-                console.error("Error fetching openings with status:", error);
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/currentJobOpening/fetchWithStatus`);
+            if (response.data.success) {
+                setOpenings(response.data.result);
             }
-        };
+        } catch (error) {
+            console.error("Error fetching openings with status:", error);
+        }
+    };
 
-        useEffect(() => {
-            fetchOpeningsWithStatus();
-        }, []);
+    useEffect(() => {
+        fetchOpeningsWithStatus();
+    }, []);
 
     const confirmDelete = async () => {
         if (!selectedOpening) return;
@@ -419,24 +528,18 @@ export default function CurrentOpenings() {
                     <motion.h1 className={sectionTitle} variants={fadeUp}>
                         Manage Current Openings
                     </motion.h1>
-                    {/* <div className={tableTitle}>
-                        <span>Current Openings</span>
-                      
-                        <Button className={addButton} onClick={handleShow}>
-                            <FaPlus className="me-2" /> Add Opening
-                        </Button>
-                    </div> */}
                     <div className={tableTitle}>
                         <div className="d-flex justify-content-between align-items-center w-100">
 
                             {/* Filters on the left */}
                             <div className="d-flex align-items-center gap-2">
                                 {/* Location Filter */}
-                                {/* <Form.Select
+                                <Form.Select
+                                    className="w-60"
                                     value={selectedLocation}
                                     onChange={(e) => setSelectedLocation(e.target.value)}
                                     style={{
-                                        maxWidth: "250px",   // increased width
+                                        maxWidth: "300px",   // increased width
                                         height: "40px",      // increased height
                                         fontSize: "16px"     // larger text
                                     }}
@@ -445,14 +548,15 @@ export default function CurrentOpenings() {
                                     {[...new Set(openings.map(op => op.location))].map((loc, i) => (
                                         <option key={i} value={loc}>{loc}</option>
                                     ))}
-                                </Form.Select> */}
+                                </Form.Select>
 
                                 {/* Status Filter */}
-                                {/* <Form.Select
+                                <Form.Select
+                                    className="w-60"
                                     value={selectedFilterStatus}
                                     onChange={(e) => setSelectedFilterStatus(e.target.value)}
                                     style={{
-                                        maxWidth: "250px",   // increased width
+                                        maxWidth: "300px",   // increased width
                                         height: "40px",      // increased height
                                         fontSize: "16px"     // larger text
                                     }}
@@ -460,7 +564,7 @@ export default function CurrentOpenings() {
                                     <option value="All">All Status</option>
                                     <option value="Publish">Publish</option>
                                     <option value="UnPublish">UnPublish</option>
-                                </Form.Select> */}
+                                </Form.Select>
                             </div>
 
                             {/* Add button on the right */}
@@ -484,11 +588,13 @@ export default function CurrentOpenings() {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredOpenings.length > 0 ? (
-                                filteredOpenings.map((opening, index) => (
-                                    <tr key={opening.id}>
-                                        <td>{index + 1}</td>
-                                        {/* <td>
+                            {getPaginatedData().length > 0 ? (
+                                getPaginatedData().map((opening, index) => {
+                                    const actualIndex = (currentPage - 1) * (pageSize === -1 ? filteredOpenings.length : pageSize) + index + 1;
+                                    return (
+                                        <tr key={opening.id}>
+                                            <td>{actualIndex}</td>
+                                            {/* <td>
                                             <img
                                                 src={opening.logo}
                                                 alt="logo"
@@ -500,80 +606,62 @@ export default function CurrentOpenings() {
                                                 }}
                                             />
                                         </td> */}
-                                        <td>{opening.name}</td>
-                                        <td style={{ minHeight: "60px", padding: "12px", verticalAlign: "middle" }}>
-                                            {opening.description ? (
-                                                <span
-                                                    style={{ cursor: "pointer" }}
-                                                    onClick={() => handlePreview(opening.description)}
-                                                >
-                                                    {opening.description.replace(/<[^>]+>/g, "").length > 20 ? (
-                                                        <>
-                                                            {opening.description.replace(/<[^>]+>/g, "").slice(0, 20)}
-                                                            <span style={{ color: "#FF5722", marginLeft: "2px" }}>
-                                                                ... Read more
-                                                            </span>
-                                                        </>
-                                                    ) : (
-                                                        <span
-                                                            dangerouslySetInnerHTML={{
-                                                                __html: opening.description,
-                                                            }}
-                                                        />
-                                                    )}
-                                                </span>
-                                            ) : (
-                                                <span className="text-muted">No Message</span>
-                                            )}
-                                        </td>
-                                        <td>{opening.location}</td>
-                                        <td>
-                                            {editingOpeningId === opening.id ? (
-
-                                                <div className="d-flex align-items-center">
-                                                    <Form.Select
-                                                        size="sm"
-                                                        value={selectedStatus}
-                                                        onChange={(e) => setSelectedStatus(e.target.value)}
-                                                        style={{ maxWidth: '150px' }}
+                                            <td>{opening.name}</td>
+                                            <td style={{ minHeight: "60px", padding: "12px", verticalAlign: "middle" }}>
+                                                {opening.description ? (
+                                                    <span
+                                                        style={{ cursor: "pointer" }}
+                                                        onClick={() => handlePreview(opening.description)}
                                                     >
-                                                        <option value="Publish">Publish</option>
-                                                        <option value="UnPublish">UnPublish</option>
-                                                    </Form.Select>
-                                                    <Button variant="link" onClick={() => handleUpdateStatus(opening.id)} className="ms-2 p-0" title="Update Status"><FaCheck color="green" /></Button>
-                                                    <Button variant="link" onClick={handleCancelEdit} className="ms-2 p-0" title="Cancel"><FaTimes color="red" /></Button>
-                                                </div>
-                                            ) : (
-                                                <span onClick={() => handleStatusClick(opening)} style={{ cursor: 'pointer' }} title="Click to edit">
-                                                    {opening.status}
-                                                </span>
-                                            )}
-                                        </td>
+                                                        {opening.description.replace(/<[^>]+>/g, "").length > 20 ? (
+                                                            <>
+                                                                {opening.description.replace(/<[^>]+>/g, "").slice(0, 20)}
+                                                                <span style={{ color: "#FF5722", marginLeft: "2px" }}>
+                                                                    ... Read more
+                                                                </span>
+                                                            </>
+                                                        ) : (
+                                                            <span
+                                                                dangerouslySetInnerHTML={{
+                                                                    __html: opening.description,
+                                                                }}
+                                                            />
+                                                        )}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-muted">No Message</span>
+                                                )}
+                                            </td>
+                                            <td>{opening.location}</td>
+                                            <td>
+                                                {editingOpeningId === opening.id ? (
 
-                                        <td>
-                                            <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", width: "100%" }}>
-                                                <Button
-                                                    onClick={() => handleEditShow(opening)}
-                                                    variant="primary"
-                                                    title="Edit Opening"
-                                                    style={{
-                                                        width: "28px",
-                                                        height: "28px",
-                                                        borderRadius: "50%",
-                                                        padding: "0",
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "center",
-                                                        fontSize: "14px",
-                                                    }}
-                                                >
-                                                    <FaPen />
-                                                </Button>
+                                                    <div className="d-flex align-items-center">
+                                                        <Form.Select
+                                                            size="sm"
+                                                            value={selectedStatus}
+                                                            onChange={(e) => setSelectedStatus(e.target.value)}
+                                                            style={{ maxWidth: '150px' }}
+                                                        >
+                                                            <option value="Publish">Publish</option>
+                                                            <option value="UnPublish">UnPublish</option>
+                                                        </Form.Select>
+                                                        <Button variant="link" onClick={() => handleUpdateStatus(opening.id)} className="ms-2 p-0" title="Update Status"><FaCheck color="green" /></Button>
+                                                        <Button variant="link" onClick={handleCancelEdit} className="ms-2 p-0" title="Cancel"><FaTimes color="red" /></Button>
+                                                    </div>
+                                                ) : (
+                                                    <span onClick={() => handleStatusClick(opening)} style={{ cursor: 'pointer' }} title="Click to edit">
+                                                        {opening.status}
+                                                    </span>
+                                                )}
+                                            </td>
 
-                                                {(opening?.job_seeker_count ?? 0) === 0 && (
+                                            <td>
+                                                <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", width: "100%" }}>
                                                     <Button
-                                                        variant="danger"
-                                                        title="Delete Opening"
+                                                        onClick={() => handleEditShow(opening)}
+                                                        variant="primary"
+                                                        title="Edit Opening"
                                                         style={{
                                                             width: "28px",
                                                             height: "28px",
@@ -583,29 +671,58 @@ export default function CurrentOpenings() {
                                                             alignItems: "center",
                                                             justifyContent: "center",
                                                             fontSize: "14px",
-                                                            marginLeft: "6px",
                                                         }}
-                                                        onClick={() => handleDeleteClick(opening)}
                                                     >
-                                                        <FaRegTrashAlt />
+                                                        <FaPen />
                                                     </Button>
-                                                )}
-                                            </div>
-                                        </td>
 
-
-
-                                    </tr>
-                                ))
+                                                    {(opening?.job_seeker_count ?? 0) === 0 && (
+                                                        <Button
+                                                            variant="danger"
+                                                            title="Delete Opening"
+                                                            style={{
+                                                                width: "28px",
+                                                                height: "28px",
+                                                                borderRadius: "50%",
+                                                                padding: "0",
+                                                                display: "flex",
+                                                                alignItems: "center",
+                                                                justifyContent: "center",
+                                                                fontSize: "14px",
+                                                                marginLeft: "6px",
+                                                            }}
+                                                            onClick={() => handleDeleteClick(opening)}
+                                                        >
+                                                            <FaRegTrashAlt />
+                                                        </Button>
+                                                    )}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
                             ) : (
                                 <tr>
                                     <td colSpan="6" className="text-center text-muted">
-                                        No openings added yet.
+                                        No openings found.
                                     </td>
                                 </tr>
                             )}
                         </tbody>
                     </Table>
+
+                    {/* Pagination Controls */}
+                    {filteredOpenings.length > 0 && (
+                        <PaginationControls
+                            currentPage={currentPage}
+                            totalPages={getTotalPages()}
+                            onPageChange={handlePageChange}
+                            pageSize={pageSize}
+                            onPageSizeChange={handlePageSizeChange}
+                            totalItems={filteredOpenings.length}
+                            pageSizeOptions={pageSizeOptions}
+                        />
+                    )}
                 </motion.div>
             </Container>
 

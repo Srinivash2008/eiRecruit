@@ -96,6 +96,74 @@ const editModalStyle = emotionClass`
   }
 `;
 
+// Pagination Controls Component
+const PaginationControls = ({ 
+  currentPage, 
+  totalPages, 
+  onPageChange, 
+  pageSize, 
+  onPageSizeChange, 
+  totalItems,
+  pageSizeOptions 
+}) => {
+  const startItem = totalItems === 0 ? 0 : (currentPage - 1) * (pageSize === -1 ? totalItems : pageSize) + 1;
+  const endItem = Math.min(
+    currentPage * (pageSize === -1 ? totalItems : pageSize),
+    totalItems
+  );
+
+  return (
+    <div className="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-3">
+      {/* Page size selector */}
+      <div className="d-flex align-items-center">
+        <span className="me-2" style={{ fontSize: '0.9rem', whiteSpace: 'nowrap' }}>Rows per page:</span>
+        <Form.Select
+          value={pageSize}
+          onChange={(e) => onPageSizeChange(Number(e.target.value))}
+          style={{ width: 'auto', fontSize: '0.9rem' }}
+          size="sm"
+        >
+          {pageSizeOptions.map(option => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </Form.Select>
+      </div>
+
+      {/* Page info */}
+      <div style={{ fontSize: '0.9rem', whiteSpace: 'nowrap' }}>
+        Showing {startItem} to {endItem} of {totalItems} entries
+      </div>
+
+      {/* Page navigation */}
+      <div className="d-flex align-items-center gap-2">
+        <Button
+          variant="outline-secondary"
+          size="sm"
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </Button>
+        
+        <span style={{ fontSize: '0.9rem', minWidth: '80px', textAlign: 'center' }}>
+          Page {currentPage} of {totalPages}
+        </span>
+        
+        <Button
+          variant="outline-secondary"
+          size="sm"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages || totalPages === 0}
+        >
+          Next
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 // Helpers
 const truncateFilename = (filename, maxLength = 18) => {
     if (!filename) return "";
@@ -117,8 +185,14 @@ export default function JobSeekerList() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
+    const [pageSize, setPageSize] = useState(1);
+    const pageSizeOptions = [
+        { value: 1, label: '1' },
+        { value: 2, label: '2' },
+        { value: -1, label: 'All' }
+    ];
 
     const [showMessageModal, setShowMessageModal] = useState(false);
     const [showApplicationModal, setShowApplicationModal] = useState(false);
@@ -126,6 +200,31 @@ export default function JobSeekerList() {
 
     const [selectedMessage, setSelectedMessage] = useState("");
     const [editingApplication, setEditingApplication] = useState(null);
+
+    // Calculate paginated data
+    const getPaginatedData = () => {
+        const startIndex = (currentPage - 1) * (pageSize === -1 ? data.length : pageSize);
+        const endIndex = pageSize === -1 ? data.length : startIndex + pageSize;
+        
+        return data.slice(startIndex, endIndex);
+    };
+
+    // Calculate total pages
+    const getTotalPages = () => {
+        if (pageSize === -1) return 1;
+        return Math.ceil(data.length / pageSize);
+    };
+
+    // Handle page size change
+    const handlePageSizeChange = (newSize) => {
+        setPageSize(newSize);
+        setCurrentPage(1); // Reset to first page when changing page size
+    };
+
+    // Handle page change
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+    };
 
     const handleShowMessage = (message) => {
         setSelectedMessage(message);
@@ -151,11 +250,6 @@ export default function JobSeekerList() {
         setEditingApplication(null);
         setShowEditModal(false);
     };
-
-    const totalPages = Math.ceil(data.length / itemsPerPage);
-    const indexOfLast = currentPage * itemsPerPage;
-    const indexOfFirst = indexOfLast - itemsPerPage;
-    const currentItems = data.slice(indexOfFirst, indexOfLast);
 
     const jobOptions = jobs;
 
@@ -429,24 +523,6 @@ export default function JobSeekerList() {
         }
     };
 
-
-
-    // useEffect(() => {
-    //     setLoading(true);
-    //     (async () => {
-    //         try {
-    //             const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/job-seeker/fetch`);
-    //             if (res.data && res.data.result) {
-    //                 setData(res.data.result);
-    //             }
-    //         } catch (err) {
-    //             console.error(err);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     })();
-    // }, []);
-
     useEffect(() => {
         const fetchOpenings = async () => {
             try {
@@ -560,57 +636,60 @@ export default function JobSeekerList() {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentItems.length > 0 ? (
-                                currentItems.map((row, idx) => (
-                                    <tr key={indexOfFirst + idx}>
-                                        <td>{indexOfFirst + idx + 1}</td>
-                                        <td>{row.name}</td>
-                                        <td>{row.email}</td>
-                                        <td>{row.contact_number}</td>
-                                        <td>{row.opening_name}</td>
-                                        <td>
-                                            {row.message ? (
-                                                row.message.length > 20 ? (
+                            {getPaginatedData().length > 0 ? (
+                                getPaginatedData().map((row, index) => {
+                                    const actualIndex = (currentPage - 1) * (pageSize === -1 ? data.length : pageSize) + index + 1;
+                                    return (
+                                        <tr key={row.id}>
+                                            <td>{actualIndex}</td>
+                                            <td>{row.name}</td>
+                                            <td>{row.email}</td>
+                                            <td>{row.contact_number}</td>
+                                            <td>{row.opening_name}</td>
+                                            <td>
+                                                {row.message ? (
+                                                    row.message.length > 20 ? (
+                                                        <span
+                                                            style={{ cursor: "pointer" }}
+                                                            onClick={() => handleShowMessage(row.message)}
+                                                        >
+                                                            {row.message.slice(0, 20)}
+                                                            <span style={{ color: "#FF5722", marginLeft: '2px' }}>... Read more</span>
+                                                        </span>
+                                                    ) : (
+                                                        <span>{row.message}</span>
+                                                    )
+                                                ) : (
+                                                    <span className="text-muted">No Message</span>
+                                                )}
+                                            </td>
+                                            <td>
+                                                {row.resume ? (
                                                     <span
-                                                        style={{ cursor: "pointer" }}
-                                                        onClick={() => handleShowMessage(row.message)}
+                                                        className={attachmentChip}
+                                                        onClick={() => forceDownload(row.resume, row.resume.split("/").pop())}
+                                                        title={getCleanFileName(row.resume)}
                                                     >
-                                                        {row.message.slice(0, 20)}
-                                                        <span style={{ color: "#FF5722", marginLeft: '2px' }}>... Read more</span>
+                                                        <FaFileAlt />{' '}
+                                                        {truncateFilename(getCleanFileName(row.resume), 18)}
                                                     </span>
                                                 ) : (
-                                                    <span>{row.message}</span>
-                                                )
-                                            ) : (
-                                                <span className="text-muted">No Message</span>
-                                            )}
-                                        </td>
-                                        <td>
-                                            {row.resume ? (
-                                                <span
-                                                    className={attachmentChip}
-                                                    onClick={() => forceDownload(row.resume, row.resume.split("/").pop())}
-                                                    title={getCleanFileName(row.resume)}
+                                                    <span className="text-muted">No Resume</span>
+                                                )}
+                                            </td>
+                                            <td>{formatDate(row.submitted_date)}</td>
+                                            <td>
+                                                <Button
+                                                    className={editButton}
+                                                    onClick={() => handleShowEditModal(row)}
+                                                    title="Edit Application"
                                                 >
-                                                    <FaFileAlt />{' '}
-                                                    {truncateFilename(getCleanFileName(row.resume), 18)}
-                                                </span>
-                                            ) : (
-                                                <span className="text-muted">No Resume</span>
-                                            )}
-                                        </td>
-                                        <td>{formatDate(row.submitted_date)}</td>
-                                        <td>
-                                            <Button
-                                                className={editButton}
-                                                onClick={() => handleShowEditModal(row)}
-                                                title="Edit Application"
-                                            >
-                                                <FaEdit />
-                                            </Button>
-                                        </td>
-                                    </tr>
-                                ))
+                                                    <FaEdit />
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
                             ) : (
                                 <tr>
                                     <td colSpan="9" className="text-center text-muted">
@@ -621,19 +700,17 @@ export default function JobSeekerList() {
                         </tbody>
                     </Table>
 
-                    {/* Pagination */}
-                    {totalPages > 1 && (
-                        <Pagination className="justify-content-center mt-3">
-                            {[...Array(totalPages)].map((_, idx) => (
-                                <Pagination.Item
-                                    key={idx + 1}
-                                    active={currentPage === idx + 1}
-                                    onClick={() => setCurrentPage(idx + 1)}
-                                >
-                                    {idx + 1}
-                                </Pagination.Item>
-                            ))}
-                        </Pagination>
+                    {/* Pagination Controls */}
+                    {data.length > 0 && (
+                        <PaginationControls
+                            currentPage={currentPage}
+                            totalPages={getTotalPages()}
+                            onPageChange={handlePageChange}
+                            pageSize={pageSize}
+                            onPageSizeChange={handlePageSizeChange}
+                            totalItems={data.length}
+                            pageSizeOptions={pageSizeOptions}
+                        />
                     )}
                 </div>
             </Container>
