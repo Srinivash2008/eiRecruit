@@ -540,8 +540,9 @@ export default function CurrentOpenings() {
                                     value={selectedOpeningName}
                                     onChange={(e) => setSelectedOpeningName(e.target.value)}
                                     style={{
+                                        border: "1px solid #363a3eff",
                                         minWidth: "180px",
-                                        maxWidth: "250px",
+                                        maxWidth: "200px",
                                         height: "40px",
                                         fontSize: "16px",
                                     }}
@@ -560,8 +561,9 @@ export default function CurrentOpenings() {
                                     value={selectedLocation}
                                     onChange={(e) => setSelectedLocation(e.target.value)}
                                     style={{
+                                        border: "1px solid #363a3eff",
                                         minWidth: "180px",
-                                        maxWidth: "250px",
+                                        maxWidth: "200px",
                                         height: "40px",
                                         fontSize: "16px",
                                     }}
@@ -580,8 +582,9 @@ export default function CurrentOpenings() {
                                     value={selectedFilterStatus}
                                     onChange={(e) => setSelectedFilterStatus(e.target.value)}
                                     style={{
+                                        border: "1px solid #363a3eff",
                                         minWidth: "180px",
-                                        maxWidth: "250px",
+                                        maxWidth: "200px",
                                         height: "40px",
                                         fontSize: "16px",
                                     }}
