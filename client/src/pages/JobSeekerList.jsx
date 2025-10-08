@@ -242,10 +242,12 @@ export default function JobSeekerList() {
 
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
     const pageSizeOptions = [
-        { value: 1, label: '1' },
-        { value: 2, label: '2' },
+        { value: 10, label: '10' },
+        { value: 25, label: '25' },
+        { value: 50, label: '50' },
+        { value: 100, label: '100' },
         { value: -1, label: 'All' }
     ];
 
@@ -700,7 +702,7 @@ export default function JobSeekerList() {
                                 <button
                                     className="btn btn-success"
                                     onClick={() => handleShowApplicationModal(null)}
-                                     style={{ padding: "0.45rem 0.5rem" }}
+                                    style={{ padding: "0.45rem 0.5rem" }}
                                 >
                                     Apply
                                 </button>
@@ -708,7 +710,7 @@ export default function JobSeekerList() {
 
                             <button
                                 className="btn btn-primary"
-                                 style={{ padding: "0.45rem 0.5rem" }}
+                                style={{ padding: "0.45rem 0.5rem" }}
                                 onClick={exportToExcel}
                             >
                                 Export to Excel
