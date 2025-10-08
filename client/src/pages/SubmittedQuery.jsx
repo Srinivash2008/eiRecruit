@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Container, Table, Pagination, Spinner, Modal, Button, Form } from "react-bootstrap";
+import { Container, Table, Pagination, Spinner, Modal, Button, Form, InputGroup } from "react-bootstrap";
 import { css as emotionClass } from "@emotion/css";
 import { motion } from "framer-motion";
-import { FaFileAlt, FaCommentDots } from "react-icons/fa";
+import { FaFileAlt, FaCommentDots, FaSearch } from "react-icons/fa";
 import axios from "axios";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
@@ -74,72 +74,118 @@ const customTable = emotionClass`
   }
 `;
 
+const searchWrapper = emotionClass`
+  max-width: 200px;
+  display: flex;
+  border: 2px solid #0076ff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, box-shadow 0.3s ease, border 0.3s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    border-color: #1ca638;
+  }
+
+  .input-group-text {
+    background: linear-gradient(135deg, #0076ff, #1ca638);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  .form-control {
+    border: none;
+    border-radius: 0;
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    background-color: #fff;
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 12px rgba(0, 118, 255, 0.3);
+    }
+
+    &::placeholder {
+      color: #888;
+      opacity: 1;
+    }
+  }
+`;
+
+
 // Pagination Controls Component
-const PaginationControls = ({ 
-  currentPage, 
-  totalPages, 
-  onPageChange, 
-  pageSize, 
-  onPageSizeChange, 
-  totalItems,
-  pageSizeOptions 
+const PaginationControls = ({
+    currentPage,
+    totalPages,
+    onPageChange,
+    pageSize,
+    onPageSizeChange,
+    totalItems,
+    pageSizeOptions
 }) => {
-  const startItem = totalItems === 0 ? 0 : (currentPage - 1) * (pageSize === -1 ? totalItems : pageSize) + 1;
-  const endItem = Math.min(
-    currentPage * (pageSize === -1 ? totalItems : pageSize),
-    totalItems
-  );
+    const startItem = totalItems === 0 ? 0 : (currentPage - 1) * (pageSize === -1 ? totalItems : pageSize) + 1;
+    const endItem = Math.min(
+        currentPage * (pageSize === -1 ? totalItems : pageSize),
+        totalItems
+    );
 
-  return (
-    <div className="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-3">
-      {/* Page size selector */}
-      <div className="d-flex align-items-center">
-        <span className="me-2" style={{ fontSize: '0.9rem', whiteSpace: 'nowrap' }}>Rows per page:</span>
-        <Form.Select
-          value={pageSize}
-          onChange={(e) => onPageSizeChange(Number(e.target.value))}
-          style={{ width: 'auto', fontSize: '0.9rem' }}
-          size="sm"
-        >
-          {pageSizeOptions.map(option => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </Form.Select>
-      </div>
+    return (
+        <div className="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-3">
+            {/* Page size selector */}
+            <div className="d-flex align-items-center">
+                <span className="me-2" style={{ fontSize: '0.9rem', whiteSpace: 'nowrap' }}>Rows per page:</span>
+                <Form.Select
+                    value={pageSize}
+                    onChange={(e) => onPageSizeChange(Number(e.target.value))}
+                    style={{ width: 'auto', fontSize: '0.9rem' }}
+                    size="sm"
+                >
+                    {pageSizeOptions.map(option => (
+                        <option key={option.value} value={option.value}>
+                            {option.label}
+                        </option>
+                    ))}
+                </Form.Select>
+            </div>
 
-      {/* Page info */}
-      <div style={{ fontSize: '0.9rem', whiteSpace: 'nowrap' }}>
-        Showing {startItem} to {endItem} of {totalItems} entries
-      </div>
+            {/* Page info */}
+            <div style={{ fontSize: '0.9rem', whiteSpace: 'nowrap' }}>
+                Showing {startItem} to {endItem} of {totalItems} entries
+            </div>
 
-      {/* Page navigation */}
-      <div className="d-flex align-items-center gap-2">
-        <Button
-          variant="outline-secondary"
-          size="sm"
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          Previous
-        </Button>
-        
-        <span style={{ fontSize: '0.9rem', minWidth: '80px', textAlign: 'center' }}>
-          Page {currentPage} of {totalPages}
-        </span>
-        
-        <Button
-          variant="outline-secondary"
-          size="sm"
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages || totalPages === 0}
-        >
-          Next
-        </Button>
-      </div>
-    </div>
-  );
+            {/* Page navigation */}
+            <div className="d-flex align-items-center gap-2">
+                <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    onClick={() => onPageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                >
+                    Previous
+                </Button>
+
+                <span style={{ fontSize: '0.9rem', minWidth: '80px', textAlign: 'center' }}>
+                    Page {currentPage} of {totalPages}
+                </span>
+
+                <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    onClick={() => onPageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages || totalPages === 0}
+                >
+                    Next
+                </Button>
+            </div>
+        </div>
+    );
 };
 
 // Helpers
@@ -192,6 +238,21 @@ export default function SubmittedQuery() {
         { value: 2, label: '2' },
         { value: -1, label: 'All' }
     ];
+    const [searchQuery, setSearchQuery] = useState(""); // new
+
+    const getFilteredData = () => {
+        if (!searchQuery) return data;
+        const query = searchQuery.toLowerCase();
+        return data.filter(
+            row =>
+                row.full_name.toLowerCase().includes(query) ||
+                row.phone_number.toLowerCase().includes(query)
+        );
+    };
+
+
+    const filteredData = getFilteredData();
+
 
     // Modal state
     const [showModal, setShowModal] = useState(false);
@@ -199,17 +260,16 @@ export default function SubmittedQuery() {
 
     // Calculate paginated data
     const getPaginatedData = () => {
-        const startIndex = (currentPage - 1) * (pageSize === -1 ? data.length : pageSize);
-        const endIndex = pageSize === -1 ? data.length : startIndex + pageSize;
-        
-        return data.slice(startIndex, endIndex);
+        const filteredData = getFilteredData();
+        const startIndex = (currentPage - 1) * (pageSize === -1 ? filteredData.length : pageSize);
+        const endIndex = pageSize === -1 ? filteredData.length : startIndex + pageSize;
+        return filteredData.slice(startIndex, endIndex);
     };
 
-    // Calculate total pages
-    const getTotalPages = () => {
-        if (pageSize === -1) return 1;
-        return Math.ceil(data.length / pageSize);
-    };
+
+    const getTotalPages = () => pageSize === -1 ? 1 : Math.ceil(filteredData.length / pageSize);
+
+
 
     // Handle page size change
     const handlePageSizeChange = (newSize) => {
@@ -250,39 +310,42 @@ export default function SubmittedQuery() {
     }, []);
 
     const exportToExcel = () => {
-        if (!data || data.length === 0) {
-            toast.warning("No data available to export!");
-            return;
-        }
-
-        // Map data for Excel, skipping the Attachment column
-        const excelData = data.map((row, idx) => ({
+        if (!filteredData.length) return toast.warning("No data available to export!");
+        const excelData = filteredData.map((row, idx) => ({
             "S.No": idx + 1,
             Name: row.full_name,
             "Phone Number": row.phone_number,
-            Message: row.message ? row.message : "No Message",
+            Message: row.message || "No Message",
             "Submitted Date": formatDate(row.submission_date)
         }));
-
-        // Create worksheet and workbook
         const worksheet = XLSX.utils.json_to_sheet(excelData);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Queries");
-
-        // Convert workbook to binary and save as file
         const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-        const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-        saveAs(blob, "Submitted_Queries.xlsx");
+        saveAs(new Blob([excelBuffer], { type: "application/octet-stream" }), "Submitted_Queries.xlsx");
     };
+
 
     return (
         <motion.div className={dashboardContainer} initial="hidden" animate="visible">
             <Container>
                 <div className={tableSection}>
                     <h1 className={sectionTitle}>Submitted Queries</h1>
-                    <div className="d-flex justify-content-end mb-3">
+                    <div className="mb-3 d-flex justify-content-end align-items-center flex-wrap gap-2">
+                        <InputGroup className={searchWrapper}>
+                            <InputGroup.Text><FaSearch /></InputGroup.Text>
+                            <Form.Control
+                                // type="text"
+                                placeholder="Search here"
+                                value={searchQuery}
+                                onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+                            />
+                        </InputGroup>
+
+
                         <button
                             className="btn btn-primary"
+                            style={{ padding: "0.45rem 0.5rem" }}
                             onClick={exportToExcel}
                         >
                             Export to Excel
@@ -376,14 +439,14 @@ export default function SubmittedQuery() {
                             </Table>
 
                             {/* Pagination Controls */}
-                            {data.length > 0 && (
+                            {getPaginatedData().length > 0 && (
                                 <PaginationControls
                                     currentPage={currentPage}
-                                    totalPages={getTotalPages()}
+                                    totalPages={Math.ceil(getFilteredData().length / (pageSize === -1 ? getFilteredData().length : pageSize))}
                                     onPageChange={handlePageChange}
                                     pageSize={pageSize}
                                     onPageSizeChange={handlePageSizeChange}
-                                    totalItems={data.length}
+                                    totalItems={getFilteredData().length}
                                     pageSizeOptions={pageSizeOptions}
                                 />
                             )}
