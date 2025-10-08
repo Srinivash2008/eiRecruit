@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { Container, Table, Pagination, Spinner, Form, Button } from "react-bootstrap";
+import { Container, Table, Spinner, Form, Button, InputGroup } from "react-bootstrap";
 import { css as emotionClass } from "@emotion/css";
 import { motion } from "framer-motion";
 import axios from "axios";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { toast } from "react-toastify";
-
+import { FaSearch } from "react-icons/fa";
 
 // Styles
 const dashboardContainer = emotionClass`
@@ -45,15 +45,66 @@ const customTable = emotionClass`
   }
 `;
 
+const searchWrapper = emotionClass`
+  max-width: 200px;
+  display: flex;
+  border: 2px solid #0076ff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, box-shadow 0.3s ease, border 0.3s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    border-color: #1ca638;
+  }
+
+  .input-group-text {
+    background: linear-gradient(135deg, #0076ff, #1ca638);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background: linear-gradient(135deg, #0056cc, #13912c);
+    }
+  }
+
+  .form-control {
+    border: none;
+    border-radius: 0;
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    background-color: #fff;
+    transition: box-shadow 0.3s ease;
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 12px rgba(0, 118, 255, 0.3);
+    }
+
+    &::placeholder {
+      color: #888;
+      opacity: 1;
+    }
+  }
+`;
+
 // Pagination Controls Component
-const PaginationControls = ({ 
-  currentPage, 
-  totalPages, 
-  onPageChange, 
-  pageSize, 
-  onPageSizeChange, 
+const PaginationControls = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+  pageSize,
+  onPageSizeChange,
   totalItems,
-  pageSizeOptions 
+  pageSizeOptions
 }) => {
   const startItem = totalItems === 0 ? 0 : (currentPage - 1) * (pageSize === -1 ? totalItems : pageSize) + 1;
   const endItem = Math.min(
@@ -95,11 +146,11 @@ const PaginationControls = ({
         >
           Previous
         </Button>
-        
+
         <span style={{ fontSize: '0.9rem', minWidth: '80px', textAlign: 'center' }}>
           Page {currentPage} of {totalPages}
         </span>
-        
+
         <Button
           variant="outline-secondary"
           size="sm"
@@ -119,6 +170,7 @@ const formatDate = (isoString) => new Date(isoString).toLocaleDateString("en-GB"
 export default function CandidateRegistration() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -129,32 +181,40 @@ export default function CandidateRegistration() {
     { value: -1, label: 'All' }
   ];
 
-  // Calculate paginated data
-  const getPaginatedData = () => {
-    const startIndex = (currentPage - 1) * (pageSize === -1 ? data.length : pageSize);
-    const endIndex = pageSize === -1 ? data.length : startIndex + pageSize;
-    
-    return data.slice(startIndex, endIndex);
+  const getFilteredData = () => {
+    if (!searchQuery) return data;
+    const query = searchQuery.toLowerCase();
+    return data.filter(
+      (row) =>
+        row.name.toLowerCase().includes(query) ||
+        row.position.toLowerCase().includes(query) ||
+        row.current_place_of_stay.toLowerCase().includes(query) ||
+        row.preferred_country_to_apply.toLowerCase().includes(query)
+    );
   };
 
-  // Calculate total pages
+  const getPaginatedData = () => {
+    const filteredData = getFilteredData();
+    const startIndex = (currentPage - 1) * (pageSize === -1 ? filteredData.length : pageSize);
+    const endIndex = pageSize === -1 ? filteredData.length : startIndex + pageSize;
+    return filteredData.slice(startIndex, endIndex);
+  };
+
   const getTotalPages = () => {
     if (pageSize === -1) return 1;
-    return Math.ceil(data.length / pageSize);
+    return Math.ceil(getFilteredData().length / pageSize);
   };
 
-  // Handle page size change
   const handlePageSizeChange = (newSize) => {
     setPageSize(newSize);
-    setCurrentPage(1); // Reset to first page when changing page size
+    setCurrentPage(1);
   };
 
-  // Handle page change
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
 
-  // Fetch data from API
+  // Fetch data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -169,18 +229,17 @@ export default function CandidateRegistration() {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
   const exportToExcel = () => {
-    if (!data || data.length === 0) {
+    const filteredData = getFilteredData();
+    if (!filteredData.length) {
       toast.warning("No data available to export!");
       return;
     }
 
-    // Map data for Excel
-    const excelData = data.map((row, idx) => ({
+    const excelData = filteredData.map((row, idx) => ({
       "S.No": idx + 1,
       Name: row.name,
       Position: row.position,
@@ -189,25 +248,42 @@ export default function CandidateRegistration() {
       "Submission Date": formatDate(row.submission_date)
     }));
 
-    // Create worksheet and workbook
     const worksheet = XLSX.utils.json_to_sheet(excelData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Candidates");
 
-    // Convert workbook to binary and save as file
     const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
     const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
     saveAs(blob, "Candidate_Registration.xlsx");
   };
+
+  const filteredData = getFilteredData(); // computed once
 
   return (
     <motion.div className={dashboardContainer} initial="hidden" animate="visible">
       <Container>
         <div className={tableSection}>
           <h1 className={sectionTitle}>Future Job Postings</h1>
-          <div className="d-flex justify-content-end mb-3">
+
+          <div className="mb-3 d-flex justify-content-end align-items-center flex-wrap gap-2">
+            <InputGroup className={searchWrapper}>
+              <InputGroup.Text>
+                <FaSearch />
+              </InputGroup.Text>
+              <Form.Control
+                type="text"
+                placeholder="Search here"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+              />
+            </InputGroup>
+
             <button
               className="btn btn-primary"
+              style={{ padding: "0.45rem 0.5rem" }}
               onClick={exportToExcel}
             >
               Export to Excel
@@ -232,9 +308,9 @@ export default function CandidateRegistration() {
                   </tr>
                 </thead>
                 <tbody>
-                  {getPaginatedData().length > 0 ? (
+                  {filteredData.length > 0 ? (
                     getPaginatedData().map((row, index) => {
-                      const actualIndex = (currentPage - 1) * (pageSize === -1 ? data.length : pageSize) + index + 1;
+                      const actualIndex = (currentPage - 1) * (pageSize === -1 ? filteredData.length : pageSize) + index + 1;
                       return (
                         <tr key={row.id}>
                           <td>{actualIndex}</td>
@@ -249,22 +325,21 @@ export default function CandidateRegistration() {
                   ) : (
                     <tr>
                       <td colSpan="6" className="text-center text-muted">
-                        No candidates registered yet.
+                        No candidates found.
                       </td>
                     </tr>
                   )}
                 </tbody>
               </Table>
 
-              {/* Pagination Controls */}
-              {data.length > 0 && (
+              {filteredData.length > 0 && (
                 <PaginationControls
                   currentPage={currentPage}
                   totalPages={getTotalPages()}
                   onPageChange={handlePageChange}
                   pageSize={pageSize}
                   onPageSizeChange={handlePageSizeChange}
-                  totalItems={data.length}
+                  totalItems={filteredData.length}
                   pageSizeOptions={pageSizeOptions}
                 />
               )}
