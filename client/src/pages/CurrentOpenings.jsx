@@ -243,6 +243,7 @@ export default function CurrentOpenings() {
 
     const [selectedLocation, setSelectedLocation] = useState("All");
     const [selectedFilterStatus, setSelectedFilterStatus] = useState("All");
+    const [selectedOpeningName, setSelectedOpeningName] = useState("All");
 
     // Calculate paginated data
     const getPaginatedData = () => {
@@ -272,7 +273,7 @@ export default function CurrentOpenings() {
     // Reset to page 1 when filters change
     useEffect(() => {
         setCurrentPage(1);
-    }, [selectedLocation, selectedFilterStatus]);
+    }, [selectedLocation, selectedFilterStatus, selectedOpeningName]);
 
     const handleDeleteClick = (opening) => {
         setSelectedOpening(opening);
@@ -516,7 +517,8 @@ export default function CurrentOpenings() {
     const filteredOpenings = openings.filter(op => {
         const matchLocation = selectedLocation === "All" || op.location === selectedLocation;
         const matchStatus = selectedFilterStatus === "All" || op.status === selectedFilterStatus;
-        return matchLocation && matchStatus;
+        const matchOpeningName = selectedOpeningName === "All" || op.name === selectedOpeningName;
+        return matchLocation && matchStatus && matchOpeningName;
     });
 
 
@@ -529,36 +531,59 @@ export default function CurrentOpenings() {
                         Manage Current Openings
                     </motion.h1>
                     <div className={tableTitle}>
-                        <div className="d-flex justify-content-between align-items-center w-100">
-
+                        <div className="d-flex flex-wrap flex-md-nowrap justify-content-between align-items-center w-100 gap-3">
                             {/* Filters on the left */}
-                            <div className="d-flex align-items-center gap-2">
+                            <div className="d-flex align-items-center gap-2 flex-wrap flex-md-nowrap w-100 w-md-auto">
+                                {/* Opening Name Filter */}
+                                <Form.Select
+                                    className="flex-grow-1"
+                                    value={selectedOpeningName}
+                                    onChange={(e) => setSelectedOpeningName(e.target.value)}
+                                    style={{
+                                        minWidth: "180px",
+                                        maxWidth: "250px",
+                                        height: "40px",
+                                        fontSize: "16px",
+                                    }}
+                                >
+                                    <option value="All">All Opening Names</option>
+                                    {[...new Set(openings.map((op) => op.name))].map((name, i) => (
+                                        <option key={i} value={name}>
+                                            {name}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+
                                 {/* Location Filter */}
                                 <Form.Select
-                                    className="w-60"
+                                    className="flex-grow-1"
                                     value={selectedLocation}
                                     onChange={(e) => setSelectedLocation(e.target.value)}
                                     style={{
-                                        maxWidth: "300px",   // increased width
-                                        height: "40px",      // increased height
-                                        fontSize: "16px"     // larger text
+                                        minWidth: "180px",
+                                        maxWidth: "250px",
+                                        height: "40px",
+                                        fontSize: "16px",
                                     }}
                                 >
                                     <option value="All">All Locations</option>
-                                    {[...new Set(openings.map(op => op.location))].map((loc, i) => (
-                                        <option key={i} value={loc}>{loc}</option>
+                                    {[...new Set(openings.map((op) => op.location))].map((loc, i) => (
+                                        <option key={i} value={loc}>
+                                            {loc}
+                                        </option>
                                     ))}
                                 </Form.Select>
 
                                 {/* Status Filter */}
                                 <Form.Select
-                                    className="w-60"
+                                    className="flex-grow-1"
                                     value={selectedFilterStatus}
                                     onChange={(e) => setSelectedFilterStatus(e.target.value)}
                                     style={{
-                                        maxWidth: "300px",   // increased width
-                                        height: "40px",      // increased height
-                                        fontSize: "16px"     // larger text
+                                        minWidth: "180px",
+                                        maxWidth: "250px",
+                                        height: "40px",
+                                        fontSize: "16px",
                                     }}
                                 >
                                     <option value="All">All Status</option>
@@ -568,10 +593,16 @@ export default function CurrentOpenings() {
                             </div>
 
                             {/* Add button on the right */}
-                            <Button className={addButton} onClick={handleShow}>
+                            <Button
+                                className={`${addButton} mt-2 mt-md-0`}
+                                onClick={handleShow}
+                                style={{ whiteSpace: "nowrap" }}
+                            >
                                 <FaPlus className="me-2" /> Add Opening
                             </Button>
                         </div>
+
+
                     </div>
 
 
