@@ -11,6 +11,7 @@ class JobSeeker {
                 job_seeker_list.name,
                 job_seeker_list.email,
                 job_seeker_list.contact_number,
+                job_seeker_list.years_of_experience,
                 job_seeker_list.resume,
                 job_seeker_list.message,
                 job_seeker_list.submitted_date,
@@ -36,16 +37,18 @@ class JobSeeker {
                 INSERT INTO job_seeker_list (
                     name, 
                     email, 
-                    contact_number, 
+                    contact_number,
+                    years_of_experience,
                     resume, 
                     message, 
                     current_opening_id
-                ) VALUES (?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
             `;
             const values = [
                 data.name,
                 data.email,
                 data.contact_number,
+                data.years_of_experience,
                 data.resume,
                 data.message,
                 data.job_id
@@ -60,7 +63,7 @@ class JobSeeker {
         });
     };
 
-     static update = async (queryData) => {
+    static update = async (queryData) => {
         return new Promise((resolve, reject) => {
             const query = `
                 UPDATE job_seeker_list 
@@ -68,6 +71,7 @@ class JobSeeker {
                     name = ?, 
                     email = ?, 
                     contact_number = ?, 
+                    years_of_experience = ?,
                     resume = ?, 
                     message = ?, 
                     current_opening_id = ?
@@ -78,13 +82,14 @@ class JobSeeker {
                 queryData.name,
                 queryData.email,
                 queryData.contact_number,
+                queryData.years_of_experience,
                 queryData.resume || null,
                 queryData.message,
                 queryData.jobId,
                 queryData.id
             ];
 
-            console.log(values,"valuesvalues")
+            console.log(values, "valuesvalues")
 
             db.query(query, values, (error, result) => {
                 if (error) {

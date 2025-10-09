@@ -355,7 +355,14 @@ export default function JobSeekerList() {
             if (regex.test(value)) {
                 setApplicationData((prev) => ({ ...prev, contact_number: value }));
             }
-        } else {
+        }
+        else if (name === "years_of_experience") {
+            const regex = /^\d*$/;
+            if (regex.test(value)) {
+                setApplicationData((prev) => ({ ...prev, years_of_experience: value }));
+            }
+        }
+        else {
             setApplicationData((prev) => ({ ...prev, [name]: value }));
         }
     };
@@ -384,7 +391,16 @@ export default function JobSeekerList() {
                 } else {
                     return prev;
                 }
-            } else {
+            }
+            else if (name === "years_of_experience") {
+                const regex = /^\d*$/;
+                if (regex.test(value)) {
+                    updated[name] = value;
+                } else {
+                    return prev;
+                }
+            }
+            else {
                 updated[name] = value;
             }
 
@@ -455,6 +471,12 @@ export default function JobSeekerList() {
             toast.warning("Contact number must be exactly 10 digits");
             return;
         }
+        // Years of experience check
+        if (!/^\d+$/.test(applicationData.years_of_experience)) {
+            toast.warning("Years of experience should be a valid number");
+            return;
+        }
+
 
         if (!applicationData.resume) {
             toast.warning("Please upload your resume");
@@ -469,6 +491,7 @@ export default function JobSeekerList() {
         formData.append('name', applicationData.name);
         formData.append('email', applicationData.email);
         formData.append('contact_number', applicationData.contact_number);
+        formData.append('years_of_experience', applicationData.years_of_experience);
         formData.append('message', applicationData.message);
         formData.append('resume', applicationData.resume);
 
@@ -484,6 +507,7 @@ export default function JobSeekerList() {
                     name: response.data.result.affectedData.name,
                     email: response.data.result.affectedData.email,
                     contact_number: response.data.result.affectedData.contact_number,
+                    years_of_experience: response.data.result.affectedData.years_of_experience,
                     opening_name: selectedJob.name,
                     message: response.data.result.affectedData.message,
                     resume: response.data.result.affectedData.resume,
@@ -532,6 +556,13 @@ export default function JobSeekerList() {
             return;
         }
 
+        if (!/^\d+$/.test(editingApplication.years_of_experience)) {
+            toast.warning("Years of experience should be a valid number");
+            return;
+        }
+
+
+
         setApplying(true);
 
         const formData = new FormData();
@@ -539,6 +570,7 @@ export default function JobSeekerList() {
         formData.append('name', editingApplication.name);
         formData.append('email', editingApplication.email);
         formData.append('contact_number', editingApplication.contact_number);
+        formData.append('years_of_experience', editingApplication.years_of_experience);
         formData.append('message', editingApplication.message);
 
         // Use jobId if available, otherwise fall back to job_id
@@ -632,6 +664,7 @@ export default function JobSeekerList() {
             Name: row.name,
             "Email ID": row.email,
             "Contact Number": row.contact_number,
+            "Years of Experience": row.years_of_experience,
             "Applied Position": row.opening_name,
             Message: row.message
                 ? (row.message.length > 20 ? row.message.slice(0, 20) + "..." : row.message)
@@ -741,6 +774,7 @@ export default function JobSeekerList() {
                                 <th>Name</th>
                                 <th>Email ID</th>
                                 <th>Contact Number</th>
+                                <th>Year of experience</th>
                                 <th>Applied Position</th>
                                 <th>Message</th>
                                 <th>Resume Upload</th>
@@ -758,6 +792,7 @@ export default function JobSeekerList() {
                                             <td>{row.name}</td>
                                             <td>{row.email}</td>
                                             <td>{row.contact_number}</td>
+                                            <td>{row.years_of_experience}</td>
                                             <td>{row.opening_name}</td>
                                             <td>
                                                 {row.message ? (
@@ -915,6 +950,20 @@ export default function JobSeekerList() {
                                     />
                                 </Form.Group>
                             </Col>
+                            <Col md={6}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Years of experience</Form.Label>
+                                    <Form.Control
+                                        type='number'
+                                        name="years_of_experience"
+                                        value={applicationData.years_of_experience}
+                                        onChange={handleApplicationChange}
+                                        placeholder="Enter your years of experience"
+                                        required
+                                    />
+                                </Form.Group>
+                            </Col>
+
                         </Row>
                         <Form.Group className="mb-3">
                             <Form.Label>Message (Optional)</Form.Label>
@@ -995,6 +1044,19 @@ export default function JobSeekerList() {
                                             value={editingApplication.contact_number}
                                             onChange={handleEditChange}
                                             placeholder="Enter your contact number"
+                                            required
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={6}>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label>Years of experience</Form.Label>
+                                        <Form.Control
+                                            type='number'
+                                            name="years_of_experience"
+                                            value={editingApplication.years_of_experience}
+                                            onChange={handleEditChange}
+                                            placeholder="Enter your years of experience"
                                             required
                                         />
                                     </Form.Group>

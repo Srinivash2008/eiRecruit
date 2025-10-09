@@ -40,6 +40,7 @@ export const createJobSeekerController = async (req, res) => {
             "name",
             "email",
             "contact_number",
+            "years_of_experience",
             "jobId"
         ];
         const missingFields = requiredFields.filter(
@@ -57,6 +58,7 @@ export const createJobSeekerController = async (req, res) => {
             name: newApplicationData.name,
             email: newApplicationData.email,
             contact_number: newApplicationData.contact_number,
+            years_of_experience: newApplicationData.years_of_experience,
             resume: newApplicationData.logo,
             message: newApplicationData.message,
             job_id: newApplicationData.jobId
@@ -88,7 +90,7 @@ export const updateJobSeekerController = async (req, res) => {
     const updateApplicationData = req.body;
     const file = req.file;
 
-    
+
 
     try {
         // Handle file upload
@@ -123,7 +125,7 @@ export const updateJobSeekerController = async (req, res) => {
             // updateApplicationData
 
         }
-        
+
         // Run update in model
         const result = await JobSeekeer.update(updateApplicationData);
 
@@ -133,6 +135,7 @@ export const updateJobSeekerController = async (req, res) => {
                 name: result.affectedData.name,
                 email: result.affectedData.email,
                 contact_number: result.affectedData.contact_number,
+                years_of_experience: result.affectedData.years_of_experience,
                 resume: result.affectedData.resume,
                 message: result.affectedData.message,
                 jobId: result.affectedData.jobId,

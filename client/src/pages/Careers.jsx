@@ -40,6 +40,30 @@ const sectionTitle = css`
     font-size: 1.5rem;
   }
 `;
+
+const aboutText = emotionClass`
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: #2d3748;
+  margin-bottom: 1.8rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-align: justify;
+  
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.3rem;
+  }
+`;
+
+
 const sectionContent = css`
   font-size: 1rem;
   font-weight: 600;
@@ -695,6 +719,7 @@ export default function Careers() {
     name: '',
     email: '',
     contact_number: '',
+    years_of_experience: '',
     message: '',
     resume: null,
   });
@@ -756,6 +781,11 @@ export default function Careers() {
       toast.warning("Contact number must be exactly 10 digits");
       return;
     }
+    //years of experience check
+    if (isNaN(applicationData.years_of_experience) || applicationData.years_of_experience < 0 || applicationData.years_of_experience > 50) {
+      toast.warning("Please enter a valid number of years of experience (0-50)");
+      return;
+    }
 
     if (!applicationData.resume) {
       toast.warning("Please upload your resume");
@@ -773,11 +803,12 @@ export default function Careers() {
     formData.append('name', applicationData.name);
     formData.append('email', applicationData.email);
     formData.append('contact_number', applicationData.contact_number);
+    formData.append('years_of_experience', applicationData.years_of_experience);
     formData.append('message', applicationData.message);
     formData.append('resume', applicationData.resume);
 
     try {
-        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/job-seeker/create`, formData, {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/job-seeker/create`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -1544,9 +1575,34 @@ export default function Careers() {
           </motion.div>
 
           <motion.h2 id="software_professionals" style={{ scrollMarginTop: '100px' }} className={sectionTitle} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>Software Professionals</motion.h2>
-          <motion.h2 className={sectionContent} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>Content will be added</motion.h2>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>
+            <div style={{ padding: '0 1rem', maxWidth: '35%', margin: '0 auto 2.2rem auto', textAlign: 'left' }}>
+              <ul style={{ listStyleType: 'disc', paddingLeft: '20px', fontSize: '1.05rem', color: '#333', textAlign: 'left', display: 'inline-block', fontWeight: 400 }}>
+                <li style={{ marginBottom: '0.75rem' }}>Software Development (Java, React JS, Node.js, Python, Angular, .NET, Full Stack)</li>
+                <li style={{ marginBottom: '0.75rem' }}>Cloud & DevOps</li>
+                <li style={{ marginBottom: '0.75rem' }}>Data Science & AI</li>
+                <li style={{ marginBottom: '0.75rem' }}>Cybersecurity</li>
+                <li style={{ marginBottom: '0.75rem' }}>Product Management</li>
+                <li style={{ marginBottom: '0.75rem' }}>UI/UX Design</li>
+                <li style={{ marginBottom: '0.75rem' }}>QA & Automation Testing</li>
+                <li style={{ marginBottom: '0.75rem' }}>Gaming & Mobile Apps</li>
+                <li style={{ marginBottom: '0.75rem' }}>SaaS / Cloud Solutions</li>
+                <li style={{ marginBottom: '0.75rem' }}>FinTech</li>
+              </ul>
+            </div>
+          </motion.div>
           <motion.h2 id="other_professionals" style={{ scrollMarginTop: '90px' }} className={sectionTitle} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>Other Professionals</motion.h2>
-          <motion.h2 className={sectionContent} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>Content will be added</motion.h2>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>
+            <div style={{ padding: '0 1rem', maxWidth: '35%', margin: '0 auto 2.2rem auto', textAlign: 'left' }}>
+              <ul style={{ listStyleType: 'disc', paddingLeft: '20px', fontSize: '1.05rem', color: '#333', textAlign: 'left', display: 'inline-block', fontWeight: 400 }}>
+
+                <li style={{ marginBottom: '0.75rem' }}>Business Analyst</li>
+                <li style={{ marginBottom: '0.75rem' }}>Marketing and Sales</li>
+                <li style={{ marginBottom: '0.75rem' }}>Project Managers</li>
+                <li style={{ marginBottom: '0.75rem' }}>Business heads</li>
+              </ul>
+            </div>
+          </motion.div>
 
         </Container>
       </motion.section>
@@ -1628,7 +1684,7 @@ export default function Careers() {
                         <div style={{ color: '#888', fontSize: '0.98rem', marginBottom: 8 }}>
                           <strong>Location:</strong> {job.location}
                         </div>
-                        <strong style={{color: '#888'  ,marginBottom: 8}}>Job Description:</strong>
+                        <strong style={{ color: '#888', marginBottom: 8 }}>Job Description:</strong>
                         <Card.Text
                           style={{ fontSize: '1.01rem', opacity: 0.92 }}
                           dangerouslySetInnerHTML={{ __html: job.description }}
@@ -1794,6 +1850,19 @@ export default function Careers() {
                     value={applicationData.contact_number}
                     onChange={handleApplicationChange}
                     placeholder="Enter your contact number"
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Years of experience</Form.Label>
+                  <Form.Control
+                    type='number'
+                    name="years_of_experience"
+                    value={applicationData.years_of_experience}
+                    onChange={handleApplicationChange}
+                    placeholder="Enter your years of experience"
                     required
                   />
                 </Form.Group>

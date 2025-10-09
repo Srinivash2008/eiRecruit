@@ -911,13 +911,13 @@ export default function About() {
   };
   const theme = useTheme();
   const servicesSnapshot = [
-    'Industry-Specific Hiring and Staffing',
-    'Trusted partner for staff deployment, Contract staffing, and temporary staffing',
-    'Executive Search: Discreet and targeted recruitment for leadership and C-suite roles.',
-    'Recruitment Process Outsourcing (RPO)',
-    'Employer Services',
-    'Job Seeker Assistance',
-    'Visa & Immigration Support',
+    "Industry-Specific Hiring and Staffing",
+    "Trusted partner for staff deployment, Contract staffing, and temporary staffing",
+    "Executive Search: Discreet and targeted recruitment for leadership and C-suite roles",
+    "Recruitment Process Outsourcing (RPO)",
+    "Employer Services",
+    "Job Seeker Assistance",
+    "Visa & Immigration Support",
   ];
   return (
     <Container className="py-0"  >
@@ -1022,17 +1022,20 @@ export default function About() {
       <motion.div className={sectionDivider} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7, delay: 0.1 }} />
       <motion.h2 className={sectionTitle} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>Services Snapshot</motion.h2>
       <motion.div variants={staggerQuick} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }}>
-        <Row className="g-4 justify-content-center align-items-stretch">
-          {servicesSnapshot.map((service, i) => (
-            <Col md={4} sm={6} xs={12} key={i} className="d-flex">
-              <motion.div variants={fadeUpQuick} style={{ width: '100%' }}>
-                <div className={snapshotCard} style={{ background: i % 2 === 0 ? theme.colors.lightBlue : theme.colors.lightGreen }}>
-                  {service}
-                </div>
-              </motion.div>
-            </Col>
-          ))}
-        </Row>
+        <div style={{ padding: '0 1rem', maxWidth: '80%', margin: '0 auto' }}>
+          <p className={aboutText} style={{ textAlign: 'center', marginBottom: '2rem' }}>
+            We understand the evolving needs of the technology and science landscape — and we deliver the right people to power your growth. We identify and source the most suitable candidates for all levels — from junior level to C level — across a wide range of technologies.
+          </p>
+          <ul style={{ listStyleType: 'disc', paddingLeft: '20px', fontSize: '1.05rem', color: '#333' }}>
+            <li style={{ marginBottom: '0.75rem' }}>Industry-Specific Hiring and Staffing</li>
+            <li style={{ marginBottom: '0.75rem' }}>Trusted partner for staff deployment, Contract staffing, and temporary staffing</li>
+            <li style={{ marginBottom: '0.75rem' }}>Executive Search: Discreet and targeted recruitment for leadership and C-suite roles.</li>
+            <li style={{ marginBottom: '0.75rem' }}>Recruitment Process Outsourcing (RPO):</li>
+            <li style={{ marginBottom: '0.75rem' }}>Employer Services</li>
+            <li style={{ marginBottom: '0.75rem' }}>Job Seeker Assistance</li>
+            <li style={{ marginBottom: '0.75rem' }}>Visa & Immigration Support</li>
+          </ul>
+        </div>
       </motion.div>
       <motion.div className="text-center mt-4" style={{ fontSize: '1.08rem', opacity: 0.85 }} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>
         Please visit our <button
