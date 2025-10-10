@@ -1,4 +1,9 @@
 import JobSeekeer from '../models/jobSeekerModel.js';
+
+// **Access the Environment Variable for the Domain**
+// It's good practice to get the domain once at the top of the file.
+// Use an empty string or a development URL as a fallback if process.env.PUBLIC_DOMAIN isn't set.
+const PUBLIC_DOMAIN = process.env.PUBLIC_DOMAIN || 'http://localhost:3000';
 export const fetchJobSeekerController = async (req, res) => {
     try {
         const applications = await JobSeekeer.findAll();
@@ -31,7 +36,9 @@ export const createJobSeekerController = async (req, res) => {
     try {
         // Handle file if uploaded
         if (file) {
-            newApplicationData.logo = `http://${req.headers.host}/api/v1/uploads/resumeFolder/${file.filename}`;
+            // newApplicationData.logo = `http://${req.headers.host}/api/v1/uploads/resumeFolder/${file.filename}`;
+            // 💡 CHANGED: Replaced http://${req.headers.host} with ${PUBLIC_DOMAIN}
+            newApplicationData.logo = `${PUBLIC_DOMAIN}/api/v1/uploads/resumeFolder/${file.filename}`;
         }
 
 
@@ -95,7 +102,9 @@ export const updateJobSeekerController = async (req, res) => {
     try {
         // Handle file upload
         if (file) {
-            updateApplicationData.resume = `http://${req.headers.host}/api/v1/uploads/resumeFolder/${file.filename}`;
+            // updateApplicationData.resume = `http://${req.headers.host}/api/v1/uploads/resumeFolder/${file.filename}`;
+             // 💡 CHANGED: Replaced http://${req.headers.host} with ${PUBLIC_DOMAIN}
+            updateApplicationData.resume = `${PUBLIC_DOMAIN}/api/v1/uploads/resumeFolder/${file.filename}`;
         }
 
         // Validate ID

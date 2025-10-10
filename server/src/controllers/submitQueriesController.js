@@ -1,6 +1,11 @@
 import SubmitQueries from '../models/submitQueriesModel.js';
 import { sendEmail } from '../utils/emailSender.js';
 
+// **Access the Environment Variable for the Domain**
+// It's good practice to get the domain once at the top of the file.
+// Use an empty string or a development URL as a fallback if process.env.PUBLIC_DOMAIN isn't set.
+const PUBLIC_DOMAIN = process.env.PUBLIC_DOMAIN || 'http://localhost:3000';
+
 export const submitQueryController = async (req, res) => {
     const newQueryData = req.body;
     const file = req.file;
@@ -10,7 +15,8 @@ export const submitQueryController = async (req, res) => {
     try {
         // Handle file if uploaded
         if (file) {
-            newQueryData.attachment_url = `http://${req.headers.host}/api/v1/uploads/submitQueriesFolder/${file.filename}`;
+            // newQueryData.attachment_url = `http://${req.headers.host}/api/v1/uploads/submitQueriesFolder/${file.filename}`;
+            newQueryData.attachment_url = `${PUBLIC_DOMAIN}/api/v1/uploads/submitQueriesFolder/${file.filename}`;
         }
         
 

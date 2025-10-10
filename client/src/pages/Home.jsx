@@ -606,15 +606,15 @@ export default function Home() {
     //   title: 'Medical Innovation'
     // },
     {
-      image: Banner1,
-      title: 'Medical Innovation'
-    },
-    {
       image: Banner2,
       title: 'Medical Innovation'
     },
     {
       image: Banner3,
+      title: 'Medical Innovation'
+    },
+    {
+      image: Banner1,
       title: 'Medical Innovation'
     },
   ];

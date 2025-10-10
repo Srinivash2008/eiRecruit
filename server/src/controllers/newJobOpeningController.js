@@ -1,6 +1,9 @@
 import currentJobOpenings from "../models/newJobOpeningModel.js";
 
-
+// **Access the Environment Variable for the Domain**
+// It's good practice to get the domain once at the top of the file.
+// Use an empty string or a development URL as a fallback if process.env.PUBLIC_DOMAIN isn't set.
+const PUBLIC_DOMAIN = process.env.PUBLIC_DOMAIN || 'http://localhost:3000';
 
 export const fetchOpeningController = async (req, res) => {
     try {
@@ -63,7 +66,8 @@ export const createNewOpeningController = async (req, res) => {
     try {
         // Handle file if uploaded
         if (file) {
-            newOpeningData.logo = `http://${req.headers.host}/api/v1/uploads/logoFolder/${file.filename}`;
+            // newOpeningData.logo = `http://${req.headers.host}/api/v1/uploads/logoFolder/${file.filename}`;
+            newOpeningData.logo = `${PUBLIC_DOMAIN}/api/v1/uploads/logoFolder/${file.filename}`;
         }
 
 
@@ -124,7 +128,8 @@ export const updateCurrentOpeningController = async (req, res) => {
     try {
         // Handle file if uploaded
         if (file) {
-            updatecurrentOpeningData.logo = `http://${req.headers.host}/api/v1/uploads/logoFolder/${file.filename}`;
+            // updatecurrentOpeningData.logo = `http://${req.headers.host}/api/v1/uploads/logoFolder/${file.filename}`;
+            updatecurrentOpeningData.logo = `${PUBLIC_DOMAIN}/api/v1/uploads/logoFolder/${file.filename}`;
         }
         // Validate required fields
         const validFields = Object.keys(updatecurrentOpeningData).filter((field) => {

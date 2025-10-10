@@ -2,7 +2,7 @@ import { useTheme } from '@emotion/react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { css as emotionClass } from '@emotion/css';
 
-import { FaLightbulb, FaHandshake, FaAward, FaUsers, FaUserTie, FaBriefcase, FaEnvelope, FaShieldAlt, FaClipboardCheck } from 'react-icons/fa';
+import { FaLightbulb, FaHandshake, FaAward, FaUsers, FaUserTie, FaBriefcase, FaEnvelope, FaShieldAlt, FaClipboardCheck, FaArrowRight, FaCheck, FaHandPointRight, FaLocationArrow, FaAngleRight, FaChevronRight, FaPaperPlane, FaSpa } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ButtonFive, ButtonFour, ButtonOne, ButtonThree } from '../components/AnimatedButton';
@@ -891,6 +891,28 @@ const missionList = emotionClass`
   }
 `;
 
+const serviceList = emotionClass`
+  list-style: none;
+  padding-left: 40px;
+  max-width: 900px;
+  margin: 0 auto;
+  li {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
+    color: #333;
+    line-height: 1.6;
+    text-align: left;
+  }
+  svg {
+    color: #1CA638;
+    margin-right: 1rem;
+    margin-top: 0.25rem;
+    flex-shrink: 0;
+  }
+`;
+
 
 export default function About() {
   // Animation variants
@@ -1026,15 +1048,48 @@ export default function About() {
           <p className={aboutText} style={{ textAlign: 'center', marginBottom: '2rem' }}>
             We understand the evolving needs of the technology and science landscape — and we deliver the right people to power your growth. We identify and source the most suitable candidates for all levels — from junior level to C level — across a wide range of technologies.
           </p>
-          <ul style={{ listStyleType: 'disc', paddingLeft: '20px', fontSize: '1.05rem', color: '#333' }}>
-            <li style={{ marginBottom: '0.75rem' }}>Industry-Specific Hiring and Staffing</li>
-            <li style={{ marginBottom: '0.75rem' }}>Trusted partner for staff deployment, Contract staffing, and temporary staffing</li>
-            <li style={{ marginBottom: '0.75rem' }}>Executive Search: Discreet and targeted recruitment for leadership and C-suite roles.</li>
-            <li style={{ marginBottom: '0.75rem' }}>Recruitment Process Outsourcing (RPO):</li>
-            <li style={{ marginBottom: '0.75rem' }}>Employer Services</li>
-            <li style={{ marginBottom: '0.75rem' }}>Job Seeker Assistance</li>
-            <li style={{ marginBottom: '0.75rem' }}>Visa & Immigration Support</li>
+          <ul className={serviceList}>
+            <li style={{ marginBottom: '0.75rem' }}><FaSpa style={{ color: '#1ca638', fontSize: '20px' }}/> Industry-Specific Hiring and Staffing</li>
+            <li style={{ marginBottom: '0.75rem' }}><FaSpa style={{ color: '#1ca638', fontSize: '20px' }}/> Trusted partner for staff deployment, Contract staffing, and temporary staffing</li>
+            <li style={{ marginBottom: '0.75rem' }}><FaSpa style={{ color: '#1ca638', fontSize: '20px' }}/> Executive Search: Discreet and targeted recruitment for leadership and C-suite roles.</li>
+            <li style={{ marginBottom: '0.75rem' }}><FaSpa style={{ color: '#1ca638', fontSize: '20px' }}/> Recruitment Process Outsourcing (RPO):</li>
+            <li style={{ marginBottom: '0.75rem' }}><FaSpa style={{ color: '#1ca638', fontSize: '20px' }}/> Employer Services</li>
+            <li style={{ marginBottom: '0.75rem' }}><FaSpa style={{ color: '#1ca638', fontSize: '20px' }}/> Job Seeker Assistance</li>
+            <li style={{ marginBottom: '0.75rem' }}><FaSpa style={{ color: '#1ca638', fontSize: '20px' }}/> Visa & Immigration Support</li>
           </ul>
+           <p className={aboutText} style={{ textAlign: 'left', marginBottom: '2rem' }}>
+            We specialise in connecting top-tier software professionals with leading organisations. From startups to enterprise-level businesses,
+          </p>
+          <p className={aboutText} style={{ textAlign: 'left', marginBottom: '2rem' }}>
+           <strong>Our expertise spans:</strong>
+          </p>
+          
+          <ul className={serviceList}>
+            <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px' }}/>  Software Development (Java, React JS, Node.js, Python, Angular, .NET, Full Stack)</li>
+            <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px' }}/>  Cloud & DevOps</li>
+            <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px' }}/>  Data Science & AI</li>
+            <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px' }}/>  Cybersecurity</li>
+            <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px' }}/>  UI/UX Design</li>
+            <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px' }}/>  QA & Automation Testing</li>
+            <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px' }}/>  Gaming & Mobile Apps</li>
+            <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px' }}/>  SaaS / Cloud Solutions</li>
+            <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px' }}/>  FinTech</li>
+          </ul>
+          <p className={aboutText} style={{ textAlign: 'left', marginBottom: '2rem' }}>
+            <b>Contract Staffing - <i>Hire. Scale. Deliver. Faster.</i></b> 
+          </p>
+           <p className={aboutText} style={{ textAlign: 'left', marginBottom: '2rem' }}>
+            In today’s fast-paced software industry, project requirements change quickly. Companies need the flexibility to scale their workforce without long-term commitments. Our Contract Staffing solutions help you bridge skill gaps, manage workload spikes, and keep your projects on track — efficiently and cost-effectively.
+          </p>
+             <ul className={serviceList}>
+            <li style={{ marginBottom: '0.75rem' }}><FaLocationArrow style={{ color: '#1ca638', fontSize: '20px' }}/><div style={{textAlign: 'justify'}}><b>Short-Term & Long-Term Contracts:</b> From a few weeks to several months, we align with your project timelines.</div></li>
+            <li style={{ marginBottom: '0.75rem' }}><FaLocationArrow style={{ color: '#1ca638', fontSize: '20px' }}/><div style={{textAlign: 'justify'}}><b>Remote or On-Site Talent:</b> Access developers, testers, and analysts who can work remotely or at your office.</div></li>
+            <li style={{ marginBottom: '0.75rem' }}><FaLocationArrow style={{ color: '#1ca638', fontSize: '20px' }}/><div style={{textAlign: 'justify'}}><b>End-to-End Administration:</b> We manage payroll, compliance, attendance, and onboarding — you focus on delivery.</div></li>
+          </ul>
+          <p className={aboutText} style={{ textAlign: 'left', marginBottom: '2rem' }}>
+            Whether you’re developing a new application, migrating to the cloud, or scaling your support team, our contract staffing services provide the <b>right talent at the right time</b> — without the long-term overhead.
+          </p>
+          
         </div>
       </motion.div>
       <motion.div className="text-center mt-4" style={{ fontSize: '1.08rem', opacity: 0.85 }} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>
