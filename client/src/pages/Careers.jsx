@@ -1682,6 +1682,9 @@ export default function Careers() {
                           {job.name}
                         </Card.Title>
                         <div style={{ color: '#888', fontSize: '0.98rem', marginBottom: 8 }}>
+                          <strong>Experience:</strong> {job.co_years_of_experience} years
+                        </div>
+                        <div style={{ color: '#888', fontSize: '0.98rem', marginBottom: 8 }}>
                           <strong>Location:</strong> {job.location}
                         </div>
                         <strong style={{ color: '#888', marginBottom: 8 }}>Job Description:</strong>

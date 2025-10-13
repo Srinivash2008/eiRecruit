@@ -8,15 +8,17 @@ class CurrentJobOpenings {
             INSERT INTO current_opening (
                 name,
                 description,
+                co_years_of_experience,
                 location,
                 logo,
                 status
-            ) VALUES (?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?)
         `;
 
             const values = [
                 queryData.name,
                 queryData.description,
+                queryData.co_years_of_experience,
                 queryData.location,
                 queryData.logo || null,
                 queryData.status || 'Publish'
@@ -40,6 +42,7 @@ class CurrentJobOpenings {
             current_opening.id,
             current_opening.name,
             current_opening.description,
+            current_opening.co_years_of_experience,
             current_opening.location,
             current_opening.logo,
             current_opening.status,
@@ -65,6 +68,7 @@ class CurrentJobOpenings {
             current_opening.id,
             current_opening.name,
             current_opening.description,
+            current_opening.co_years_of_experience,
             current_opening.location,
             current_opening.logo,
             current_opening.status,
@@ -114,12 +118,13 @@ class CurrentJobOpenings {
         return new Promise((resolve, reject) => {
             const query = `
             UPDATE current_opening 
-            SET name = ?, description = ?, location = ?, logo = ?
+            SET name = ?, description = ?, co_years_of_experience = ?, location = ?, logo = ?
             WHERE id = ?
         `;
             const values = [
                 queryData.name,
                 queryData.description,
+                queryData.co_years_of_experience,
                 queryData.location,
                 queryData.logo || null,
                 queryData.id

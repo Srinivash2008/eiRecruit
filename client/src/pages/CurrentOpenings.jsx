@@ -204,6 +204,7 @@ export default function CurrentOpenings() {
         id: '',
         name: '',
         description: '',
+        co_years_of_experience: '',
         status: '',
         location: '',
         logo: null,
@@ -213,6 +214,7 @@ export default function CurrentOpenings() {
         id: '',
         name: '',
         description: '',
+        co_years_of_experience: '',
         status: '',
         location: '',
         logo: null,
@@ -326,7 +328,7 @@ export default function CurrentOpenings() {
 
     const handleClose = () => {
         setShowModal(false);
-        setNewOpening({ name: '', description: '', location: '', logo: null });
+        setNewOpening({ name: '', description: '', co_years_of_experience: '', location: '', logo: null });
     };
     const handleShow = () => setShowModal(true);
 
@@ -334,6 +336,11 @@ export default function CurrentOpenings() {
         const { name, value, files } = e.target;
         if (name === 'logo') {
             setNewOpening((prev) => ({ ...prev, logo: files[0] }));
+        } else if (name === "co_years_of_experience") {
+            const regex = /^\d*$/;
+            if (regex.test(value)) {
+                setNewOpening((prev) => ({ ...prev, co_years_of_experience: value }));
+            }
         } else {
             setNewOpening((prev) => ({ ...prev, [name]: value }));
         }
@@ -354,6 +361,12 @@ export default function CurrentOpenings() {
             return;
         }
 
+         // Years of experience check
+        if (!/^\d+$/.test(newOpening.co_years_of_experience)) {
+            toast.warning("Years of experience should be a valid number");
+            return;
+        }
+
         // if (!nameRegex.test(newOpening.name)) {
         //     toast.warning("Name can only contain letters.");
         //     return;
@@ -367,6 +380,7 @@ export default function CurrentOpenings() {
         const formData = new FormData();
         formData.append('name', newOpening.name);
         formData.append('description', newOpening.description);
+        formData.append('co_years_of_experience', newOpening.co_years_of_experience);
         formData.append('location', newOpening.location);
         formData.append('logo', newOpening.logo);
 
@@ -405,6 +419,7 @@ export default function CurrentOpenings() {
             id: '',
             name: '',
             description: '',
+            co_years_of_experience: '',
             status: '',
             location: '',
             logo: null,
@@ -415,6 +430,11 @@ export default function CurrentOpenings() {
         const { name, value, files } = e.target;
         if (name === 'logo') {
             setEditingOpening((prev) => ({ ...prev, logo: files[0] }));
+        } else if (name === "co_years_of_experience") {
+            const regex = /^\d*$/;
+            if (regex.test(value)) {
+                setEditingOpening((prev) => ({ ...prev, co_years_of_experience: value }));
+            }
         } else {
             setEditingOpening((prev) => ({ ...prev, [name]: value }));
         }
@@ -430,12 +450,18 @@ export default function CurrentOpenings() {
             toast.warning("Please fill in all required fields.");
             return;
         }
+         // Years of experience check
+        if (!/^\d+$/.test(editingOpening.co_years_of_experience)) {
+            toast.warning("Years of experience should be a valid number");
+            return;
+        }
         console.log(editingOpening, "editingOpening");
 
         const formData = new FormData();
         formData.append('id', editingOpening.id);
         formData.append('name', editingOpening.name);
         formData.append('description', editingOpening.description);
+        formData.append('co_years_of_experience', editingOpening.co_years_of_experience);
         formData.append('location', editingOpening.location);
         formData.append('status', editingOpening.status);
         if (editingOpening.logo) {
@@ -616,6 +642,7 @@ export default function CurrentOpenings() {
                                 {/* <th>Logo</th> */}
                                 <th>Opening Name</th>
                                 <th>Job Description</th>
+                                <th>Years of Experience</th>
                                 <th>Location</th>
                                 <th>Status</th>
                                 <th>Actions</th>
@@ -666,6 +693,7 @@ export default function CurrentOpenings() {
                                                     <span className="text-muted">No Message</span>
                                                 )}
                                             </td>
+                                            <td>{opening.co_years_of_experience}</td>
                                             <td>{opening.location}</td>
                                             <td>
                                                 {editingOpeningId === opening.id ? (
@@ -832,6 +860,17 @@ export default function CurrentOpenings() {
                                 />
                             </div>
                         </Form.Group>
+                         <Form.Group className="mb-3" controlId="co_years_of_experience">
+                            <Form.Label>Years of experience</Form.Label>
+                            <Form.Control
+                                type='number'
+                                name="co_years_of_experience"
+                                value={newOpening.co_years_of_experience}
+                                onChange={handleChange}
+                                placeholder="Enter  years of experience"
+                                required
+                            />
+                        </Form.Group>
 
                         <Form.Group className="mb-3" controlId="location">
                             <Form.Label>Location</Form.Label>
@@ -919,6 +958,17 @@ export default function CurrentOpenings() {
                                     modules={quillModules}
                                 />
                             </div>
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="co_years_of_experience">
+                            <Form.Label>Years of experience</Form.Label>
+                            <Form.Control
+                                type='number'
+                                name="co_years_of_experience"
+                                value={editingOpening.co_years_of_experience}
+                                onChange={handleEditChange}
+                                placeholder="Enter years of experience"
+                                required
+                            />
                         </Form.Group>
 
                         <Form.Group className="mb-3" controlId="location">
