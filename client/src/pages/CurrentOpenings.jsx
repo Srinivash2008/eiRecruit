@@ -765,7 +765,7 @@ export default function CurrentOpenings() {
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan="6" className="text-center text-muted">
+                                    <td colSpan="7" className="text-center text-muted">
                                         No openings found.
                                     </td>
                                 </tr>
