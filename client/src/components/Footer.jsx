@@ -442,7 +442,7 @@ export default function Footer() {
               <a href="#" css={socialIcon} aria-label="Twitter" role="listitem" tabIndex={0}>
                 <FaTwitter />
               </a>
-              <a href="#" css={socialIcon} aria-label="LinkedIn" role="listitem" tabIndex={0}>
+              <a href="https://www.linkedin.com/company/eirecruit-consulting/"  target="_blank" rel="noopener noreferrer" css={socialIcon} aria-label="LinkedIn" role="listitem" tabIndex={0}>
                 <FaLinkedin />
               </a>
               <a href="#" css={socialIcon} aria-label="Instagram" role="listitem" tabIndex={0}>
