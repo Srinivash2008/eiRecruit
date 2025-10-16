@@ -5,7 +5,7 @@ import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { FaEnvelope, FaPhoneAlt, FaPaperPlane, FaGlobe } from 'react-icons/fa';
 import { Buttonseven, Buttonsix, ButtonTwo } from '../components/AnimatedButton';
-import contact1 from '../assets/images/contact5_updated.jpg';
+import contact1 from '../assets/images/services-crop2.jpg';
 import axios from "axios";
 import carrers_image from '../assets/carrers.jpg';
 import { toast } from "react-toastify";
@@ -393,6 +393,9 @@ export default function Contact() {
                         style={{
                           width: '100%',
                           height: '100%',
+                          //  objectFit: 'none',
+                          // objectFit: 'scale-down',
+                          // objectFit: 'contain',
                           // objectFit: 'cover',
                           objectFit: 'fill',
                           // filter: 'brightness(1) contrast(1.1)',

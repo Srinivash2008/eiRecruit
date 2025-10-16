@@ -2,7 +2,7 @@ import { useTheme } from '@emotion/react';
 import { Container, Row, Col, Card, Button, Badge, Modal, Form } from 'react-bootstrap';
 import { keyframes } from '@emotion/react';
 import { css as emotionClass, css } from '@emotion/css';
-import { FaLaptopHouse, FaChartLine, FaMoneyBillWave, FaUsers, FaBriefcase, FaMapMarkerAlt, FaSuitcase, FaClipboardCheck, FaPassport, FaPlane, FaUserMd, FaFileAlt, FaHandshake, FaCheckCircle, FaShieldAlt, FaStar, FaHeart, FaGlobe, FaHandPointRight } from 'react-icons/fa';
+import { FaLaptopHouse, FaChartLine, FaMoneyBillWave, FaUsers, FaBriefcase, FaMapMarkerAlt, FaSuitcase, FaClipboardCheck, FaPassport, FaPlane, FaUserMd, FaFileAlt, FaHandshake, FaCheckCircle, FaShieldAlt, FaStar, FaHeart, FaGlobe, FaHandPointRight, FaRegStar, FaBolt, FaCaretRight, FaLightbulb, FaCog, FaGem, FaCube, FaFeather, FaArrowCircleRight, FaAnchor, FaPaw, FaCloud, FaBell, FaUserTie, FaUser } from 'react-icons/fa';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useState, useEffect, use } from 'react';
@@ -623,6 +623,19 @@ const categoryContentText = emotionClass`
   color: #334155;
   line-height: 1.7;
 `;
+
+const jobListContainer = emotionClass`
+  padding: 0 1rem;
+  width: 35%;
+  margin: 0 auto 2.2rem auto;
+  text-align: left;
+
+  @media (max-width: 450px) {
+    width: 100%; /* override the width, not max-width */
+  }
+`;
+
+
 
 // Counter component for animated numbers
 const AnimatedCounter = ({ target, duration = 2000, suffix = '' }) => {
@@ -1576,30 +1589,30 @@ export default function Careers() {
 
           <motion.h2 id="software_professionals" style={{ scrollMarginTop: '100px' }} className={sectionTitle} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>Software Professionals</motion.h2>
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>
-            <div style={{ padding: '0 1rem', maxWidth: '35%', margin: '0 auto 2.2rem auto', textAlign: 'left' }}>
+            <div className={jobListContainer}>
               <ul style={{ listStyleType: 'none', paddingLeft: '20px', fontSize: '1.05rem', color: '#333', textAlign: 'left', display: 'inline-block', fontWeight: 400 }}>
-                <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px'}}/>Software Development (Java, React JS, Node.js, Python, Angular, .NET, Full Stack)</li>
-                <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px' }}/>Cloud & DevOps</li>
-                <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px' }}/>Data Science & AI</li>
-                <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px' }}/>Cybersecurity</li>
-                <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px' }}/>Product Management</li>
-                <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px' }}/>UI/UX Design</li>
-                <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px' }}/>QA & Automation Testing</li>
-                <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px' }}/>Gaming & Mobile Apps</li>
-                <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px' }}/>SaaS / Cloud Solutions</li>
-                <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px' }}/>FinTech</li>
+                <li style={{ marginBottom: '0.75rem' }}><FaBriefcase  style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px'}}/>Software Development (Java, React JS, Node.js, Python, Angular, .NET, Full Stack)</li>
+                <li style={{ marginBottom: '0.75rem' }}><FaBriefcase style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px' }}/>Cloud & DevOps</li>
+                <li style={{ marginBottom: '0.75rem' }}><FaBriefcase style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px' }}/>Data Science & AI</li>
+                <li style={{ marginBottom: '0.75rem' }}><FaBriefcase style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px' }}/>Cybersecurity</li>
+                <li style={{ marginBottom: '0.75rem' }}><FaBriefcase style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px' }}/>Product Management</li>
+                <li style={{ marginBottom: '0.75rem' }}><FaBriefcase style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px' }}/>UI/UX Design</li>
+                <li style={{ marginBottom: '0.75rem' }}><FaBriefcase style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px' }}/>QA & Automation Testing</li>
+                <li style={{ marginBottom: '0.75rem' }}><FaBriefcase style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px' }}/>Gaming & Mobile Apps</li>
+                <li style={{ marginBottom: '0.75rem' }}><FaBriefcase style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px' }}/>SaaS / Cloud Solutions</li>
+                <li style={{ marginBottom: '0.75rem' }}><FaBriefcase style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px' }}/>FinTech</li>
               </ul>
             </div>
           </motion.div>
           <motion.h2 id="other_professionals" style={{ scrollMarginTop: '90px' }} className={sectionTitle} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>Other Professionals</motion.h2>
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1, margin: '0px 0px -10% 0px' }} variants={fadeUpQuick}>
-            <div style={{ padding: '0 1rem', maxWidth: '35%', margin: '0 auto 2.2rem auto', textAlign: 'left' }}>
+            <div className={jobListContainer}>
               <ul style={{ listStyleType: 'none', paddingLeft: '20px', fontSize: '1.05rem', color: '#333', textAlign: 'left', display: 'inline-block', fontWeight: 400 }}>
 
-                <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px'}}/>Business Analyst</li>
-                <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px'}}/>Marketing and Sales</li>
-                <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px'}}/>Project Managers</li>
-                <li style={{ marginBottom: '0.75rem' }}><FaHandPointRight style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px'}}/>Business heads</li>
+                <li style={{ marginBottom: '0.75rem' }}><FaUserTie style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px'}}/>Business Analyst</li>
+                <li style={{ marginBottom: '0.75rem' }}><FaUserTie style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px'}}/>Marketing and Sales</li>
+                <li style={{ marginBottom: '0.75rem' }}><FaUserTie style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px'}}/>Project Managers</li>
+                <li style={{ marginBottom: '0.75rem' }}><FaUserTie style={{ color: '#1ca638', fontSize: '20px', marginRight: '10px'}}/>Business heads</li>
               </ul>
             </div>
           </motion.div>

@@ -6,7 +6,7 @@ import { FaLightbulb, FaHandshake, FaAward, FaUsers, FaUserTie, FaBriefcase, FaE
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ButtonFive, ButtonFour, ButtonOne, ButtonThree } from '../components/AnimatedButton';
-import contact4 from '../assets/images/banner2.jpg';
+import contact4 from '../assets/images/contact5_updated.jpg';
 
 const sectionTitle = emotionClass`
   font-size: 2rem;
@@ -201,7 +201,8 @@ const aboutImageContainer = emotionClass`
 const aboutImage = emotionClass`
   width: 100%;
   height: 450px;
-  object-fit: cover;
+  // object-fit: cover;
+  object-fit: fill;
   border-radius: 20px;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   filter: contrast(1.05) saturate(1.1);
